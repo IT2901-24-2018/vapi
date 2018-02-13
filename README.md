@@ -1,37 +1,31 @@
-# bit24
-Map-based overview of road conditions in relation to maintenance and weather
+## Setting up React and Django
 
-## Setup
+### Frontend
+Make sure you have [npm](https://nodejs.org/en/) installed through Node. You can easily test this by running `npm -v` in your terminal. We also recommend you use [Yarn](https://yarnpkg.com/lang/en/) to install packages, and our instructions will assume that you do.
+Now you should be ready to install our frontend dependencies.
+```
+cd frontend
+yarn
+```
 
-### Setup for django and react
+When the dependencies are finished installing, you can start up the frontend server. It will automatically open your browser at localhost:3000, but you can close that.
+`yarn start`
 
-clone project
+### Backend
+While the frontend server is running in your terminal, open up another to set up the backend.
 
-set up vitual environment and activate (probably a good idea to do it in the same folder you cloned the project?)
+We recommend setting up a virtualenv to contain the backend dependencies. [Here's](https://gist.github.com/IamAdiSri/a379c36b70044725a85a1216e7ee9a46) a solid guide on installing virtualenvwrapper for Python3. 
+Make yourself a virtualenv for the project with `mkvirtualenv bit24` and remember to run `workon bit24` to have access to the backend dependencies.
 
-cd into repository and `pip install requirements.txt`
+When your virtual environment is set up, get the required dependencies for the backend:
+`pip install -r requirements.txt`
 
-or
+Apply the latest and greatest in database migrations:
+`python manage.py migrate`
 
-`pip install django`
+Now you can start up the backend server.
+`python manage.py runserver`
 
-`pip install django-webpack-loader`
-
-cd into folder with manage.py
-
-`./manage.py migrate` (`python manage.py migrate` for windows)
-
-can at this point run `./manage.py runserver` (see above for windows) but since the react part is missing it will show a blank page for now.
-
-open new cmd, activate environment cd into frontend folder
-
-`npm install`
-
-wait...
-
-`npm run start`
-
-open localhost:8000 in web (there will also be a react site on port 3000 can probably be removed)
 
 ### PostreSQL db setup (work in progress)
 Install PostreSQL linux: (https://www.postgresql.org/download/linux/ubuntu/)
@@ -64,14 +58,5 @@ set the username and password to the username and password you made earlier (for
 
 then migrate and run server.
 
-### TODO
-Need to improve a lot of this. It still makes the sqlite3 db file.
-
-The bit24 folder should be named backend?, but to do that you need to set up the django part again. See django and react tutorial below.
-
-Everything in the "project" folder can be freely moved up one level (and delete "project"). Migrate again just in case.
-
-### Tutorials
-django and react: http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/
-
-postresql, django and react with authorization https://hackernoon.com/creating-websites-using-react-and-django-rest-framework-b14c066087c7
+## Misc
+Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for this React+Django setup tutorial.
