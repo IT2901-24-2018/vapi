@@ -9,21 +9,23 @@ yarn
 ```
 
 When the dependencies are finished installing, you can start up the frontend server. It will automatically open your browser at localhost:3000, but you can close that.
-`yarn start`
 
 ### Backend
-While the frontend server is running in your terminal, open up another to set up the backend.
+While the frontend server is running in your terminal, open up another terminal to set up the backend.
 
 We recommend setting up a virtualenv to contain the backend dependencies. [Here's](https://gist.github.com/IamAdiSri/a379c36b70044725a85a1216e7ee9a46) a solid guide on installing virtualenvwrapper for Python3. 
 Make yourself a virtualenv for the project with `mkvirtualenv bit24` and remember to run `workon bit24` to have access to the backend dependencies.
 
 When your virtual environment is set up, get the required dependencies for the backend:
+
 `pip install -r requirements.txt`
 
 Apply the latest and greatest in database migrations:
+
 `python manage.py migrate`
 
 Now you can start up the backend server.
+
 `python manage.py runserver`
 
 
@@ -59,4 +61,4 @@ set the username and password to the username and password you made earlier (for
 then migrate and run server.
 
 ## Misc
-Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for this React+Django setup tutorial.
+Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for the React+Django setup tutorial we used.
