@@ -28,6 +28,7 @@ Now you can start up the backend server.
 
 `python manage.py runserver`
 
+The website should now be available at [localhost:8000](http://localhost:8000)
 
 ### PostreSQL db setup (work in progress)
 Install PostreSQL linux: (https://www.postgresql.org/download/linux/ubuntu/)
