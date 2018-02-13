@@ -10,4 +10,3 @@ WEBPACK_LOADER = {
             'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.prod.json'),
         }
 }
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
