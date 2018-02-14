@@ -1,0 +1,10 @@
+language: python
+install: 
+  - pip install -r requirements.txt
+  - cd frontend
+  - npm install
+script:
+  - npm run lint-js
+  - npm run lint-css
+  - cd ../
+  - flake8
