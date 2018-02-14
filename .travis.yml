@@ -9,4 +9,6 @@ script:
   - npm run lint-js
   - npm run lint-css
   - cd ../
-  - flake8
+  - flake8 apps
+notifications:
+  email: false
