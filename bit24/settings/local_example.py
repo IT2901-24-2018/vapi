@@ -1,14 +1,14 @@
-# Copy this file to a file called "local.py"
-# Aftwards, rename USER and PASSWORD to what you set up Postgres with.
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'bit24',
+        'NAME': 'myproject',
         'HOST': 'localhost',
         'PORT': '',
         # Replace with your own settings
-        'USER': 'bit24test',
-        'PASSWORD': 'test',
+        'USER': 'myprojectuser',
+        'PASSWORD': 'password',
     }
 }

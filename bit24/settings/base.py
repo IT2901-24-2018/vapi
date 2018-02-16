@@ -71,21 +71,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bit24.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-# DATABASES = {
-    # 'default': {
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'bit24', 
-        # 'USER': 'db_user',
-        # 'PASSWORD': 'db_password',
-        # 'HOST': 'localhost',
-        # 'PORT': '',
-    # }
-# }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
