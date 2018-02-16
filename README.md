@@ -8,7 +8,11 @@ cd frontend
 yarn
 ```
 
-When the dependencies are finished installing, you can start up the frontend server. It will automatically open your browser at localhost:3000, but you can close that.
+When the dependencies are finished installing, you can start up the frontend server.
+```
+npm start
+```
+It will automatically open your browser at localhost:3000, but you can close that. 
 
 ### Backend
 While the frontend server is running in your terminal, open up another terminal to set up the backend.
