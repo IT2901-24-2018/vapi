@@ -1,7 +1,7 @@
 import React from 'react';
-import logo from './logo.svg';
+import logo from './media/logo.svg';
 import './App.css';
-import MyMapComponent from './components/MyMapComponent';
+import MyMapComponent from './components/MyMapComponent/MyMapComponent';
 
 const App = () => (
   <div className="App">
