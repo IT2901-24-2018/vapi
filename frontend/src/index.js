@@ -2,22 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import Toggle from 'material-ui/Toggle';
+import AppBar from 'material-ui/AppBar';
 
 import './base.css';
 
-import MyMapComponent from './components/MyMapComponent/MyMapComponent';
+import Map from './components/Map/Map';
 
 import registerServiceWorker from './registerServiceWorker';
 
 const App = () => (
   <MuiThemeProvider>
-    <div className="App">
-      <Toggle
-        defaultToggled
-      />
-      <MyMapComponent isMarkerShown />
-    </div>
+    <AppBar
+      title="Orm"
+      showMenuIconButton={false}
+    />
+    <Map isMarkerShown />
   </MuiThemeProvider>
 );
 
