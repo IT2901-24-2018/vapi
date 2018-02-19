@@ -1,4 +1,5 @@
 ## Setting up React and Django
+We wrote this guide for Linux, some adjustments could be required for OS X and Windows. You don't _have_ to have Yarn, or virtualenvwrapper, or virtualenv, but it's all recommended.
 
 ### Frontend
 Make sure you have [npm](https://nodejs.org/en/) installed through Node. You can easily test this by running `npm -v` in your terminal. We also recommend you use [Yarn](https://yarnpkg.com/lang/en/) to install packages, and our instructions will assume that you do.
@@ -18,25 +19,15 @@ It will automatically open your browser at localhost:3000, but you can close tha
 While the frontend server is running in your terminal, open up another terminal to set up the backend.
 
 We recommend setting up a virtualenv to contain the backend dependencies. [Here's](https://gist.github.com/IamAdiSri/a379c36b70044725a85a1216e7ee9a46) a solid guide on installing virtualenvwrapper for Python3. 
-Make yourself a virtualenv for the project with `mkvirtualenv bit24` and remember to run `workon bit24` to have access to the backend dependencies.
+Make yourself a virtualenv for the project with `mkvirtualenv orm` and remember to run `workon orm` to have access to the backend dependencies.
 
 When your virtual environment is set up, get the required dependencies for the backend:
 
 `pip install -r requirements.txt`
 
-Apply the latest and greatest in database migrations:
-
-`python manage.py migrate`
-
-Now you can start up the backend server.
-
-`python manage.py runserver`
-
-The website should now be available at [localhost:8000](http://localhost:8000)
-
 ### Database
 
-Note that I've only tested this on linux, process could be wildly different for Windows.
+We haven't noted down instructions for Windows, but try downloading Postgres [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads#windows) and installing it [here](http://www.postgresqltutorial.com/install-postgresql/). The following instructions are designed for Linux and potentially OS X.
 
 First, get the postgresql packages through apt.
 
@@ -52,22 +43,22 @@ You should now be in a shell session as the `postgres` user. Begin a Postgres se
 
 Make the database
 
-`CREATE DATABASE myproject;`
+`CREATE DATABASE orm;`
 
 Make a database user which will connect to and interact with the database. Remember the username and password,
 
-`CREATE USER myprojectuser WITH PASSWORD 'password';`
+`CREATE USER user WITH PASSWORD 'password';`
 
 Set the following connection parameters for the user we created, speeding up database operations.
 ```
-ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
-ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
-ALTER ROLE myprojectuser SET timezone TO 'UTC';
+ALTER ROLE user SET client_encoding TO 'utf8';
+ALTER ROLE user SET default_transaction_isolation TO 'read committed';
+ALTER ROLE user SET timezone TO 'UTC';
 ```
 
 Now we need to grant the database user access rights to the database we created.
 
-`GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;`
+`GRANT ALL PRIVILEGES ON DATABASE orm TO user;`
 
 Exit the SQL prompt to get back to the postgres user session.
 
@@ -79,7 +70,7 @@ We're done with this user, so we can also exit the postgres user shell session, 
 
 Now, we have to give this information to our Django config. We start by navigating to our settings folder.
 
-`cd bit24/settings/`
+`cd backend/settings/`
 
 Copy the local_example.py file to a local.py file, which will be hidden from git and contain your specific database information.
 
@@ -87,11 +78,15 @@ Copy the local_example.py file to a local.py file, which will be hidden from git
 
 Open up local.py and edit the values of "user" and "password" to the values you set earlier.
 
-Run migrations to make sure your database is up to speed.
+Apply the latest and greatest in database migrations:
 
 `python manage.py migrate`
 
-Now you should be all set up!
+Now you can start up the backend server.
+
+`python manage.py runserver`
+
+The website should now be available at [localhost:8000](http://localhost:8000)
 
 ## Misc
 Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for the React+Django setup tutorial we used.
