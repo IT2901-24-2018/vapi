@@ -5,6 +5,9 @@ backend/settings/local.py
 
 .DS_Store
 *.pyc
+
+.vscode/
 .idea/
+
 webpack-stats.dev.json
 webpack-stats.prod.json
