@@ -3,3 +3,6 @@ static/
 
 .DS_Store
 *.pyc
+.idea/
+webpack-stats.dev.json
+webpack-stats.prod.json
