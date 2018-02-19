@@ -1,0 +1,114 @@
+/* Overlay for localhost:3000 */
+#Port__overlay {
+  position: absolute;
+  background: hsla(0, 0%, 0%, 0.5);
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+#Port__overlay-textbox {
+  display: flex;
+  flex-direction: column;
+  background: hsl(0, 0%, 93%);
+  color: hsl(201, 11%, 30%);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 64px;
+  box-shadow: 0 2px 4px 0 hsla(0, 0%, 0%, 0.2);
+}
+
+#Port__overlay-textbox p {
+  margin: 0;
+  line-height: 32px;
+}
+
+#Port__overlay-textbox p:first-of-type {
+  font-size: 150%;
+  line-height: 64px;
+}
+
+#Port__overlay-textbox p span:not(#Port__overlay-textbox-link) {
+  font-family: monospace;
+  padding: 4px;
+  background: hsl(0, 0%, 85%);
+}
+
+#Port__overlay-textbox #continue {
+  padding: 8px;
+  font-size: inherit;
+  background: hsl(0, 0%, 93%);
+  color: hsl(201, 11%, 30%);
+  border: 2px solid hsl(201, 11%, 30%);
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+  align-self: center;
+  margin: 8px;
+  height: 64px;
+  width: 64px;
+  position: relative;
+}
+
+#Port__overlay-textbox #continue:focus {
+  outline: none;
+}
+
+#Port__overlay-textbox #continue:hover {
+  cursor: pointer;
+  background-color: hsl(201, 11%, 30%);
+  color: hsl(0, 0%, 93%);
+}
+
+#Port__overlay-textbox #continue:active {
+  background-color: #888;
+}
+
+#Port__overlay-textbox #continue::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 50%;
+  border: 1px solid hsl(35, 100%, 50%);
+  animation: ripple 5s ease-in-out infinite;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+#Port__overlay #dismiss {
+  background: none;
+  color: white;
+  border: none;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 16px;
+  position: fixed;
+  max-width: inherit;
+  margin: 16px auto;
+  transform: translateX(-50%);
+  bottom: 0;
+}
+
+#Port__overlay #dismiss:hover {
+  background: none;
+  color: hsl(35, 100%, 50%);
+  cursor: pointer;
+}
+
+#Port__overlay #dismiss:focus {
+  outline: none;
+}

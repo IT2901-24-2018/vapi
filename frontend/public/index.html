@@ -21,12 +21,23 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
   <title>Wrong port!</title>
+  <link rel="stylesheet" type="text/css" href="index.css">
 </head>
 
 <body>
   <noscript>
     You need to enable JavaScript to run this app.
   </noscript>
+  <div id="Port__overlay">
+    <div id="Port__overlay-textbox">
+      <p>Oh, hey there.</p>
+      <p>You've come to the wrong port. This is just transpiled frontend.</p>
+      <p>You probably got here because <span>yarn start</span> automatically opened the browser. What a hassle.</p>
+      <p>If you want backend functionality, make sure you're running the Django server, and click the button below.</p>
+      <button id="continue" onClick="window.location='http://localhost:8000';">Bye!</button>
+    </div>
+    <button id="dismiss" onClick="this.parentNode.parentNode.removeChild(this.parentNode);">I'm a silly person who wants to play around in this frontend-only landscape</button>
+  </div>
   <div id="root"></div>
   <!--
       This HTML file is a template.
