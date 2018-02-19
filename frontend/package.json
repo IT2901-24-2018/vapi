@@ -97,21 +97,5 @@
     "presets": [
       "react-app"
     ]
-  },
-  "eslintConfig": {
-    "extends": "airbnb",
-    "env": {
-      "browser": true,
-      "jest": true
-    },
-    "rules": {
-      "react/jsx-filename-extension": 0
-    }
-  },
-  "stylelint": {
-    "extends": "stylelint-config-standard",
-    "rules": {
-      "selector-list-comma-newline-after": "always-multi-line"
-    }
   }
 }
