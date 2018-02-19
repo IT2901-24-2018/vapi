@@ -79,7 +79,7 @@ We're done with this user, so we can also exit the postgres user shell session, 
 
 Now, we have to give this information to our Django config. We start by navigating to our settings folder.
 
-`cd bit24/settings/`
+`cd backend/settings/`
 
 Copy the local_example.py file to a local.py file, which will be hidden from git and contain your specific database information.
 

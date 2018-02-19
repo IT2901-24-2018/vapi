@@ -1,7 +1,7 @@
-from bit24.settings.base import *
+from backend.settings.base import *
 
 try:
-    from bit24.settings.local import *
+    from backend.settings.local import *
 except ImportError as e:
     # No local settings file found.
     # You can still override using environment variables.

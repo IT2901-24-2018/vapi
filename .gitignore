@@ -1,7 +1,7 @@
 assets/
 static/
 
-bit24/settings/local.py
+backend/settings/local.py
 
 .DS_Store
 *.pyc
