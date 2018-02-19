@@ -9,10 +9,10 @@ yarn
 ```
 
 When the dependencies are finished installing, you can start up the frontend server.
-```
-npm start
-```
-It will automatically open your browser at localhost:3000, but you can close that. 
+
+`yarn start`
+
+It will automatically open your browser at localhost:3000, but you can close that.
 
 ### Backend
 While the frontend server is running in your terminal, open up another terminal to set up the backend.
@@ -34,36 +34,64 @@ Now you can start up the backend server.
 
 The website should now be available at [localhost:8000](http://localhost:8000)
 
-### PostreSQL db setup (work in progress)
-Install PostreSQL linux: (https://www.postgresql.org/download/linux/ubuntu/)
+### Database
 
-Create the file /etc/apt/sources.list.d/pgdg.list, and add a line for the repository
+Note that I've only tested this on linux, process could be wildly different for Windows.
 
-Open cmd in/cd to above dir.
+First, get the postgresql packages through apt.
 
-Type `sudo touch pgdg.list`
+`sudo apt install postgresql postgresql-contrib`
 
-then `sudo vi pgdg.list` to open file in vim
+Boot up postgres user prompt
 
-i to edit. When done press escape then `:wq` to save and quit.
+`sudo su - postgres`
 
-then `wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -`
+You should now be in a shell session as the `postgres` user. Begin a Postgres session:
 
-and `sudo apt-get update`
+`psql`
 
-last `apt-get install postgresql-9.6` or `apt-get install postgresql-9.6`
+Make the database
 
-`pip install psycopg2` (unnecessary if pip install requirements.txt)
+`CREATE DATABASE myproject;`
 
-make a user with password
+Make a database user which will connect to and interact with the database. Remember the username and password,
 
-edit bit24/settings.py (the django settings file)
+`CREATE USER myprojectuser WITH PASSWORD 'password';`
 
-under databases remove the current bit and uncomment the postgres stuff
+Set the following connection parameters for the user we created, speeding up database operations.
+```
+ALTER ROLE myprojectuser SET client_encoding TO 'utf8';
+ALTER ROLE myprojectuser SET default_transaction_isolation TO 'read committed';
+ALTER ROLE myprojectuser SET timezone TO 'UTC';
+```
 
-set the username and password to the username and password you made earlier (for some reason this did not work with the postgres user, think?)
+Now we need to grant the database user access rights to the database we created.
 
-then migrate and run server.
+`GRANT ALL PRIVILEGES ON DATABASE myproject TO myprojectuser;`
+
+Exit the SQL prompt to get back to the postgres user session.
+
+`\q`
+
+We're done with this user, so we can also exit the postgres user shell session, to get your regular shell back.
+
+`exit`
+
+Now, we have to give this information to our Django config. We start by navigating to our settings folder.
+
+`cd bit24/settings/`
+
+Copy the local_example.py file to a local.py file, which will be hidden from git and contain your specific database information.
+
+`cp local_example.py local.py`
+
+Open up local.py and edit the values of "user" and "password" to the values you set earlier.
+
+Run migrations to make sure your database is up to speed.
+
+`python manage.py migrate`
+
+Now you should be all set up!
 
 ## Misc
 Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for the React+Django setup tutorial we used.
