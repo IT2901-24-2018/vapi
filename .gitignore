@@ -1,6 +1,8 @@
 assets/
 static/
 
+bit24/settings/local.py
+
 .DS_Store
 *.pyc
 .idea/

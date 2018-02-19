@@ -22,10 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '_26^m9#xs0hi*bi_ak+o@n_2yyq^8wc8t-p26zc*^&_1a*ui7c'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# Overwrite for production
+Debug = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -69,25 +69,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'bit24.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-
-        # Use instead of above for PostgreSQL db
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': 'bit24',
-        # 'USER': 'example_user',
-        # 'PASSWORD': '123qweasd',
-        # 'HOST': 'localhost',
-        # 'PORT': '5432',
-    }
-}
 
 
 # Password validation
