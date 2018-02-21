@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import MyMapComponent from '../MyMapComponent';
+import Map from '../Map';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<MyMapComponent />, div);
+  ReactDOM.render(<Map />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

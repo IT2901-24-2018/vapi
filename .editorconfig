@@ -1,0 +1,43 @@
+# EditorConfig is awesome: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+charset = utf-8
+indent_style = space
+end_of_line = lf
+insert_final_newline = true
+
+# Matches multiple files with brace expansion notation
+# Set default charset
+[*.{js,py}]
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Matches js and html files
+# Set indent to two spaces
+[*.{js,html,json,css}]
+indent_size = 2
+
+# 4 space indentation
+[*.py]
+indent_size = 4
+
+[*.md]
+trim_trailing_whitespace = false
+
+# The JSON files contain newlines inconsistently
+[*.json]
+insert_final_newline = ignore
+
+# Minified JavaScript files shouldn't be changed
+[**.min.js]
+indent_style = ignore
+indent_size = ignore
+insert_final_newline = ignore
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
