@@ -51,13 +51,9 @@ def convert_veiref(list_of_veirefs):
 def send_veiref(list_of_veirefs):
     """
     :param list_of_veirefs: A list containing the veirefs
-    :return: Not decided yet. 204 error with API-requests so far. 
+    :return: Not decided yet. 204 error with API-requests so far.
     """
     base_url = "https://www.vegvesen.no/nvdb/api/v2/veg?vegreferanse="
     for veiref in list_of_veirefs:
         r = requests.get(base_url + veiref)
         print(r.status_code)
-
-
-data = get_from_vegref("/home/embrik/Documents/BIT24/GeoJSON/Driftsdata_SubSet_Small.geojson")
-send_veiref(data)
