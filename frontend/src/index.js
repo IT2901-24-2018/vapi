@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import AppBar from 'material-ui/AppBar';
 
+import './sanitize.css';
 import './base.css';
 
 import Map from './components/Map/Map';
