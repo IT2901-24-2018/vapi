@@ -54,6 +54,11 @@ def send_veiref(list_of_veirefs):
     :return: Not decided yet. 204 error with API-requests so far.
     """
     base_url = "https://www.vegvesen.no/nvdb/api/v2/veg?vegreferanse="
+    gathered_calls = []
     for veiref in list_of_veirefs:
         r = requests.get(base_url + veiref)
-        print(r.status_code)
+        if r.status_code == 200:
+            gathered_calls.append(r.json())
+        else:
+            print("Could not perform API call due to status code: ", r.status_code, "on veigref: ", veiref)
+    return gathered_calls
