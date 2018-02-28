@@ -1,6 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
+import 'leaflet/dist/leaflet.css';
+
+import { Map, TileLayer } from 'react-leaflet';
+
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 
@@ -16,13 +20,10 @@ import * as _colorManipulator from 'material-ui/utils/colorManipulator';
 import './sanitize.css';
 import './base.css';
 
-import Map from './components/Map/Map';
-
 import registerServiceWorker from './registerServiceWorker';
 
 const styles = {
   paper: {
-    height: 512,
     width: 512,
     padding: 32,
     margin: '32px auto',
@@ -52,36 +53,51 @@ const THEME = getMuiTheme({
   },
 });
 
+const stamenTonerTiles = 'http://stamen-tiles-{s}.a.ssl.fastly.net/toner-background/{z}/{x}/{y}.png';
+const stamenTonerAttr = 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+const mapCenter = [39.9528, -75.1638];
+const zoomLevel = 12;
+
 const App = () => (
   <MuiThemeProvider muiTheme={THEME}>
-    <AppBar
-      title="Orm"
-      showMenuIconButton={false}
-    />
-    <Paper style={styles.paper} zDepth={1}>
-      <FlatButton label="Primary" primary />
-      <FlatButton label="Secondary" secondary />
-      <Divider style={styles.divider} />
-      <RaisedButton label="Primary" primary />
-      <RaisedButton label="Secondary" secondary />
-      <Divider style={styles.divider} />
-      <Toggle
-        defaultToggled
+    <div>
+      <AppBar
+        title="Orm"
+        showMenuIconButton={false}
       />
-      <Toggle
-        thumbSwitchedStyle={{
-          backgroundColor: COLOR_SCHEME.orange,
-        }}
-        trackSwitchedStyle={{
-          backgroundColor: _colorManipulator.fade(COLOR_SCHEME.orange, 0.5),
-        }}
-        defaultToggled
-      />
-      <Divider style={styles.divider} />
-      <DatePicker hintText="Portrait Dialog" />
-      <p>hey ha</p>
-    </Paper>
-    <Map isMarkerShown />
+      <Paper style={styles.paper} zDepth={1}>
+        <FlatButton label="Primary" primary />
+        <FlatButton label="Secondary" secondary />
+        <Divider style={styles.divider} />
+        <RaisedButton label="Primary" primary />
+        <RaisedButton label="Secondary" secondary />
+        <Divider style={styles.divider} />
+        <Toggle
+          defaultToggled
+        />
+        <Toggle
+          thumbSwitchedStyle={{
+            backgroundColor: COLOR_SCHEME.orange,
+          }}
+          trackSwitchedStyle={{
+            backgroundColor: _colorManipulator.fade(COLOR_SCHEME.orange, 0.5),
+          }}
+          defaultToggled
+        />
+        <Divider style={styles.divider} />
+        <DatePicker hintText="Portrait Dialog" />
+        <p>hey ha</p>
+      </Paper>
+      <Map
+        center={mapCenter}
+        zoom={zoomLevel}
+      >
+        <TileLayer
+          attribution={stamenTonerAttr}
+          url={stamenTonerTiles}
+        />
+      </Map>
+    </div>
   </MuiThemeProvider>
 );
 
