@@ -3,9 +3,8 @@ from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework import viewsets, permissions
 from api.models import RoadSegment
-from api.serializers import RoadSegmentSerializer
+from api.serializers import RoadSegmentSerializer, UserSerializer
 from django.contrib.auth.models import User
-from api.serializers import UserSerializer
 from api.permissions import IsAdminOrReadOnly
 
 
