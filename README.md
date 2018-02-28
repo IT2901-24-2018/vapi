@@ -47,18 +47,18 @@ Make the database
 
 Make a database user which will connect to and interact with the database. Remember the username and password,
 
-`CREATE USER user WITH PASSWORD 'password';`
+`CREATE USER username WITH PASSWORD 'password';`
 
 Set the following connection parameters for the user we created, speeding up database operations.
 ```
-ALTER ROLE user SET client_encoding TO 'utf8';
-ALTER ROLE user SET default_transaction_isolation TO 'read committed';
-ALTER ROLE user SET timezone TO 'UTC';
+ALTER ROLE username SET client_encoding TO 'utf8';
+ALTER ROLE username SET default_transaction_isolation TO 'read committed';
+ALTER ROLE username SET timezone TO 'UTC';
 ```
 
 Now we need to grant the database user access rights to the database we created.
 
-`GRANT ALL PRIVILEGES ON DATABASE orm TO user;`
+`GRANT ALL PRIVILEGES ON DATABASE orm TO username;`
 
 Exit the SQL prompt to get back to the postgres user session.
 
@@ -76,7 +76,7 @@ Copy the local_example.py file to a local.py file, which will be hidden from git
 
 `cp local_example.py local.py`
 
-Open up local.py and edit the values of "user" and "password" to the values you set earlier.
+Open up local.py and edit the values of "username" and "password" to the values you set earlier.
 
 Apply the latest and greatest in database migrations:
 
