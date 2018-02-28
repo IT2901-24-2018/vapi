@@ -15,7 +15,7 @@ def get_from_vegref(file_name_path):
     for feature in open_data['features']:
         properties = feature["properties"]
         from_vegrefs.append(str(properties["from_vegref"]))
-    return convert_veiref(from_vegrefs)
+    return convert_vegref(from_vegrefs)
 
 
 def get_to_vegref(file_name_path):
@@ -30,30 +30,53 @@ def get_to_vegref(file_name_path):
     for feature in open_data['features']:
         properties = feature["properties"]
         to_vegrefs.append(str(properties["to_vegref"]))
-    return convert_veiref(to_vegrefs)
+    return convert_vegref(to_vegrefs)
 
 
-def convert_veiref(list_of_veirefs):
+def convert_vegref(list_of_vegrefs):
     """
     This function converts the Vegrefs from the JSON file to fit the documentation for the vegrefs in the NVDB API.
-    :param list_of_veirefs: A list of strings containing the vegrefs
-    :return converted_veirefs: A list of the converted vegrefps
+    :param list_of_vegrefs: A list of strings containing the vegrefs
+    :return converted_vegrefs: A list of the converted vegrefps
     """
-    converted_veirefs = []
-    for veiref in list_of_veirefs:
-        split_veiref = veiref.split("-")
-        correct_veiref = str(("5000" + split_veiref[1] + split_veiref[2] + "hp" + split_veiref[3] + "m"
-                              + split_veiref[4]))
-        converted_veirefs.append(correct_veiref)
-    return converted_veirefs
+    converted_vegrefs = []
+    for vegref in list_of_vegrefs:
+        split_vegref = vegref.split("-")
+        correct_vegref = str(("5000" + split_vegref[1] + split_vegref[2] + "hp" + split_vegref[3] + "m"
+                              + split_vegref[4]))
+        converted_vegrefs.append(correct_vegref)
+    return converted_vegrefs
 
 
-def send_veiref(list_of_veirefs):
+def get_vegref_info(list_of_vegrefs):
     """
-    :param list_of_veirefs: A list containing the veirefs
-    :return: Not decided yet. 204 error with API-requests so far.
+    :param list_of_vegrefs: A list containing the vegrefs
+    :return: gathered_calls: A list containing JSON objects as dicts.
     """
     base_url = "https://www.vegvesen.no/nvdb/api/v2/veg?vegreferanse="
-    for veiref in list_of_veirefs:
-        r = requests.get(base_url + veiref)
-        print(r.status_code)
+    gathered_veg = []
+    for vegref in list_of_vegrefs:
+        r = requests.get(base_url + vegref)
+        if r.status_code == requests.codes.ok:
+            gathered_veg.append(r.json())
+        else:
+            print("Could not perform API call due to status code: ", r.status_code, "on veggref: ", vegref)
+    return gathered_veg
+
+
+def get_veglenke_info(gathered_veg):
+    """
+    :param gathered_veg: A list containing dicts
+    :return: A list containing all the api requests. Data added to a list as dicts
+    """
+    base_url = "https://www.vegvesen.no/nvdb/api/v2/vegnett/lenker/"
+    gathered_vegnett = []
+    for veg in gathered_veg:
+        vegref_id = str(veg['veglenke']['id'])
+        r = requests.get(base_url + vegref_id)
+        if r.status_code == requests.codes.ok:
+            print(r.json())
+            gathered_vegnett.append(r.json())
+        else:
+            print("Could not perform API call due to status code: ", r.status_code, "on road: ", vegref_id)
+    return gathered_vegnett
