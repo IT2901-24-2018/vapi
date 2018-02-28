@@ -48,17 +48,35 @@ def convert_veiref(list_of_veirefs):
     return converted_veirefs
 
 
-def send_veiref(list_of_veirefs):
+def get_veiref_info(list_of_veirefs):
     """
     :param list_of_veirefs: A list containing the veirefs
-    :return: Not decided yet. 204 error with API-requests so far.
+    :return: gathered_calls: A list containing JSON objects as dicts.
     """
     base_url = "https://www.vegvesen.no/nvdb/api/v2/veg?vegreferanse="
-    gathered_calls = []
+    gathered_veg = []
     for veiref in list_of_veirefs:
         r = requests.get(base_url + veiref)
-        if r.status_code == 200:
-            gathered_calls.append(r.json())
+        if r.status_code == requests.codes.ok:
+            gathered_veg.append(r.json())
         else:
             print("Could not perform API call due to status code: ", r.status_code, "on veigref: ", veiref)
-    return gathered_calls
+    return gathered_veg
+
+
+def get_veglenke_info(gathered_veg):
+    """
+    :param gathered_veg: A list containing dicts
+    :return: A list containing all the api requests. Data added to a list as dicts
+    """
+    base_url = "https://www.vegvesen.no/nvdb/api/v2/vegnett/lenker/"
+    gathered_vegnett = []
+    for veg in gathered_veg:
+        vegref_id = str(veg['veglenke']['id'])
+        r = requests.get(base_url + vegref_id)
+        if r.status_code == requests.codes.ok:
+            print(r.json())
+            gathered_vegnett.append(r.json())
+        else:
+            print("Could not perform API call due to status code: ", r.status_code, "on road: ", vegref_id)
+    return gathered_vegnett
