@@ -6,14 +6,15 @@ from api.models import RoadSegment
 from api.serializers import RoadSegmentSerializer
 from django.contrib.auth.models import User
 from api.serializers import UserSerializer
+from api.permissions import IsAdminOrReadOnly
 
 
-# @api_view
-# def api_root(request, format=None):
-#     return Response({
-#         'users': reverse('user-list', request=request, format=format),
-#         'roadsegments': reverse('roadsegment-list', request=request, format=format)
-#     })
+@api_view
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'roadsegments': reverse('roadsegment-list', request=request, format=format)
+    })
 
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
@@ -23,7 +24,7 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
     """
     queryset = RoadSegment.objects.all()
     serializer_class = RoadSegmentSerializer
-    # permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

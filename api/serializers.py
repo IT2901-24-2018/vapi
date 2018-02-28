@@ -13,4 +13,4 @@ class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('url', 'id', 'username')
+        fields = ('id', 'username')
