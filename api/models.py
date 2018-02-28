@@ -14,8 +14,5 @@ class RoadSegment(models.Model):
     materialtype_kode = models.BooleanField()
     from_vegref = models.CharField(max_length=22)
     to_vegref = models.CharField(max_length=22)
-
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=100)
-    # geometry_type = models.CharField()
-    # geometry_coordinates_

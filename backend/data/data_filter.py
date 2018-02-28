@@ -12,8 +12,6 @@ def filter_data(file_name):
     out_data = {"features": []}
 
     for feature in data['features']:
-        out_linestring = []
-
         properties = feature["properties"]
         time = properties["time"].replace("\/", "-")
         startlat = properties["startlat"]
@@ -27,17 +25,6 @@ def filter_data(file_name):
         from_vegref = properties["from_vegref"]
         to_vegref = properties["to_vegref"]
         id = properties["id"]
-
-        # temp = properties["the_geom"].split(";")
-        # srid = temp[0].lstrip("SRID=")
-        # temp[1] = temp[1].lstrip("LINESTRING(")
-        # temp[1] = temp[1].rstrip(")")
-        # linestring = temp[1].split(",")
-        # for x in linestring:
-        #     out_linestring.append(x.split(" "))
-        #
-        # the_geom = {"srid": srid, "linestring": out_linestring}
-
         name = properties["name"]
         description = properties["descriptio"]
 
@@ -46,7 +33,6 @@ def filter_data(file_name):
                           "plogaktiv": plogaktiv, "vatsprederaktiv": vatsprederaktiv,
                           "materialtype_kode": materialtype_kode, "from_vegref": from_vegref,
                           "to_vegref": to_vegref, "id": id,
-                          # "the_geom": the_geom,
                           "name": name, "description": description}
 
         out_feature = {"type": feature["type"], "properties": out_properties,
