@@ -11,5 +11,3 @@ backend/settings/local.py
 
 webpack-stats.dev.json
 webpack-stats.prod.json
-db.sqlite3
-
