@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,6 +21,7 @@ SETTINGS_DIR = os.path.dirname(globals()['__file__'])
 BACKEND_DIR = os.path.join(SETTINGS_DIR, '..')
 ROOT_DIR = os.path.join(SETTINGS_DIR, '..', '..')
 
+sys.path.insert(0, os.path.join(ROOT_DIR, 'backend'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
