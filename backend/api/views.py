@@ -26,6 +26,9 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated, CreateAndListOnly,)
 
     def create(self, request, *args, **kwargs):
+        """
+        Add support for creating when the input data is a list to the create method
+        """
         many = False
 
         # Check if the incoming data is a list

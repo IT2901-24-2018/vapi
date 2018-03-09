@@ -32,7 +32,6 @@ class ProductionData(BaseModel):
     startlong = models.FloatField()
     endlat = models.FloatField()
     endlong = models.FloatField()
-    # Translate to English
     dry_spreader_active = models.NullBooleanField()
     plow_active = models.NullBooleanField()
     wet_spreader_active = models.NullBooleanField()

@@ -26,15 +26,15 @@ def production_data_filter(file_name):
 
         # Add the production types/properties if not null.
         if properties["torrsprederaktiv"] is not None:
-            out_properties["torrsprederaktiv"] = properties["torrsprederaktiv"]
+            out_properties["dry_spreader_active"] = properties["torrsprederaktiv"]
         if properties["plogaktiv"] is not None:
-            out_properties["plogaktiv"] = properties["plogaktiv"]
+            out_properties["plow_active"] = properties["plogaktiv"]
         if properties["vatsprederaktiv"] is not None:
-            out_properties["vatsprederaktiv"] = properties["vatsprederaktiv"]
+            out_properties["wet_spreader_active"] = properties["vatsprederaktiv"]
         if properties["materialtype_kode"] is not None:
-            out_properties["materialtype_kode"] = properties["materialtype_kode"]
+            out_properties["material_type_code"] = properties["materialtype_kode"]
         else:
-            out_properties["materialtype_kode"] = ""
+            out_properties["material_type_code"] = ""
 
         out_data.append(out_properties)
     return out_data
