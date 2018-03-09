@@ -11,3 +11,13 @@ class IsAdminOrReadOnly(permissions.BasePermission):
             return True
         else:
             return request.user.is_staff
+
+
+class CreateAndListOnly(permissions.BasePermission):
+    """
+    Custom permission to only allow create and list actions.
+    """
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS or request.method in ("POST",):
+            return True
+        return False

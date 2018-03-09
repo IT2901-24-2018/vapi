@@ -20,14 +20,21 @@ def production_data_filter(file_name):
         startlong = properties["startlong"]
         endlat = properties["endlat"]
         endlong = properties["endlon"]
-        torrsprederaktiv = properties["torrsprederaktiv"]
-        plogaktiv = properties["plogaktiv"]
-        vatsprederaktiv = properties["vatsprederaktiv"]
-        materialtype_kode = properties["materialtype_kode"]
 
         out_properties = {"time": time, "startlat": startlat, "startlong": startlong,
-                          "endlat": endlat, "endlong": endlong, "torrsprederaktiv": torrsprederaktiv,
-                          "plogaktiv": plogaktiv, "vatsprederaktiv": vatsprederaktiv,
-                          "materialtype_kode": materialtype_kode}
+                          "endlat": endlat, "endlong": endlong}
+
+        # Add the production types/properties if not null.
+        if properties["torrsprederaktiv"] is not None:
+            out_properties["torrsprederaktiv"] = properties["torrsprederaktiv"]
+        if properties["plogaktiv"] is not None:
+            out_properties["plogaktiv"] = properties["plogaktiv"]
+        if properties["vatsprederaktiv"] is not None:
+            out_properties["vatsprederaktiv"] = properties["vatsprederaktiv"]
+        if properties["materialtype_kode"] is not None:
+            out_properties["materialtype_kode"] = properties["materialtype_kode"]
+        else:
+            out_properties["materialtype_kode"] = ""
+
         out_data.append(out_properties)
     return out_data
