@@ -10,9 +10,7 @@ valgt å skille lagring til geojson fra resten.
 
 """
 from nvdbapi import *
-import nvdbapi
 import geojson
-import json
 import copy
 import shapely.wkt
 from warnings import warn
@@ -316,8 +314,3 @@ def geojsontemplate():
         "features": []
     }
 
-v = nvdbVegnett()
-print(v)
-v.addfilter_geo( { 'kommune' : 1601, 'vegreferanse' : 'Ev6' })
-gjson = vegnett2geojson(v)
-print(gjson)
