@@ -4,6 +4,7 @@ Django==2.0.2
 django-webpack-loader==0.5.0
 djangorestframework==3.7.7
 flake8==3.5.0
+geojson==2.3.0
 idna==2.6
 mccabe==0.6.1
 psycopg2==2.7.4
@@ -12,4 +13,5 @@ pyflakes==1.6.0
 pytz==2018.3
 requests==2.18.4
 Shapely==1.6.4.post1
+six==1.11.0
 urllib3==1.22
