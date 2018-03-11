@@ -2,7 +2,6 @@ from nvdb_to_geojson import *
 from nvdbapi import *
 import json
 
-#TODO: Add function for removing fields. Instead of appending veg, append deepcopy without fields
 
 def format_vegnet(kommune, vegref):
     unformated_road_network = []
@@ -12,7 +11,7 @@ def format_vegnet(kommune, vegref):
     vegnett.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
     veg = vegnett.nesteForekomst()
     while veg:
-        unformated_road_network.append(veg)
+        unformated_road_network.append(road_filter(veg))
         counter += 1
         veg = vegnett.nesteForekomst()
     formated_road_network = json.dumps(unformated_road_network, sort_keys=True, indent=2, separators=(',', ':'))
@@ -35,3 +34,9 @@ def vegnet_to_gjson(kommune, vegref):
 def gjson_to_file(filename, gjson_road_network):
     with open(filename, 'w') as outfile:
         json.dump(gjson_road_network, outfile, sort_keys=True, indent=2, separators=(',', ':'))
+
+
+def road_filter(road):
+    road.pop("felt", None)
+    road['geometri'].pop("kvalitet", None)
+    return road

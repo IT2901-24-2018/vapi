@@ -10,6 +10,7 @@ valgt å skille lagring til geojson fra resten.
 
 """
 from nvdbapi import *
+from road_filter import remove_keys
 import nvdbapi
 import geojson
 import copy
@@ -31,7 +32,7 @@ from warnings import warn
 def __addveg2geojson(vegseg, mygeojson):
     """Internt metode, føyer til ett enkelt vegsegment til eksisterende geojson"""
 
-    v = vegseg
+    v = remove_keys(vegseg)
 
     egenskaper = {}
     wktgeom = v['geometri'].pop('wkt')
@@ -81,8 +82,8 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False, vegsegmenter=T
 
     Eksempel
     v = nvdbVegnett()
-    v.addfilter_geo( { 'kommune' : 1601, 'vegreferanse' : 'Ev6' })
-    gjson = v.vegnett2geojson)
+    v.addfilter_geo( { 'kommune' : 5001, 'vegreferanse' : 'kg' })
+    gjson = vegnett2geojson(v)
     """
 
     mygeojson = geojsontemplate()
@@ -314,4 +315,3 @@ def geojsontemplate():
         },
         "features": []
     }
-
