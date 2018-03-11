@@ -10,6 +10,7 @@ valgt å skille lagring til geojson fra resten.
 
 """
 from nvdbapi import *
+import nvdbapi
 import geojson
 import copy
 import shapely.wkt
@@ -110,7 +111,7 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False, vegsegmenter=T
     else:
         warn('Sorry, men gjenkjenner ikke dette som vegnettsdata')
 
-    return mygeojson
+    return mygeojson, count
 
 
 def __geometritypefilter(shapelygeometri, geometritype=''):
