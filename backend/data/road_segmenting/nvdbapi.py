@@ -1,3 +1,5 @@
+#All credit should go to the creator of this file
+#https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdbapi.py
 # -*- coding: utf-8 -*-
 
 import six  # python 2 vs 3 compability library
