@@ -48,5 +48,3 @@ def road_network_to_file(filename, road_network):
     """
     with open(filename, 'w') as outfile:
         json.dump(road_network, outfile, sort_keys=True, indent=2, separators=(',', ':'))
-
-road_network_to_file('roadnet.gjson', vegnet_to_geojson(5001, 'kg'))
