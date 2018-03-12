@@ -29,6 +29,7 @@ from warnings import warn
 # (on 64 bit machines you may choose 32 or 64 bit installations of python ,
 # so beware))
 
+
 def __addveg2geojson(vegseg, mygeojson):
     """Internt metode, føyer til ett enkelt vegsegment til eksisterende geojson"""
 
