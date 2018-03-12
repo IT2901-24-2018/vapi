@@ -24,7 +24,21 @@ class InsertOneProductionDataTest(TestCase):
         Test input of one ProductionData object
         """
         prod_data = ProductionData.objects.all()
+        # Check that there is one and only one item in prod-data table
         self.assertEqual(len(prod_data), 1)
+
+    def test_boolean_fields(self):
+        """
+        Test the boolean fields
+        """
+        prod_data = ProductionData.objects.all()
+        
+        # run test on the different optional fields
+        self.assertEqual(prod_data[0].plow_active, True)
+        self.assertIsNone(prod_data[0].dry_spreader_active)
+        self.assertIsNone(prod_data[0].wet_spreader_active)
+        self.assertIsNone(prod_data[0].brush_active)
+        self.assertIsNone(prod_data[0].material_type_code)
 
 
 class GetAllProductionDataTest(TestCase):
@@ -56,12 +70,14 @@ class GetAllProductionDataTest(TestCase):
         """
         # Create instance of GET request
         request = self.factory.get(reverse('prod-data-list'))
+
+        # Authenticate the request
         request.user = self.user
 
         # Get API response
         response = ProductionDataViewSet.as_view({'get': 'list'})(request)
 
-        # Get data from db
+        # Get data from db and run test
         prod_data = ProductionData.objects.all()
         serializer = ProductionDataSerializer(prod_data, many=True)
         self.assertEqual(response.data, serializer.data)
@@ -73,13 +89,13 @@ class GetAllProductionDataTest(TestCase):
         """
         # Create instance of GET request
         request = self.factory.get(reverse('prod-data-list'))
+
+        # Simulate an anonymous request
         request.user = AnonymousUser()
 
         # Get API response
         response = ProductionDataViewSet.as_view({'get': 'list'})(request)
 
-        # Get data from db
-        prod_data = ProductionData.objects.all()
-        serializer = ProductionDataSerializer(prod_data, many=True)
+        # Run test
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
