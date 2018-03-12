@@ -10,5 +10,6 @@ script:
   - npm run lint-css
   - cd ../
   - flake8 manage.py backend
+  - isort -c
 notifications:
   email: false
