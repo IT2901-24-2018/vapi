@@ -27,7 +27,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Add support for creating when the input data is a list to the create method
+        Add support for creating when the input data is a list
         """
         many = False
 
@@ -35,6 +35,9 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
             many = True
+            if len(request.data) > 10000:
+                error = {"detail": "Input list too long"}
+                return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=request.data, many=many)
@@ -53,7 +56,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         """
         Deny retrieve actions. Prevent returning single prod data.
         """
-        error = {"detail": "The retrieve action is not supported."}
+        error = {"detail": "Retrieving a single production data instance is not supported."}
         return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
