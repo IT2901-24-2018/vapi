@@ -26,35 +26,25 @@ def format_vegnet(kommune, vegref):
     return counter, raw_road_network, formated_road_network
 
 
-def format_vegnet_to_file(filename, road_network):
-    """
-    :param filename: Name of the file and the extension
-    :param road_network: Takes in an unformated road network
-    :return: Nothing. Produces a finished file
-    """
-    with open(filename, 'w') as outfile:
-        json.dump(road_network, outfile, sort_keys=True, indent=2, separators=(',', ':'))
-
-
-def vegnet_to_gjson(kommune, vegref):
+def vegnet_to_geojson(kommune, vegref):
     """
     :param kommune: Municipality number
     :param vegref: Vegreferanse for the road you want to gather the network for
     :return: Counter - number of road segments. Raw_road_network - Raw 1 line geojson,
-    formated_gjson - formated geojson readibly by the human mind(duh)
+    formated_geojson - formated geojson readibly by the human mind(duh)
     """
     v = nvdbVegnett()
     v.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
-    raw_gjson, counter = vegnett2geojson(v)
-    formatted_gjson = json.dumps(raw_gjson, sort_keys=True, indent=2, separators=(',', ':'))
-    return counter, raw_gjson, formatted_gjson
+    raw_geojson, counter = vegnett2geojson(v)
+    formatted_geojson = json.dumps(raw_geojson, sort_keys=True, indent=2, separators=(',', ':'))
+    return counter, raw_geojson, formatted_geojson
 
 
-def gjson_to_file(filename, raw_gjson):
+def geojson_to_file(filename, road_network):
     """
     :param filename: Name of the file and the extension
-    :param raw_gjson: Unformatted gjson road network
+    :param road_network: Unformatted geojson road network or raw_road_network
     :return: Nothing. Produces a file
     """
     with open(filename, 'w') as outfile:
-        json.dump(raw_gjson, outfile, sort_keys=True, indent=2, separators=(',', ':'))
+        json.dump(road_network, outfile, sort_keys=True, indent=2, separators=(',', ':'))
