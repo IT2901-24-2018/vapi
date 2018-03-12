@@ -1,5 +1,5 @@
-#All credit should go to the creator of this file
-#https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdbapi.py
+# All credit should go to the creator of this file
+# https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdbapi.py
 # -*- coding: utf-8 -*-
 
 import six  # python 2 vs 3 compability library
@@ -15,11 +15,11 @@ from copy import deepcopy
 requests.packages.urllib3.disable_warnings()
 
 """Bibliotek for å hente data fra NVDB api V2 (og senere versjoner)
-Har 2 klasser, nvdbVegnett og nvdbFagdata
+Har 2 klasser, NvdbVegnett og NvdbFagdata
 """
 
 
-class nvdbVegnett:
+class NvdbVegnett:
     """Klasse for spørringer mot NVDB for å hente vegnett.
     Jobber dynamisk mot NVDB api for å hente statistikk, laste ned data etc.
     Holder alle parametre som inngår i dialogen med NVDB api.
@@ -33,7 +33,7 @@ class nvdbVegnett:
             - Hent neste "batch" med objekter
             - Hent hvert enkelt objekt
 
-    n = nvdbVegnett()
+    n = NvdbVegnett()
     v = n.nesteForekomst()
     while v:
         print v['id']  # Gjør noe spennende
@@ -64,32 +64,32 @@ class nvdbVegnett:
         self.data = {'objekter': []}
         self.apiurl = 'https://www.vegvesen.no/nvdb/api/v2/'
 
-    def nestePaginering(self):
+    def neste_paginering(self):
         """ = True | False. Blar videre til neste oppslag (side) i pagineringen.
         Nyttig for dem som selv vil kopiere / iterere over listen av objekter,
-        som holdes i attributten nvdbFagdata.data
+        som holdes i attributten NvdbFagdata.data
         Returnerer True eller False
 
         Eksempel
-            n = nvdbFagdata( 45) # bomstasjon
-            suksess = n.nestePaginering()
+            n = NvdbFagdata( 45) # bomstasjon
+            suksess = n.neste_paginering()
             while suksess:
                 mycopy = n.data['objekter']
                 for bomst in mycopy:
                     print bomst['id'] # Gjør noe spennende.
-                suksess = n.nestePaginering()
+                suksess = n.neste_paginering()
         """
-        if isinstance(self, nvdbFagdata) and not self.objektTypeId:
+        if isinstance(self, NvdbFagdata) and not self.objektTypeId:
             raise ValueError('\n'.join(('ObjektTypeID mangler.',
                                         '\tEks: N = nvdbFagData(45)',
                                         '\teller: N = nvdbFagData()',
                                         '       N.objektType(45)')))
-        if isinstance(self, nvdbFagdata) and not self.antall:
+        if isinstance(self, NvdbFagdata) and not self.antall:
             self.statistikk()
 
         if self.paginering['initielt']:
 
-            if isinstance(self, nvdbFagdata):
+            if isinstance(self, NvdbFagdata):
                 parametre = merge_dicts(self.geofilter,
                                         self.overlappfilter,
                                         self.egenskapsfilter,
@@ -98,7 +98,7 @@ class nvdbVegnett:
                 self.data = self.anrope('/'.join(('vegobjekter', str(self.objektTypeId))),
                                         parametre=parametre)
 
-            elif isinstance(self, nvdbVegnett):
+            elif isinstance(self, NvdbVegnett):
                 parametre = merge_dicts(self.geofilter,
                                         {'antall': self.paginering['antall']})
                 self.data = self.anrope('vegnett/lenker', parametre=parametre)
@@ -128,27 +128,27 @@ class nvdbVegnett:
         Brukes for å iterere over mottatte data uten å bekymre seg
         om evt paginering.
         Eksempel:
-            v = nvdbVegNett()
+            v = NvdbVegnett()
             veg = v.nesteForekomst()
             while veg:
                 print veg.id # Gjør noe spennende med dette enkeltobjektet
                 veg = v.nesteForekomst()
         """
-        if isinstance(self, nvdbFagdata) and not self.objektTypeId:
+        if isinstance(self, NvdbFagdata) and not self.objektTypeId:
             raise ValueError('\n'.join(('ObjektTypeID mangler.',
                                         '\tEks: N = nvdbFagData(45)',
                                         '\teller: N = nvdbFagData()',
                                         '       N.objektType(45)')))
 
-        if isinstance(self, nvdbFagdata) and not self.antall:
+        if isinstance(self, NvdbFagdata) and not self.antall:
             self.statistikk()
 
-        antObjLokalt = len(self.data['objekter'])
+        ant_obj_lokalt = len(self.data['objekter'])
         if debug:
             print("Paginering?", self.paginering)
         if self.paginering['initielt']:
 
-            if isinstance(self, nvdbFagdata):
+            if isinstance(self, NvdbFagdata):
                 parametre = merge_dicts(self.geofilter,
                                         self.overlappfilter,
                                         self.egenskapsfilter,
@@ -157,7 +157,7 @@ class nvdbVegnett:
                 self.data = self.anrope('/'.join(('vegobjekter', str(self.objektTypeId))),
                                         parametre=parametre)
 
-            elif isinstance(self, nvdbVegnett):
+            elif isinstance(self, NvdbVegnett):
                 parametre = merge_dicts(self.geofilter,
                                         {'antall': self.paginering['antall']})
                 self.data = self.anrope('vegnett/lenker', parametre=parametre)
@@ -171,7 +171,7 @@ class nvdbVegnett:
                 self.paginering['meredata'] = False
                 return None
 
-        elif self.paginering['meredata'] and self.paginering['hvilken'] > antObjLokalt - 1:
+        elif self.paginering['meredata'] and self.paginering['hvilken'] > ant_obj_lokalt - 1:
             self.data = self.anrope(self.data['metadata']['neste']['href'])
             self.paginering['hvilken'] = 1
 
@@ -197,7 +197,7 @@ class nvdbVegnett:
         for a list of possible values.
 
         Example
-        p = nvdb.nvdbFagdata(809)
+        p = nvdb.NvdbFagdata(809)
         p.addfilter_geo( { 'vegreferanse' : 'Ev39' }
         p.addfilter_geo( { 'fylke' : [3,4] }
         p.addfilter_geo() # Returns the current value of this filter
@@ -223,7 +223,7 @@ class nvdbVegnett:
 
     def anrope(self, path, parametre=None, debug=False, silent=False):
 
-        if not self.apiurl in path:
+        if self.apiurl not in path:
             url = ''.join((self.apiurl, path))
         else:
             url = path
@@ -297,7 +297,7 @@ class nvdbVegnett:
             'test' - bruker TESTmiljø
             'prod' - går mot PRODUKSJON
         eksempel
-        b = nvdbFagdata(45)
+        b = NvdbFagdata(45)
         b.miljo()
         b.miljo('utv')
         b.miljo('test')
@@ -319,7 +319,7 @@ class nvdbVegnett:
         print("Bruker ", self.apiurl)
 
 
-class nvdbFagdata(nvdbVegnett):
+class NvdbFagdata(NvdbVegnett):
     """Klasse for spørringer mot NVDB ang en spesifikk objekttype.
     Jobber dynamisk mot NVDB api for å hente statistikk, laste ned data etc.
     Holder alle parametre som inngår i dialogen med NVDB api.
@@ -343,7 +343,7 @@ class nvdbFagdata(nvdbVegnett):
     n.addfilter_egenskap( '1820>=20')
 
     # EKSEMPEL: Iterer over alle bomstasjoner
-    n = nvdbFagdata(45)
+    n = NvdbFagdata(45)
     bomst = n.nesteForekomst()
     while bomst:
         print bomst['id']  # Gjør noe spennende
@@ -418,7 +418,7 @@ class nvdbFagdata(nvdbVegnett):
 
         else:
             print('Ikke definert noen objekttype ennå')
-            print('Bruk: x = nvdbFagdatID) eller\n', ' x = nvdbFagdata()\n',
+            print('Bruk: x = nvdbFagdatID) eller\n', ' x = NvdbFagdata()\n',
                   'x.objektType(ID)\n',
                   'hvor ID er objekttypens ID, eks bomstasjon = 45\n\n')
 
@@ -477,7 +477,7 @@ class nvdbFagdata(nvdbVegnett):
         for explanation.
 
         Example
-        p = nvdb.nvdbFagdata(570) # Trafikkulykke
+        p = nvdb.NvdbFagdata(570) # Trafikkulykke
         p.addfilter_overlapp( '67'  ) # Trafikkulykke in tunnels (tunnelløp)
         p.addfilter_overlapp( '105(2021=2738)'  ) # Ulykke where speed limit =80
 
@@ -509,7 +509,7 @@ class nvdbFagdata(nvdbVegnett):
         for explanation.
 
         Example
-        p = nvdb.nvdbFagdata(45)
+        p = nvdb.NvdbFagdata(45)
         p.addfilter_egenskap( '1820=20'  ) # takst = 20 kr
         p.addfilter_egenskap( 'OR 1820=50'  ) # is now "1820=20 OR 1820=50"
 
@@ -526,8 +526,8 @@ class nvdbFagdata(nvdbVegnett):
 
             # Warning users about a bug in NVDB api
             if '*' in arg[0]:
-                warn("Warning - \nbug in NVDB api for wildcard (*) text" + \
-                     "matching.\n" +
+                warn("Warning - bug in NVDB api for wildcard (*) text" +
+                     "matching.n" +
                      "You'll probably find ZERO features with this filter")
 
         elif len(arg) == 1 and not arg[0]:
@@ -535,16 +535,16 @@ class nvdbFagdata(nvdbVegnett):
         else:
             return self.egenskapsfilter
 
-    def nesteNvdbFagObjekt(self):
+    def neste_nvdb_fag_object(self):
         fagdata = self.nesteForekomst()
         if fagdata:
-            fagobj = nvdbFagObjekt(fagdata)
-            return (fagobj)
+            fagobj = NvdbFagObjekt(fagdata)
+            return fagobj
         else:
             return None
 
 
-class nvdbFagObjekt():
+class NvdbFagObjekt:
     """Class for NVDB objects, with methods to get data from them"""
 
     def __init__(self, rawdata, ignorewarnings=False):
@@ -595,11 +595,9 @@ class nvdbFagObjekt():
         """
 
         for i, dic in enumerate(self.egenskaper):
-            if dic['id'] == id_or_navn or str(id_or_navn) == dic['navn'] or \
-                str(id_or_navn).lower() in dic['navn'].lower() or \
-                str(dic['id']) == str(id_or_navn):
+            if dic['id'] == id_or_navn or str(id_or_navn) == dic['navn'] or str(id_or_navn).lower() \
+                    in dic['navn'].lower() or str(dic['id']) == str(id_or_navn):
                 return dic
-
         return empty
 
     def egenskapverdi(self, id_or_navn, empty=None):
@@ -697,8 +695,6 @@ class nvdbFagObjekt():
                             return elem
 
                     return None
-
-
         else:
             # Raise error
             raise ValueError('Function relasjon: Keyword argument relasjon must be int or string')
@@ -714,7 +710,7 @@ def finnid(objektid, kunvegnett=False, kunfagdata=False):
     Vegnett returnerer en LISTE med alle vegnettselementene for veglenka"""
 
     # Dummy objekt for å gjenbruke anrops-funksjonene
-    b = nvdbFagdata(45)
+    b = NvdbFagdata(45)
     res = None
 
     # Henter fagdata

@@ -1,9 +1,9 @@
-#All credit should go to the creator of this file
-#https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdb2geojson.py
+# All credit should go to the creator of this file
+# https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdb2geojson.py
 
 # -*- coding: utf-8 -*-
 """Lagre vegnett og fagdata fra NVDB til geojson.
-Bruker klassene nvdbVegnett og nvdbFagdata fra nvdbapi.py
+Bruker klassene NvdbVegnett og NvdbFagdata fra nvdbapi.py
 
 Pga shapely-biblioteket, som kan være litt trælete å installere, har jeg
 valgt å skille lagring til geojson fra resten.
@@ -65,7 +65,7 @@ def __addveg2geojson(vegseg, mygeojson):
     return mygeojson
 
 
-def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False, vegsegmenter=True):
+def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False):
     """Konverterer NVDB vegnett til dict med geojson - struktur, men med
     koordinater i UTM sone 33 (epsg:25833). Dette er ikke standard
     geojson lenger, men vi angir det likevel i header.
@@ -81,7 +81,7 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False, vegsegmenter=T
     visst antal veglenker.
 
     Eksempel
-    v = nvdbVegnett()
+    v = NvdbVegnett()
     v.addfilter_geo( { 'kommune' : 5001, 'vegreferanse' : 'kg' })
     gjson = vegnett2geojson(v)
     """
@@ -89,7 +89,7 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False, vegsegmenter=T
     mygeojson = geojsontemplate()
 
     # Har vi et objekt for søk mot NVDB api?
-    if isinstance(vegnett, nvdbapi.nvdbVegnett):
+    if isinstance(vegnett, nvdbapi.NvdbVegnett):
         if not vegnett.geofilter and not ignorewarning and not maxcount:
             warn('For mange lenker - bruk  ignorewarning=True for hele Norge')
             maxcount = 1000
@@ -207,7 +207,7 @@ def fagdata2geojson(fagdata, maxcount=False,
     det likevel i header.
 
     Args:
-        fagdata : nvdbFagObjekt fra nvdbapi.py (søkeobjekt som henter data fra
+        fagdata : NvdbFagObjekt fra nvdbapi.py (søkeobjekt som henter data fra
                     NVDB api)
 
     Keywords:
@@ -262,7 +262,7 @@ def fagdata2geojson(fagdata, maxcount=False,
 
     mygeojson = geojsontemplate()
 
-    if isinstance(fagdata, nvdbapi.nvdbFagdata):
+    if isinstance(fagdata, nvdbapi.NvdbFagdata):
 
         if strictGeometryType:
             geometrityper = fagdata.objektTypeDef['stedfesting']
@@ -290,7 +290,7 @@ def fagdata2geojson(fagdata, maxcount=False,
 
     elif isinstance(fagdata, dict) and 'egenskaper' in fagdata.keys():
 
-        mittobj = nvdbapi.nvdbFagdata(fagdata['metadata']['type']['id'])
+        mittobj = nvdbapi.NvdbFagdata(fagdata['metadata']['type']['id'])
         if strictGeometryType:
             geometrityper = mittobj.objektTypeDef['stedfesting']
         else:

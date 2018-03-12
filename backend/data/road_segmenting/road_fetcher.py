@@ -15,7 +15,7 @@ def format_vegnet(kommune, vegref):
     raw_road_network = []
     counter = 0
 
-    vegnett = nvdbVegnett()
+    vegnett = NvdbVegnett()
     vegnett.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
     veg = vegnett.nesteForekomst()
     while veg:
@@ -33,14 +33,14 @@ def vegnet_to_geojson(kommune, vegref):
     :return: Counter - number of road segments. Raw_road_network - Raw 1 line geojson,
     formated_geojson - formated geojson readibly by the human mind(duh)
     """
-    v = nvdbVegnett()
+    v = NvdbVegnett()
     v.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
     raw_geojson, counter = vegnett2geojson(v)
     formatted_geojson = json.dumps(raw_geojson, sort_keys=True, indent=2, separators=(',', ':'))
     return counter, raw_geojson, formatted_geojson
 
 
-def geojson_to_file(filename, road_network):
+def road_network_to_file(filename, road_network):
     """
     :param filename: Name of the file and the extension
     :param road_network: Unformatted geojson road network or raw_road_network
@@ -48,3 +48,5 @@ def geojson_to_file(filename, road_network):
     """
     with open(filename, 'w') as outfile:
         json.dump(road_network, outfile, sort_keys=True, indent=2, separators=(',', ':'))
+
+road_network_to_file('roadnet.gjson', vegnet_to_geojson(5001, 'kg'))
