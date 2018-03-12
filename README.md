@@ -89,4 +89,6 @@ Now you can start up the backend server.
 The website should now be available at [localhost:8000](http://localhost:8000)
 
 ## Misc
+You can run `make test` to run all our tests and lints locally.
+
 Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for the React+Django setup tutorial we used.
