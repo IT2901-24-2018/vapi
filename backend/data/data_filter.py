@@ -32,9 +32,8 @@ def production_data_filter(file_name):
         if properties["vatsprederaktiv"] is not None:
             out_properties["wet_spreader_active"] = properties["vatsprederaktiv"]
         if properties["materialtype_kode"] is not None:
-            out_properties["material_type_code"] = properties["materialtype_kode"]
-        else:
-            out_properties["material_type_code"] = ""
+            # Remove ".0" from "d.0" and cast as int
+            out_properties["material_type_code"] = int(properties["materialtype_kode"].rstrip(".0"))
 
         out_data.append(out_properties)
     return out_data

@@ -2,6 +2,10 @@ from django.db import models
 
 
 class BaseModel(models.Model):
+    """
+    Abstract model with auto-increment id and created and updated fields that
+    are automatically set and updated.
+    """
     id = models.AutoField(primary_key=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -35,4 +39,5 @@ class ProductionData(BaseModel):
     dry_spreader_active = models.NullBooleanField()
     plow_active = models.NullBooleanField()
     wet_spreader_active = models.NullBooleanField()
-    material_type_code = models.CharField(max_length=5, blank=True)
+    brush_active = models.NullBooleanField()
+    material_type_code = models.IntegerField(null=True)
