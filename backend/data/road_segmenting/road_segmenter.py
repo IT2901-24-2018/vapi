@@ -1,28 +1,38 @@
 from road_fetcher import *
+from calculate_distance import *
 
-def split_segment(road_network):
-    # Main logic
+def split_segment(road_net, road_segment):
+    # Main logic for splittig segment
+    # TODO Create logic for calling calculate_distance and splitting the segment accordingly
+    for coordinate in range(0, len(road_net['features'][road_segment]['geometry']['coordinates'])):
+        start_coordinate = (road_net['features'][road_segment]['geometry']['coordinates'][coordinate])[0:2]
     return None
 
 
-def distance_between_utm(list_start, list_end):
-    # Calculates the distance between two UTM coordinates so we can properly split it
-    #x1, x2
-    #y1, y2
-    #distance = sqrt((x1-x2)² + (y1-y2)²)
-    #do we need to take height into the calculation?
-    return None
+def check_split(road_segment, meter):
+    from_meter = road_segment['properties']['fra_meter']
+    to_meter = road_segment['properties']['til_meter']
+    print(from_meter, to_meter)
+    if (to_meter - from_meter) > meter:
+        return True
+    else:
+        return False
 
 
-def check_split(road, meter):
-    # check if road segment is too long
-    return None
-
-
-def main(kommune, vegref):
+def main(kommune, vegref, meter):
+    # TODO Clean up the function and segment it correctly
+    segmented_road_network = []
     results = vegnet_to_geojson(kommune, vegref)
     count, road_net = results[0], results[1]
     for key, values in road_net.items():
-        if(key != 'crs'):
-            for x in range(0, count):
-                print(road_net['features'][x]['geometry']['coordinates'][0])
+        if key != 'crs':
+            for road_segment in range(0, count):
+                if check_split(road_net['features'][road_segment], meter):
+                    # TODO Segment it and add it to our road network list
+                        split_segment(road_net, road_segment)
+                else:
+                    # TODO Add segment to road network list
+                    return None
+
+
+main(5001, 'kg', 100)
