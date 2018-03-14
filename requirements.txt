@@ -15,3 +15,4 @@ requests==2.18.4
 Shapely==1.6.4.post1
 six==1.11.0
 urllib3==1.22
+utm==0.4.2
