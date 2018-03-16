@@ -35,7 +35,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
             many = True
-            if len(request.data) > 10000:
+            if len(request.data) > 100000:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
