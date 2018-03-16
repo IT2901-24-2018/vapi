@@ -1,4 +1,4 @@
-"""bit24 URL Configuration
+"""backend URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.0/topics/http/urls/
@@ -13,12 +13,15 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import path
-from django.conf.urls import url
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    url(r'^', TemplateView.as_view(template_name="index.html")),
+    url(r'^', include('api.urls')),
+    url(r'^api-auth/', include('rest_framework.urls')),
+    url(r'^$', TemplateView.as_view(template_name="index.html")),
+    url(r'^(?:.*)/?$', TemplateView.as_view(template_name="index.html")),
 ]
