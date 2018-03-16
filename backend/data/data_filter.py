@@ -4,7 +4,7 @@ import json
 def production_data_filter(file_name):
     """
     This function filters the json input data, and returns the
-    filtered input as a list dictionaries.
+    filtered input as a list of dictionaries.
     :param file_name: File path to json input data
     :return out_data: Filtered list of dictionaries
     """

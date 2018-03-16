@@ -23,9 +23,7 @@ class IsStaffOrCreateOnly(permissions.BasePermission):
         not_staff_methods = ("OPTIONS", "POST")
 
         if request.user.is_staff and request.method in staff_methods:
-            # If the user is staff and the request method is among the allowed methods for staff.
             return True
         elif (not request.user.is_staff) and request.method in not_staff_methods:
-            # If the user is not staff, but the method is among the allowed for users that are not staff.
             return True
         return False
