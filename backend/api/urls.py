@@ -8,7 +8,7 @@ router.register(r'roadsegments', views.RoadSegmentViewSet, 'roadsegments')
 # router.register(r'productiondata', views.ProductionDataViewSet)
 # or
 router.register(r'prod-data', views.ProductionDataViewSet, 'prod-data')
-router.register(r'users', views.UserViewSet, 'users')
+router.register(r'users', views.UserViewSet)
 
 # The API URLs are determined automatically by the router.
 urlpatterns = [
