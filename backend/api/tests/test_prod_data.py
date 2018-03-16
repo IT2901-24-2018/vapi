@@ -42,8 +42,9 @@ class GetAllProductionDataTest(APITestCase):
     Test module for GET all prod data API
     """
     def setUp(self):
-        # Set up user
-        self.user = User.objects.create_user(username="haavahe", password="testpassword")
+        # Set up users
+        User.objects.create_user(username="normal_user", password="testpassword")
+        User.objects.create_user(username="staff", password="testpassword", is_staff=True)
 
         # Create data in db
         ProductionData.objects.create(
@@ -59,11 +60,11 @@ class GetAllProductionDataTest(APITestCase):
             wet_spreader_active=True
         )
 
-    def test_get_all_prod_data_authenticated(self):
+    def test_get_all_prod_data_authenticated_staff(self):
         """
-        Test GET request while authenticated
+        Test GET request while authenticated as staff
         """
-        self.client.login(username='haavahe', password='testpassword')
+        self.client.login(username='staff', password='testpassword')
 
         # Create instance of GET request
         url = reverse('prod-data-list')
@@ -74,6 +75,19 @@ class GetAllProductionDataTest(APITestCase):
         serializer = ProductionDataSerializer(prod_data, many=True)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, serializer.data)
+
+    def test_get_all_prod_data_authenticated(self):
+        """
+        Test GET request while authenticated, but not staff
+        """
+        self.client.login(username='normal_user', password='testpassword')
+
+        # Create instance of GET request
+        url = reverse('prod-data-list')
+        response = self.client.get(url)
+
+        # Run test
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_get_all_prod_data_not_authenticated(self):
         """
@@ -92,7 +106,9 @@ class PostProductionDataTest(APITestCase):
     Tests for posting data to the production data endpoint.
     """
     def setUp(self):
-        self.user = User.objects.create_user(username="haavahe", password="testpassword")
+        # Make users
+        User.objects.create_user(username="normal_user", password="testpassword")
+        User.objects.create_user(username="staff", password="testpassword", is_staff=True)
 
         # Make the test data
         self.data = [{
@@ -106,6 +122,38 @@ class PostProductionDataTest(APITestCase):
             "endlong": 20.4354, "wet_spreader_active": True
         }]
 
+    def test_post_prod_data_list_authenticated(self):
+        """
+        Testing that the endpoint takes in correctly formatted data and stores it in db.
+        """
+        # Authenticate user
+        self.client.login(username="normal_user", password="testpassword")
+
+        # Post the data
+        url = reverse('prod-data-list')
+        response = self.client.post(url, self.data, format='json')
+
+        # Check the status code, then check that the number of objects in the database matches the number
+        # of objects in the POST request
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ProductionData.objects.count(), len(self.data))
+
+    def test_post_prod_data_list_authenticated_staff(self):
+        """
+        Testing that the endpoint takes in correctly formatted data and stores it in db.
+        """
+        # Authenticate user
+        self.client.login(username="staff", password="testpassword")
+
+        # Post the data
+        url = reverse('prod-data-list')
+        response = self.client.post(url, self.data, format='json')
+
+        # Check the status code, then check that the number of objects in the database matches the number
+        # of objects in the POST request
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ProductionData.objects.count(), len(self.data))
+
     def test_post_prod_data_list_unauthenticated(self):
         """
         Testing that the endpoint has the correct restrictions on permissions.
@@ -115,15 +163,4 @@ class PostProductionDataTest(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_post_prod_data_list_authenticated(self):
-        """
-        Testing that the endpoint takes in correctly formatted data and stores it in db.
-        """
-        # Authenticate user
-        self.client.login(username='haavahe', password='testpassword')
 
-        url = reverse('prod-data-list')
-        response = self.client.post(url, self.data, format='json')
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ProductionData.objects.count(), 3)
