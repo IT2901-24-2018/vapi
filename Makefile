@@ -15,5 +15,5 @@ lint-frontend:
 	cd frontend/; npm run lint
 
 test-backend:
-	echo "I have no tests. Yet."
+	python manage.py test
 
