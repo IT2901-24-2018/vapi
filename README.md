@@ -92,6 +92,20 @@ Now you can start up the backend server.
 
 The website should now be available at [localhost:8000](http://localhost:8000)
 
+To make users for the API.
+
+`python manage.py createsuperuser`
+
+This is a super user. That includes staff priveleiges.
+
+To make a normal user.
+
+```
+from django.contrib.auth.models import User
+
+User.objects.create_user(username="username", password="password")
+```
+
 ## Misc
 You can run `make test` to run all our tests and lints locally.
 
