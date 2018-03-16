@@ -49,6 +49,10 @@ Make a database user which will connect to and interact with the database. Remem
 
 `CREATE USER username WITH PASSWORD 'password';`
 
+Give the new user permission to create databases, which is neccessary for our backend tests.
+
+`ALTER ROLE username CREATEDB;`
+
 Set the following connection parameters for the user we created, speeding up database operations.
 ```
 ALTER ROLE username SET client_encoding TO 'utf8';
