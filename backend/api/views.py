@@ -1,3 +1,4 @@
+from backend.settings.constants import INPUT_LIST_LIMIT
 from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
@@ -36,11 +37,9 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
             many = True
-            # Remove below if no limit on input data is needed
-            if len(request.data) > 100000:  # Change this number to the desired input size limit
+            if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
-            # End remove
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=request.data, many=many)
