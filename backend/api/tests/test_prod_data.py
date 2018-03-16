@@ -1,10 +1,11 @@
-from rest_framework.reverse import reverse
 from django.contrib.auth.models import User
+from django.utils import timezone
+from rest_framework import status
+from rest_framework.reverse import reverse
+from rest_framework.test import APITestCase
+
 from api.models import ProductionData
 from api.serializers import ProductionDataSerializer
-from rest_framework import status
-from django.utils import timezone
-from rest_framework.test import APITestCase
 
 
 class InsertOneProductionDataTest(APITestCase):
@@ -162,5 +163,3 @@ class PostProductionDataTest(APITestCase):
         response = self.client.post(url, self.data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-
