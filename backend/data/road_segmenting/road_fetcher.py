@@ -1,7 +1,8 @@
-from nvdb_to_geojson import *
-from road_filter import remove_keys
-from nvdbapi import *
 import json
+
+from nvdb_to_geojson import vegnett2geojson
+from nvdbapi import NvdbVegnett
+from road_filter import remove_keys
 
 
 def format_vegnet(kommune, vegref):

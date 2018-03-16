@@ -8,9 +8,10 @@ In each serializer is listed all the fields that are used from the model.
 Also includes a url field.
 """
 
-from rest_framework import serializers
-from api.models import RoadSegment
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from api.models import RoadSegment
 
 
 class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):

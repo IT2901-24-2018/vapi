@@ -1,8 +1,9 @@
-from rest_framework import viewsets, permissions
-from api.models import RoadSegment
-from api.serializers import RoadSegmentSerializer, UserSerializer
 from django.contrib.auth.models import User
+from rest_framework import permissions, viewsets
+
+from api.models import RoadSegment
 from api.permissions import IsAdminOrReadOnly
+from api.serializers import RoadSegmentSerializer, UserSerializer
 
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
