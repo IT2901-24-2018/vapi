@@ -2,7 +2,7 @@ from rest_framework import viewsets, permissions, status
 from api.models import RoadSegment, ProductionData
 from api.serializers import RoadSegmentSerializer, ProductionDataSerializer, UserSerializer
 from django.contrib.auth.models import User
-from api.permissions import IsAdminOrReadOnly, CreateAndListOnly
+from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from rest_framework.response import Response
 
 
@@ -23,7 +23,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
     queryset = ProductionData.objects.all()
     serializer_class = ProductionDataSerializer
     # Only registered users can use this view
-    permission_classes = (permissions.IsAuthenticated, CreateAndListOnly,)
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrCreateOnly,)
 
     def create(self, request, *args, **kwargs):
         """
@@ -35,9 +35,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
             many = True
-            if len(request.data) > 100000:
+            # Remove below if no limit on input data is needed
+            if len(request.data) > 100000:  # Change this number to the desired input size limit
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
+            # End remove
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=request.data, many=many)
@@ -51,13 +53,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Deny retrieve actions. Prevent returning single prod data.
-        """
-        error = {"detail": "Retrieving a single production data instance is not supported."}
-        return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
