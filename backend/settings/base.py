@@ -126,3 +126,7 @@ WEBPACK_LOADER = {
             'STATS_FILE': os.path.join(ROOT_DIR, 'webpack-stats.dev.json'),
         }
 }
+
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
