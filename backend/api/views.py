@@ -2,9 +2,9 @@ from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
-from api.models import ProductionData, RoadSegment
+from api.models import RoadSegment
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
-from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer
+from api.serializers import RoadSegmentSerializer, UserSerializer
 
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
