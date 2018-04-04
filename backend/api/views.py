@@ -41,8 +41,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
+        # TODO: map prod data to road a road segment
+        mapped_data = request.data
+
         # Instantiate the serializer
-        serializer = self.get_serializer(data=request.data, many=many)
+        serializer = self.get_serializer(data=mapped_data, many=many)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
