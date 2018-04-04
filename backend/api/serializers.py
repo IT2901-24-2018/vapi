@@ -16,8 +16,11 @@ from django.contrib.auth.models import User
 class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RoadSegment
-        fields = ('url', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'torrsprederaktiv', 'plogaktiv',
-                  'vatsprederaktiv', 'materialtype_kode', 'from_vegref', 'to_vegref', 'name', 'description')
+        fields = ('id', 'time', 'coordinates', 'fra_meter', 'fylke', 'srid', 'hp', 'href',
+                  'kategori', 'kommune', 'konnekteringslenke', 'kortform', 'medium', 'startdato',
+                  'nummer', 'region', 'sluttnode', 'sluttposisjon', 'startnode', 'startposisjon',
+                  'status', 'stregningslengde', 'temakode', 'til_meter', 'typeveg', 'vegavdeling',
+                  'veglenkeid', 'vrefkortform')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
