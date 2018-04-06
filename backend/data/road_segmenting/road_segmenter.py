@@ -70,8 +70,11 @@ def road_segmentor(kommune, vegref, max_distance, min_gps):
         if key != 'crs':
             for road_segment in range(0, count):
                 if check_split(road_net['features'][road_segment], max_distance):
-                    segmented_road_network.append(split_segment(road_net['features'][road_segment],
-                                                                max_distance, [], min_gps))
+                    split_roads = split_segment(road_net['features'][road_segment],
+                                                max_distance, [], min_gps)
+                    if split_roads is not None:
+                        for new_road in split_roads:
+                            segmented_road_network.append(new_road)
                 else:
                     segmented_road_network.append(road_net['features'][road_segment])
     return segmented_road_network
