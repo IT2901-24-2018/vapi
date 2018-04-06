@@ -1,5 +1,8 @@
 import numpy as np
 from math import pow
+from api.models import DummyModel
+from django.contrib.gis.geos import GEOSGeometry
+from django.db import connection
 
 # To functions for finding the distance from a point to a line.
 # None of them use a reasonable measure for distance.
@@ -73,6 +76,25 @@ def distance(p0, p1, p2):  # p0 is the point
     denominator = pow((pow((y2 - y1), 2) + pow((x2 - x1), 2)), 0.5)
     result = nom / denominator
     return result
+
+
+def save_dummy_segment():
+    linestring = GEOSGeometry('LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327)')
+    d = DummyModel(the_geom=linestring)
+    d.save()
+
+
+
+
+
+def point_to_linestring_distance():
+    with connection.cursor() as cursor:
+        point = GEOSGeometry('{"type": "Point", "coordinates": [63.3870750023729, 10.3277250005425]}')
+        cursor.execute("SELECT ST_Distance(ST_GeomFromText(%s, 32633),"
+                       "SELECT the_geom FROM api_dummymodels)", [point])
+        row = cursor.fetchone()
+
+    return row
 
 
 if __name__ == '__main__':

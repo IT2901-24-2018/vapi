@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 
 
 class BaseModel(models.Model):
@@ -41,3 +41,7 @@ class ProductionData(BaseModel):
     wet_spreader_active = models.NullBooleanField()
     brush_active = models.NullBooleanField()
     material_type_code = models.IntegerField(null=True)
+
+
+class DummyModel(BaseModel):
+    the_geom = models.LineStringField(srid=32633)
