@@ -84,9 +84,6 @@ def save_dummy_segment():
     d.save()
 
 
-
-
-
 def point_to_linestring_distance():
     with connection.cursor() as cursor:
         point = GEOSGeometry('{"type": "Point", "coordinates": [63.3870750023729, 10.3277250005425]}')
@@ -98,6 +95,7 @@ def point_to_linestring_distance():
 
 
 if __name__ == '__main__':
+
 
     # p1 = np.array([63.387075002372903, 10.3277250005425])
     # p2 = np.array([63.387642998353499, 10.3282330021124])
