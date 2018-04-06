@@ -70,5 +70,5 @@ def calculate_road_length(gps_list, max_length_meter, harvesine):
             else:
                 length += distance_formula(prev, gps_point)
             if length >= max_length_meter:
-                return index, length
-    return index, length
+                return index, ceil(length)
+    return index, ceil(length)
