@@ -2,11 +2,16 @@ import requests
 from road_segmenter import road_segmentor
 
 
-def filter_json(road):
+def filter_road(road):
+    """
+    Filteres the input road segment to satisfy DB layout.
+    :param road: A dictionary containing a road segment
+    :return: A filtered dict with the road segment
+    """
     filtered_road = {}
 
     filtered_road['coordinates']        = ', '.join(str(item) for innerlist in road['geometry']['coordinates']
-                                                for item in innerlist)
+                                                    for item in innerlist)
     filtered_road['fra_meter']          = road['properties']['fra_meter']
     filtered_road['fylke']              = road['properties']['fylke']
     filtered_road['srid']               = road['properties']['geometri']['srid']
@@ -37,23 +42,28 @@ def filter_json(road):
 
 
 def format_to_db():
-
+    """
+    :return: Returns a filtered road network
+    """
     road_network = road_segmentor(5001, 'kg', 100, 2)
-    finished_road_network = []
+    filtered_road_network = []
     for road in road_network:
-        road_done = filter_json(road)
+        road_done = filter_road(road)
         if road_done['coordinates']:
-            finished_road_network.append(road_done)
-    return finished_road_network
+            filtered_road_network.append(road_done)
+    return filtered_road_network
 
 
 def data_in():
+    """
+    :return: The status code of the finished post request.
+    """
     url = 'http://localhost:8000/api/roadsegments/'
-    test = format_to_db()
+    filtered_network = format_to_db()
 
-    #for element in test:
-    r = requests.post(url, json=test, auth=('kuk', '1234qweasd'))
-    print("Status: {}\n{}".format(r.status_code, r.text))
+    r = requests.post(url, json=filtered_network, auth=('kuk', '1234qweasd'))
+    return "Status: {}\n{}".format(r.status_code, r.text)
+
 
 if __name__ == '__main__':
    data_in()
