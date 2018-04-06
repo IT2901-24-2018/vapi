@@ -4,7 +4,7 @@ from django.db import models
 
 class RoadSegment(models.Model):
     id = models.AutoField(primary_key=True)
-    coordinates = models.CharField(max_length=255)
+    coordinates = models.CharField(max_length=3000)
     fra_meter = models.IntegerField()
     fylke = models.IntegerField()
     srid = models.IntegerField()
@@ -20,7 +20,7 @@ class RoadSegment(models.Model):
     region = models.IntegerField()
     sluttnode = models.CharField(max_length=255)
     sluttposisjon = models.FloatField()
-    startnode = models.IntegerField()
+    startnode = models.CharField(max_length=100)
     startposisjon = models.FloatField()
     status = models.CharField(max_length=255)
     strekningslengde = models.IntegerField()
