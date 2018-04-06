@@ -1,4 +1,5 @@
 import numpy as np
+from math import pow
 
 # To functions for finding the distance from a point to a line.
 # None of them use a reasonable measure for distance.
@@ -60,6 +61,7 @@ def point_to_line_distance(point, line):
         return endpoint_dist
 
 
+# Not correct
 def distance(p0, p1, p2):  # p0 is the point
     """
     https://stackoverflow.com/questions/27461634/calculate-distance-between-a-point-and-a-line-segment-in-latitude-and-longitude
@@ -68,22 +70,24 @@ def distance(p0, p1, p2):  # p0 is the point
     x1, y1 = p1
     x2, y2 = p2
     nom = abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1)
-    denominator = ((y2 - y1)**2 + (x2 - x1) ** 2) ** 0.5
+    denominator = pow((pow((y2 - y1), 2) + pow((x2 - x1), 2)), 0.5)
     result = nom / denominator
     return result
 
 
-# p1 = np.array([63.387075002372903, 10.3277250005425])
-# p2 = np.array([63.387642998353499, 10.3282330021124])
-# p3 = np.array([63.387691997704202, 10.3290819995141])
-#
-# # p1 = np.array([3, 3])
-# # p2 = np.array([3, 10])
-# # p3 = np.array([4, 3])
-#
-# # print(p3 - p1)
-#
-# # print(np.cross(p2 - p1, p3 - p1) / norm(p2 - p1))
-#
-# print(point_to_line_distance(p3, [p1, p2]))
-# print(distance(p3, p1, p2))
+if __name__ == '__main__':
+
+    # p1 = np.array([63.387075002372903, 10.3277250005425])
+    # p2 = np.array([63.387642998353499, 10.3282330021124])
+    # p3 = np.array([63.387691997704202, 10.3290819995141])
+
+    p1 = np.array([3, 3])
+    p2 = np.array([3, 10])
+    p3 = np.array([0, 0])
+
+    # print(p3 - p1)
+
+    # print(np.cross(p2 - p1, p3 - p1) / norm(p2 - p1))
+
+    print(point_to_line_distance(p3, [p1, p2]))
+    print(distance(p3, p1, p2))
