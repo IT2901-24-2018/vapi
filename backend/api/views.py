@@ -5,13 +5,19 @@ from rest_framework.response import Response
 from api.models import RoadSegment
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import RoadSegmentSerializer, UserSerializer
+from rest_framework.pagination import PageNumberPagination
 
+class StandardResultsSetPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
     """
     This viewset automatically provides `list`, `create`, `retrieve`,
     `update` and `destroy` actions.
     """
+    pagination_class = StandardResultsSetPagination
     queryset = RoadSegment.objects.all()
     serializer_class = RoadSegmentSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsAdminOrReadOnly,)
