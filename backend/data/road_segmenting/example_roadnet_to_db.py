@@ -66,5 +66,4 @@ def data_in():
 
 
 if __name__ == '__main__':
-   data_in()
-
+    data_in()
