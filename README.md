@@ -27,6 +27,8 @@ When your virtual environment is set up, get the required dependencies for the b
 
 ### Database
 
+[For installing Postgres with PostGIS.](http://trac.osgeo.org/postgis/wiki/UsersWikiPostGIS23UbuntuPGSQL96Apt) Then skip to "Boot up postgres user promt"
+
 We haven't noted down instructions for Windows, but try downloading Postgres [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads#windows) and installing it [here](http://www.postgresqltutorial.com/install-postgresql/). The following instructions are designed for Linux and potentially OS X.
 
 First, get the postgresql packages through apt.
