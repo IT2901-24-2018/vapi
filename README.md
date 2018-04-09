@@ -68,6 +68,8 @@ Now we need to grant the database user access rights to the database we created.
 
 To enable PostGIS on the database.
 
+`\c orm`
+
 `CREATE EXTENSION postgis;`
 
 Exit the SQL prompt to get back to the postgres user session.
