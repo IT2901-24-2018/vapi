@@ -41,11 +41,11 @@ def filter_road(road):
     return filtered_road
 
 
-def format_to_db():
+def format_to_db(kommune, type_road, max_distance, min_segments):
     """
     :return: Returns a filtered road network
     """
-    road_network = road_segmentor(5001, 'kg', 100, 2)
+    road_network = road_segmentor(kommune, type_road, max_distance, min_segments)
     filtered_road_network = []
     for road in road_network:
         road_done = filter_road(road)
@@ -54,16 +54,16 @@ def format_to_db():
     return filtered_road_network
 
 
-def data_in():
+def data_in(kommune, type_road, max_distance, min_segments):
     """
     :return: The status code of the finished post request.
     """
     url = 'http://localhost:8000/api/roadsegments/'
-    filtered_network = format_to_db()
+    filtered_network = format_to_db(kommune, type_road, max_distance, min_segments)
 
-    r = requests.post(url, json=filtered_network, auth=('kuk', '1234qweasd'))
+    r = requests.post(url, json=filtered_network, auth=('YOU_DB_USERNAME', 'YOUR_DB_PASSWORD'))
     return "Status: {}\n{}".format(r.status_code, r.text)
 
 
 if __name__ == '__main__':
-    data_in()
+    data_in(5001, 'kg', 100, 2)
