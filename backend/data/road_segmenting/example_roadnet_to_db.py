@@ -7,8 +7,8 @@ max_distance = 100
 min_segments = 2
 
 # Credentials for connecting and writing to the API
-API_username = "kuk"
-API_password = "1234qweasd"
+API_username = ""
+API_password = ""
 
 
 def filter_road(road):
