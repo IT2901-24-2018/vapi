@@ -3,6 +3,7 @@ from calculate_distance import calculate_road_length
 from road_fetcher import vegnet_to_geojson, road_network_to_file
 from road_segmenter import road_segmentor
 
+# Is this something that could be put in a setUp function?
 kommune = 5001
 vegref = 'kg'
 max_segment_length = 100
@@ -60,8 +61,9 @@ class TestSegmenting(unittest.TestCase):
         self.assertLessEqual(abs(distance - actual_distance), margin)
 
     def test_split_segment_road_length(self):
-        # TODO: find a better way to assert multiple things
-        # This test is a little useless to be honest
+        # This test is a little useless to be honest, we don't necessarily care
+        # if a road segment goes over the limit. It does however give us an idea
+        # of how accurate the segmentation is
         '''
         Given a list of road segments, the length of the split segments should all be
         within a margin of error given by the variable "margin"
@@ -72,10 +74,6 @@ class TestSegmenting(unittest.TestCase):
         for road in split_segments:
             if (road['properties']['strekningslengde'] - max_segment_length) > margin:
                 error += 1
-                # print('Vegref: ' + str(road['properties']['vrefkortform']))
-                # print('Strekningslengde: ' + str(road['properties']['strekningslengde']))
-                # print('Forskjell: ' + str(road['properties']['strekningslengde']
-                #                           - max_segment_length))
         print(str(error) + ' veier gikk over grensen i lengde')
         self.assertLess(error, 20)
 
