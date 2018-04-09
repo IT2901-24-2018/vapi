@@ -9,6 +9,7 @@ script:
   - npm run lint-js
   - npm run lint-css
   - cd ../
-  - flake8 apps
+  - flake8 backend/api backend/data
+  - isort -c
 notifications:
   email: false

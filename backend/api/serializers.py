@@ -8,9 +8,10 @@ In each serializer is listed all the fields that are used from the model.
 Also includes a url field.
 """
 
-from rest_framework import serializers
-from api.models import RoadSegment
 from django.contrib.auth.models import User
+from rest_framework import serializers
+
+from api.models import ProductionData, RoadSegment
 
 
 class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -21,6 +22,13 @@ class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
                   'number', 'region', 'endnode', 'endposition', 'startnode', 'startposition',
                   'status', 'stretchdistance', 'themecode', 'to_meter', 'typeofroad', 'roadsection',
                   'roadsectionid', 'vrefshortform')
+
+
+class ProductionDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductionData
+        fields = ('created', 'updated', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'dry_spreader_active',
+                  'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

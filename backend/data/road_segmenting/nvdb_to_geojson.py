@@ -9,14 +9,13 @@ Pga shapely-biblioteket, som kan være litt trælete å installere, har jeg
 valgt å skille lagring til geojson fra resten.
 
 """
-from nvdbapi import *
-from road_filter import remove_keys
-import nvdbapi
-import geojson
 import copy
-import shapely.wkt
 from warnings import warn
 
+import geojson
+import nvdbapi
+import shapely.wkt
+from road_filter import remove_keys
 
 # How to install shapely on windows:
 # http://deparkes.co.uk/2015/01/29/install-shapely-on-anaconda/
@@ -28,6 +27,7 @@ from warnings import warn
 # (python 2.x or 3.x, 32 or 64 bit architecture of your PYTHON INSTALLATION
 # (on 64 bit machines you may choose 32 or 64 bit installations of python ,
 # so beware))
+
 
 def __addveg2geojson(vegseg, mygeojson):
     """Internt metode, føyer til ett enkelt vegsegment til eksisterende geojson"""

@@ -49,6 +49,10 @@ Make a database user which will connect to and interact with the database. Remem
 
 `CREATE USER username WITH PASSWORD 'password';`
 
+Give the new user permission to create databases, which is neccessary for our backend tests.
+
+`ALTER ROLE username CREATEDB;`
+
 Set the following connection parameters for the user we created, speeding up database operations.
 ```
 ALTER ROLE username SET client_encoding TO 'utf8';
@@ -88,5 +92,21 @@ Now you can start up the backend server.
 
 The website should now be available at [localhost:8000](http://localhost:8000)
 
+To make users for the API.
+
+`python manage.py createsuperuser`
+
+This is a super user. That includes staff priveleiges.
+
+To make a normal user.
+
+```
+from django.contrib.auth.models import User
+
+User.objects.create_user(username="username", password="password")
+```
+
 ## Misc
+You can run `make test` to run all our tests and lints locally.
+
 Thanks to [Vikas Yadav](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) for the React+Django setup tutorial we used.

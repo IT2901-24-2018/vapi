@@ -2,12 +2,13 @@
 # https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdbapi.py
 # -*- coding: utf-8 -*-
 
-import six  # python 2 vs 3 compability library
 import json
-import requests
-from warnings import warn
 import os
 from copy import deepcopy
+from warnings import warn
+
+import requests
+import six  # python 2 vs 3 compability library
 
 # import pdb
 
