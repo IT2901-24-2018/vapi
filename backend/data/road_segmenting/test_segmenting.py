@@ -77,6 +77,10 @@ class TestSegmenting(unittest.TestCase):
         print(str(error) + ' veier gikk over grensen i lengde')
         self.assertLess(error, 20)
 
+    # test post to db
+
+    # test deletion from db
+    
 
 if __name__ == '__main__':
     unittest.main()
