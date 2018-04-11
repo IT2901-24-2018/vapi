@@ -2,7 +2,7 @@ import unittest
 
 from calculate_distance import calculate_road_length
 from road_fetcher import vegnet_to_geojson
-from road_segmenter import road_segmentor
+from road_segmenter import road_segmenter
 
 
 class TestSegmenting(unittest.TestCase):
@@ -14,20 +14,20 @@ class TestSegmenting(unittest.TestCase):
         self.max_segment_length = 100
         self.min_segment_length = 2
         self.road_net = vegnet_to_geojson(self.kommune, self.vegref)[1]
-        self.split_segments = road_segmentor(self.kommune, self.vegref,
+        self.split_segments = road_segmenter(self.kommune, self.vegref,
                                              self.max_segment_length, self.min_segment_length)
 
     def setUp(self):
         pass
 
-    def test_road_segmentor_list(self):
+    def test_road_segmenter_list(self):
         """
-        road_segmentor should return a list
+        road_segmenter should return a list
         :return:
         """
         self.assertIsInstance(self.split_segments, list)
 
-    def test_road_segmentor_list_elements(self):
+    def test_road_segmenter_list_elements(self):
         """
         every element in the split segments should be a dict
         :return:
