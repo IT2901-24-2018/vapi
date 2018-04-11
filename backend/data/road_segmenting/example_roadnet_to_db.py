@@ -20,8 +20,10 @@ def filter_road(road):
     """
     filtered_road = {}
 
-    filtered_road['coordinates']        = ', '.join(str(item) for innerlist in road['geometry']['coordinates']
+    unfiltered_coordinates              = ', '.join(str(item) for innerlist in road['geometry']['coordinates']
                                                     for item in innerlist)
+    separated_coordinates               = re.sub('(,)([^,]*)(,)', r'\2\3', unfiltered_coordinates)
+    filtered_road['coordinates']        = separated_coordinates
     filtered_road['from_meter']         = road['properties']['fra_meter']
     filtered_road['county']             = road['properties']['fylke']
     filtered_road['srid']               = road['properties']['geometri']['srid']
