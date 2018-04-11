@@ -25,7 +25,7 @@ class ProductionDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductionData
         fields = ('created', 'updated', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'dry_spreader_active',
-                  'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code')
+                  'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code', 'segment')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

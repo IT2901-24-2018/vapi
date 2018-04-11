@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 
+from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer
@@ -31,6 +32,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         """
         Add support for creating when the input data is a list
         """
+        # TODO: handle incoming segment field
         many = False
 
         # Check if the incoming data is a list
@@ -40,12 +42,24 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            error = {"detail": "Format error: Input should be a list"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        # TODO: map prod data to road a road segment
-        mapped_data = request.data
+        # Map prod data to road a road segment
+        mapped_data = mapper.map_to_segment(request.data)
+
+        # Check that there are successfully mapped prod-data
+        if len(mapped_data) == 0:
+            error = {"detail": "No segments within range"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+        print("segment: {}".format(mapped_data[0]["segment"]))
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_data, many=many)
+
+        print("serializer: {}".format(serializer))
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():

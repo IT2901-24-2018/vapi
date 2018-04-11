@@ -1,113 +1,111 @@
-import numpy as np
-from math import pow
-from api.models import DummyModel
+import utm
+from backend.settings.constants import MAX_MAPPING_DISTANCE
 from django.contrib.gis.geos import GEOSGeometry
 from django.db import connection
 
-# To functions for finding the distance from a point to a line.
-# None of them use a reasonable measure for distance.
-
-# TODO: look into PostGIS ST_Distance
+from api.models import DummyModel
 
 
-def point_to_line_distance(point, line):
+def point_to_linestring_distance(point):
     """
-    https://stackoverflow.com/questions/27161533/find-the-shortest-distance-between-a-point-and-line-segments-not-line
-
-    Calculate the distance between a point and a line segment.
-
-    To calculate the closest distance to a line segment, we first need to check
-    if the point projects onto the line segment.  If it does, then we calculate
-    the orthogonal distance from the point to the line.
-    If the point does not project to the line segment, we calculate the
-    distance to both endpoints and take the shortest distance.
-
-    :param point: Numpy array of form [x,y], describing the point.
-    :type point: numpy.array
-    :param line: list of endpoint arrays of form [P1, P2]
-    :type line: list of numpy.array
-    :return: The minimum distance to a point.
-    :rtype: float
+    Returns closest segment and distance.
+    :param point: lon lat
+    :type point: tuple
+    :return:
+    :rtype: dict
     """
-    # unit vector
-    unit_line = line[1] - line[0]
-    norm_unit_line = unit_line / np.linalg.norm(unit_line)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT S.id, "
+                       "ST_Distance(S.the_geom::geography, "
+                       "ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography) AS distance "
+                       "FROM api_dummymodel S "
+                       "ORDER BY distance ASC "
+                       "LIMIT 1", [point[0], point[1]])
+        row = cursor.fetchone()
 
-    diff = (
-        (norm_unit_line[0] * (point[0] - line[0][0])) +
-        (norm_unit_line[1] * (point[1] - line[0][1]))
-    )
+    return {"id": row[0], "distance": row[1]}
 
-    x_seg = (norm_unit_line[0] * diff) + line[0][0]
-    y_seg = (norm_unit_line[1] * diff) + line[0][1]
 
-    # decide if the intersection point falls on the line segment
-    lp1_x = line[0][0]  # line point 1 x
-    lp1_y = line[0][1]  # line point 1 y
-    lp2_x = line[1][0]  # line point 2 x
-    lp2_y = line[1][1]  # line point 2 y
-    is_betw_x = lp1_x <= x_seg <= lp2_x or lp2_x <= x_seg <= lp1_x
-    is_betw_y = lp1_y <= y_seg <= lp2_y or lp2_y <= y_seg <= lp1_y
-    if is_betw_x and is_betw_y:
-        # compute the perpendicular distance to the theoretical infinite line
-        segment_dist = (
-            np.linalg.norm(np.cross(line[1] - line[0], line[0] - point)) /
-            np.linalg.norm(unit_line)
-        )
-        return segment_dist
+def map_to_segment(production_data):
+    """
+    Maps production data to road segments
+    :param production_data:
+    :type production_data: list
+    :return:
+    :rtype: list
+    """
+
+    mapped_data = []
+
+    for prod_data in production_data:
+
+        point = (prod_data["startlong"], prod_data["startlat"])
+        segment = point_to_linestring_distance(point)
+
+        if segment["distance"] <= MAX_MAPPING_DISTANCE:
+            prod_data["segment"] = segment["id"]
+            mapped_data.append(prod_data)
+
+    return mapped_data
+
+
+def main():
+    prod_data = [{'startlat': 63.387691997704202, 'endlat': 63.3874419990294, 'endlong': 10.3290930003037,
+                  'startlong': 10.3290819995141, 'time': '2016-11-04T08:45:15'}]
+
+    mapped_prod_data = map_to_segment(prod_data)
+    if len(mapped_prod_data) > 0:
+        print("id: {}".format(mapped_prod_data[0]["roadsegment"]))
     else:
-        # if not, then return the minimum distance to the segment endpoints
-        endpoint_dist = min(
-            np.linalg.norm(line[0] - point),
-            np.linalg.norm(line[1] - point)
-        )
-        return endpoint_dist
+        print("No mapped data")
 
 
-# Not correct
-def distance(p0, p1, p2):  # p0 is the point
+def save_dummy_segment(linestring, srid):
     """
-    https://stackoverflow.com/questions/27461634/calculate-distance-between-a-point-and-a-line-segment-in-latitude-and-longitude
+    Save segment geo data.
+    :param linestring:
+    :param srid:
+    :return:
     """
-    x0, y0 = p0
-    x1, y1 = p1
-    x2, y2 = p2
-    nom = abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1)
-    denominator = pow((pow((y2 - y1), 2) + pow((x2 - x1), 2)), 0.5)
-    result = nom / denominator
-    return result
-
-
-def save_dummy_segment():
-    linestring = GEOSGeometry('LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327)')
+    if srid is not None:
+        linestring = GEOSGeometry(linestring, srid=srid)
+    else:
+        linestring = GEOSGeometry(linestring)
     d = DummyModel(the_geom=linestring)
     d.save()
 
 
-def point_to_linestring_distance():
-    with connection.cursor() as cursor:
-        point = GEOSGeometry('{"type": "Point", "coordinates": [63.3870750023729, 10.3277250005425]}')
-        cursor.execute("SELECT ST_Distance(ST_GeomFromText(%s, 32633),"
-                       "SELECT the_geom FROM api_dummymodels)", [point])
-        row = cursor.fetchone()
+def utm_to_lonlat(utm_point, zone1, zone2):
+    """
+    Converts a geometrical point from utm to lon/lat
+    :param utm_point:
+    :param zone1:
+    :param zone2:
+    :return lonlat:
+    """
+    lat_lon = utm.to_latlon(utm_point[0], utm_point[1], zone1, zone2)
+    return lat_lon[0], lat_lon[1]
 
-    return row
+
+def utm_linestring_to_lonlat_linetring(utm_coordinates, zone1, zone2):
+    """
+    Converts linestring from utm to lon/lat
+    :param utm_coordinates: 2d array
+    :param zone1:
+    :type zone1: int
+    :param zone2:
+    :type zone2: basestring
+    :return: lon/lat linestring
+    :rtype: basestring
+    """
+    linestring = 'LINESTRING('
+    for c in utm_coordinates:
+        lonlat = utm_to_lonlat(c, zone1, zone2)
+        linestring += '{0} {1},'.format(str(lonlat[0]), str(lonlat[1]))
+    linestring = linestring.rstrip(',')
+    linestring += ')'
+    return linestring
 
 
 if __name__ == '__main__':
-
-
-    # p1 = np.array([63.387075002372903, 10.3277250005425])
-    # p2 = np.array([63.387642998353499, 10.3282330021124])
-    # p3 = np.array([63.387691997704202, 10.3290819995141])
-
-    p1 = np.array([3, 3])
-    p2 = np.array([3, 10])
-    p3 = np.array([0, 0])
-
-    # print(p3 - p1)
-
-    # print(np.cross(p2 - p1, p3 - p1) / norm(p2 - p1))
-
-    print(point_to_line_distance(p3, [p1, p2]))
-    print(distance(p3, p1, p2))
+    pass
