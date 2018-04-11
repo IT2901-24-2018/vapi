@@ -6,4 +6,4 @@ File for constants
 INPUT_LIST_LIMIT = 100000
 
 # Used in api.mapper
-MAX_MAPPING_DISTANCE = 20
+MAX_MAPPING_DISTANCE = 30
