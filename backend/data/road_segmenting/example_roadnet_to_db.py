@@ -17,35 +17,34 @@ def filter_road(road):
     :param road: A dictionary containing a road segment
     :return: A filtered dict with the road segment
     """
-    filtered_road = {}
-
-    filtered_road['coordinates']        = ', '.join(str(item) for innerlist in road['geometry']['coordinates']
-                                                    for item in innerlist)
-    filtered_road['from_meter']         = road['properties']['fra_meter']
-    filtered_road['county']             = road['properties']['fylke']
-    filtered_road['srid']               = road['properties']['geometri']['srid']
-    filtered_road['hp']                 = road['properties']['hp']
-    filtered_road['href']               = road['properties']['href']
-    filtered_road['category']           = road['properties']['kategori']
-    filtered_road['municipality']       = road['properties']['kommune']
-    filtered_road['connlink']           = road['properties']['konnekteringslenke']
-    filtered_road['shortform']          = road['properties']['kortform']
-    filtered_road['medium']             = road['properties']['medium']
-    filtered_road['startdate']          = road['properties']['metadata']['startdato']
-    filtered_road['number']             = road['properties']['nummer']
-    filtered_road['region']             = road['properties']['region']
-    filtered_road['endnode']            = road['properties']['sluttnode']
-    filtered_road['endposition']        = road['properties']['sluttposisjon']
-    filtered_road['startnode']          = road['properties']['startnode']
-    filtered_road['startposition']      = road['properties']['startposisjon']
-    filtered_road['status']             = road['properties']['status']
-    filtered_road['stretchdistance']    = road['properties']['strekningslengde']
-    filtered_road['themecode']          = road['properties']['temakode']
-    filtered_road['to_meter']           = road['properties']['til_meter']
-    filtered_road['typeofroad']         = road['properties']['typeVeg']
-    filtered_road['roadsection']        = road['properties']['vegavdeling']
-    filtered_road['roadsectionid']      = road['properties']['veglenkeid']
-    filtered_road['vrefshortform']      = road['properties']['vrefkortform']
+    filtered_road = {
+        'coordinates':     ', '.join(str(item) for innerlist in road['geometry']['coordinates'] for item in innerlist),
+        'from_meter':      road['properties']['fra_meter'],
+        'county':          road['properties']['fylke'],
+        'srid':            road['properties']['geometri']['srid'],
+        'hp':              road['properties']['hp'],
+        'href':            road['properties']['href'],
+        'category':        road['properties']['kategori'],
+        'municipality':    road['properties']['kommune'],
+        'connlink':        road['properties']['konnekteringslenke'],
+        'shortform':       road['properties']['kortform'],
+        'medium':          road['properties']['medium'],
+        'startdate':       road['properties']['metadata']['startdato'],
+        'number':          road['properties']['nummer'],
+        'region':          road['properties']['region'],
+        'endnode':         road['properties']['sluttnode'],
+        'endposition':     road['properties']['sluttposisjon'],
+        'startnode':       road['properties']['startnode'],
+        'startposition':   road['properties']['startposisjon'],
+        'status':          road['properties']['status'],
+        'stretchdistance': road['properties']['strekningslengde'],
+        'themecode':       road['properties']['temakode'],
+        'to_meter':        road['properties']['til_meter'],
+        'typeofroad':      road['properties']['typeVeg'],
+        'roadsection':     road['properties']['vegavdeling'],
+        'roadsectionid':   road['properties']['veglenkeid'],
+        'vrefshortform':   road['properties']['vrefkortform']
+    }
 
     return filtered_road
 
