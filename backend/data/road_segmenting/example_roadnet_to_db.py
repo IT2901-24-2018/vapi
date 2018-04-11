@@ -1,6 +1,7 @@
+import re
+
 import requests
 from road_segmenter import road_segmentor
-import re
 
 municipality = 5001
 type_of_road = 'kg'
