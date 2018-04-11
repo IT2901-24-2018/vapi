@@ -1,5 +1,6 @@
 import requests
 from road_segmenter import road_segmentor
+import re
 
 municipality = 5001
 type_of_road = 'kg'
@@ -76,4 +77,3 @@ def data_in(municipality, type_road, max_distance, min_segments):
 
 if __name__ == '__main__':
     print(data_in(municipality, type_of_road, max_distance, min_segments))
-

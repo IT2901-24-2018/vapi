@@ -12,7 +12,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         else:
             return request.user.is_staff
 
-          
+
 class IsStaffOrCreateOnly(permissions.BasePermission):
     """
     Custom permission to only allow create and list actions.

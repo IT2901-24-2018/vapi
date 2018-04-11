@@ -1,5 +1,6 @@
-from road_fetcher import *
 from calculate_distance import *
+from road_fetcher import *
+import copy
 
 
 def split_segment(road_segment, max_distance, segmented_road_network, min_gps):

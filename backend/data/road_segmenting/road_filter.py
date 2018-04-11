@@ -8,6 +8,7 @@ def remove_keys(road):
     road['geometri'].pop("kvalitet", None)
     return road
 
+
 def remove_height(road_network):
     for road in road_network['features']:
         for list_coordinates in road['geometry']['coordinates']:
