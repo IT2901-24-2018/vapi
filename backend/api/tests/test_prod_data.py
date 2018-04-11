@@ -68,7 +68,7 @@ class GetAllProductionDataTest(APITestCase):
         self.client.login(username='staff', password='testpassword')
 
         # Create instance of GET request
-        url = reverse('prod-data-list')
+        url = reverse('productiondata-list')
         response = self.client.get(url)
 
         # Get data from db and run test
@@ -84,7 +84,7 @@ class GetAllProductionDataTest(APITestCase):
         self.client.login(username='normal_user', password='testpassword')
 
         # Create instance of GET request
-        url = reverse('prod-data-list')
+        url = reverse('productiondata-list')
         response = self.client.get(url)
 
         # Run test
@@ -95,7 +95,7 @@ class GetAllProductionDataTest(APITestCase):
         Test GET request while not authenticated
         """
         # Create instance of GET request
-        url = reverse('prod-data-list')
+        url = reverse('productiondata-list')
         response = self.client.get(url)
 
         # Run test
@@ -131,7 +131,7 @@ class PostProductionDataTest(APITestCase):
         self.client.login(username="normal_user", password="testpassword")
 
         # Post the data
-        url = reverse('prod-data-list')
+        url = reverse('productiondata-list')
         response = self.client.post(url, self.data, format='json')
 
         # Check the status code, then check that the number of objects in the database matches the number
@@ -147,7 +147,7 @@ class PostProductionDataTest(APITestCase):
         self.client.login(username="staff", password="testpassword")
 
         # Post the data
-        url = reverse('prod-data-list')
+        url = reverse('productiondata-list')
         response = self.client.post(url, self.data, format='json')
 
         # Check the status code, then check that the number of objects in the database matches the number
@@ -159,7 +159,7 @@ class PostProductionDataTest(APITestCase):
         """
         Testing that the endpoint has the correct restrictions on permissions.
         """
-        url = reverse('prod-data-list')
+        url = reverse('productiondata-list')
         response = self.client.post(url, self.data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
