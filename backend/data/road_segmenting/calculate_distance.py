@@ -1,4 +1,4 @@
-from math import *
+import math
 import utm
 
 
@@ -9,11 +9,11 @@ def distance_formula(start_list, end_list):
     :param end_list:  the second GPS point, given in UTM list form [start_x, start_y]
     :return: The distance between the first GPS point and the second GPS point
     """
-    distance = sqrt(pow((start_list[0] - end_list[0]), 2) + pow((start_list[1] - end_list[1]), 2))
+    distance = math.sqrt(pow((start_list[0] - end_list[0]), 2) + pow((start_list[1] - end_list[1]), 2))
     return distance
 
 
-def harvesine_formula(start_list, end_list):
+def haversine_formula(start_list, end_list):
     """
     Calculate the great circle distance between two points
     on the earth (specified in decimal degrees)
@@ -23,13 +23,13 @@ def harvesine_formula(start_list, end_list):
     """
     # convert decimal to radians
     earth_radius = 6371
-    lat1, lon1, lat2, lon2 = map(radians, [start_list[0], start_list[1], end_list[0], end_list[1]])
+    lat1, lon1, lat2, lon2 = map(math.radians, [start_list[0], start_list[1], end_list[0], end_list[1]])
 
-    # harvesine formula
+    # haversine formula
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-    a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2)
-    c = 2 * asin(sqrt(a))
+    a = pow(math.sin(dlat / 2), 2) + math.cos(lat1) * math.cos(lat2) * pow(math.sin(dlon / 2), 2)
+    c = 2 * math.asin(math.sqrt(a))
     return c * earth_radius
 
 
@@ -48,12 +48,12 @@ def utm_to_latlon(start_list, end_list, zone1, zone2):
     return [start[0], start[1]], [end[0], end[1]]
 
 
-def calculate_road_length(gps_list, max_length_meter, harvesine):
+def calculate_road_length(gps_list, max_length_meter, haversine):
     """
     Calculate the length of a road given a list of gps points
     :param gps_list: A 2d list of gps points given in UTM format
     :param max_length_meter: Maximum length of the road segment
-    :param harvesine: True or False. Decides if the function uses the distance formula or the harvesine formula
+    :param haversine: True or False. Decides if the function uses the distance formula or the haversine formula
     :return: returns the index of the gps_point, and total length of the road in meters
     """
 
@@ -63,12 +63,11 @@ def calculate_road_length(gps_list, max_length_meter, harvesine):
         index += 1
         if gps_list.index(gps_point) > 0:
             prev = gps_list[gps_list.index(gps_point) - 1]
-            if harvesine:
-                # todo: make sure the harvesine formula returns in meters
+            if haversine:
                 coordinates = utm_to_latlon(gps_point, prev, 32, 'V')
-                length += harvesine_formula(coordinates[0], coordinates[1])
+                length += haversine_formula(coordinates[0], coordinates[1])
             else:
                 length += distance_formula(prev, gps_point)
             if length >= max_length_meter:
-                return index, ceil(length)
-    return index, ceil(length)
+                return index, math.ceil(length)
+    return index, math.ceil(length)
