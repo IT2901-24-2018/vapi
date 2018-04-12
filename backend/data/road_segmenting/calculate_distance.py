@@ -49,26 +49,24 @@ def utm_to_latlon(start_list, end_list, zone1, zone2):
     return [start[0], start[1]], [end[0], end[1]]
 
 
-def calculate_road_length(gps_list, max_length_meter, haversine):
+def calculate_road_length(gps_list, max_length_meter, harvesine):
     """
     Calculate the length of a road given a list of gps points
     :param gps_list: A 2d list of gps points given in UTM format
     :param max_length_meter: Maximum length of the road segment
-    :param haversine: True or False. Decides if the function uses the distance formula or the haversine formula
+    :param harvesine: True or False. Decides if the function uses the distance formula or the haversine formula
     :return: returns the index of the gps_point, and total length of the road in meters
     """
 
     length = 0
-    index = 0
-    for gps_point in gps_list:
-        index += 1
-        if gps_list.index(gps_point) > 0:
-            prev = gps_list[gps_list.index(gps_point) - 1]
-            if haversine:
-                coordinates = utm_to_latlon(gps_point, prev, 32, 'V')
+    for i in range(len(gps_list)):
+        if i > 0:
+            prev = i - 1
+            if harvesine:
+                coordinates = utm_to_latlon(gps_list[i], gps_list[prev], 32, 'V')
                 length += haversine_formula(coordinates[0], coordinates[1])
             else:
-                length += distance_formula(prev, gps_point)
+                length += distance_formula(gps_list[prev], gps_list[i])
             if length >= max_length_meter:
-                return index, math.ceil(length)
-    return index, math.ceil(length)
+                return i, math.ceil(length)
+    return i, math.ceil(length)
