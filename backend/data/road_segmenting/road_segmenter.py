@@ -30,12 +30,22 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     segment_after_split['properties']['strekningslengde'] = (before_til_meter -
                                                              segment_after_split['properties']['fra_meter'])
 
-    segmented_road_network.append(segment_before_split)
+#    print(meter)
+#    print("original:", road_segment['geometry']['coordinates'])
+#    print("Split at:", index)
+#    print("before:", segment_before_split['geometry']['coordinates'])
+#    print("after:", segment_after_split['geometry']['coordinates'])
 
+    if len(segment_before_split['geometry']['coordinates']) >= min_gps:
+        segmented_road_network.append(segment_before_split)
+    else:
+        segmented_road_network.append(road_segment)
+        return segmented_road_network
 
     if check_split(segment_after_split, meter):
         if len(segment_after_split['geometry']['coordinates']) <= min_gps:
-            return segmented_road_network.append(road_segment)
+            segmented_road_network.append(road_segment)
+            return segmented_road_network
         segmented_road_network = split_segment(segment_after_split, meter, segmented_road_network, min_gps)
     else:
         if len(segment_after_split['geometry']['coordinates']) >= min_gps:
