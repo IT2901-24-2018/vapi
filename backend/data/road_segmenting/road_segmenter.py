@@ -56,7 +56,7 @@ def check_split(road_segment, max_distance):
         return False
 
 
-def road_segmentor(kommune, vegref, max_distance, min_gps):
+def road_segmenter(kommune, vegref, max_distance, min_gps):
     """
     Segments a list of road segments into a new list of shorter segments based on the max_distance
     :param kommune: Int, commune number
