@@ -77,19 +77,23 @@ def road_segmenter(kommune, vegref, max_distance, min_gps):
     :param min_gps: Minimum amount of gps points a road segment can have
     :return: New list of road segments split into shorter lengths
     """
-    segmented_road_network = []
     results = vegnet_to_geojson(kommune, vegref)
     count, road_net = results[0], results[1]
-    for key, values in road_net.items():
+    return segment_network(road_net, count, max_distance, min_gps)
+
+
+def segment_network(road_network, len_road_network, max_distance, min_gps):
+    segmented_road_network = []
+    for key, values in road_network.items():
         if key != 'crs':
-            for road_segment in range(0, count):
-                if len(road_net['features'][road_segment]['geometry']['coordinates']) > min_gps:
-                    if check_split(road_net['features'][road_segment], max_distance):
-                        split_roads = split_segment(road_net['features'][road_segment],
+            for road_segment in range(0, len_road_network):
+                if len(road_network['features'][road_segment]['geometry']['coordinates']) > min_gps:
+                    if check_split(road_network['features'][road_segment], max_distance):
+                        split_roads = split_segment(road_network['features'][road_segment],
                                                     max_distance, [], min_gps)
                         if split_roads is not None:
                             for new_road in split_roads:
                                 segmented_road_network.append(new_road)
                     else:
-                        segmented_road_network.append(road_net['features'][road_segment])
+                        segmented_road_network.append(road_network['features'][road_segment])
     return segmented_road_network
