@@ -30,3 +30,20 @@ SELECT ST_Transform(ST_GeomFromText('LINESTRING(266711 7037272,266712 7037276,26
 
 -- Select the_geom as text
 SELECT ST_AsText(the_geom) FROM api_dummymodel;
+
+
+-- Segment with the shortest distance from point and under MAX_MAPPING_DISTANCE
+WITH segment (id, distance)
+AS
+-- Find distance to segment and id
+(
+  SELECT S.id AS id,
+  ST_Distance(S.the_geom::geography,
+  ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography) AS distance
+  FROM api_dummymodel S
+)
+SELECT id, distance
+FROM segment
+WHERE distance <= %s
+ORDER BY distance ASC
+LIMIT 1

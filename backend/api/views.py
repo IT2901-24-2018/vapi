@@ -30,15 +30,13 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Add support for creating when the input data is a list
+        Create new prod-data from list mapped to road segment
         """
-        # TODO: handle incoming segment field
-        many = False
+        # TODO: Handle incoming segment field in a more slick way
 
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
-            many = True
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
@@ -54,12 +52,12 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             error = {"detail": "No segments within range"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        print("segment: {}".format(mapped_data[0]["segment"]))
+        # TODO: Handle old prod-data
+        # latest_time = mapped_data[len(mapped_data)]["time"]
+        # mapper.delete_old_production_data(latest_time)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=mapped_data, many=many)
-
-        print("serializer: {}".format(serializer))
+        serializer = self.get_serializer(data=mapped_data, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
