@@ -1,12 +1,11 @@
 from django.contrib.auth.models import User
+from django.contrib.gis.geos import GEOSGeometry
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
-from django.contrib.gis.geos import GEOSGeometry
 
-
-from api.models import ProductionData, DummyModel
+from api.models import DummyModel, ProductionData
 from api.serializers import ProductionDataSerializer
 
 
