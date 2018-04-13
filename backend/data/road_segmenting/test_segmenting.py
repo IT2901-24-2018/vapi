@@ -24,14 +24,14 @@ class TestSegmenting(unittest.TestCase):
     def test_road_segmenter_list(self):
         """
         road_segmenter should return a list
-        :return:
+        :return: Nothing
         """
         self.assertIsInstance(self.split_segments, list, "The road segmenter did not return a list")
 
     def test_road_segmenter_list_elements(self):
         """
         every element in the split segments should be a dict
-        :return:
+        :return: Nothing
         """
         count = 0
         error_message = "Not all elements in the split list are of type dict: \n"
@@ -46,7 +46,7 @@ class TestSegmenting(unittest.TestCase):
         """
         Given a list of roads segments, the split segments should always have a length
         of 2 or more
-        :return:
+        :return: Nothing
         """
         count = 0
         error_message = "These segments have less than " + str(self.min_segment_length) + " GPS points \n"
@@ -61,11 +61,11 @@ class TestSegmenting(unittest.TestCase):
         """
         The total distance of the segmented road should be similar to the length before segmentation, within
         a margin given by the variable "margin"
-        :return: True or false
+        :return: Nothing
         """
         margin = 8
         errors = 0
-        error_message = "Issues are with these links: \n"
+        error_message = "Issues are with these segments: \n"
         for key, values in self.road_net.items():
             if key != 'crs':
                 for i in range(0, self.count):
@@ -75,13 +75,38 @@ class TestSegmenting(unittest.TestCase):
                     road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
 
                     length_new = 0
-                    for road in road_segmented:
-                        length_new += calculate_road_length(road['geometry']['coordinates'], 1000, False)[1]
+                    for segment in road_segmented:
+                        length_new += calculate_road_length(segment['geometry']['coordinates'], 1000, False)[1]
                     if abs(length_actual - length_new) > margin:
                         errors += 1
                         error_message += "Veglenkeid: " + str(road['properties']['veglenkeid']) + \
                                          ", actual length: " + str(length_actual) + ", original: " + \
                                          str(length_original) + ", new:" + str(length_new) + "\n"
+        self.assertLess(errors, 1, error_message)
+
+    def test_split_segment_chaining(self):
+        """
+        Every connected segment should start with the end gps point of the previous segment
+        :return: Nothing
+        """
+        margin = 8
+        errors = 0
+        error_message = "Issues are with these links: \n"
+        for key, values in self.road_net.items():
+            if key != 'crs':
+                for i in range(0, self.count):
+                    road = self.road_net['features'][i]
+                    road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
+
+                    for i in range(1, len(road_segmented)):
+                        prev = road_segmented[i-1]['geometry']['coordinates']
+                        end_prev = prev[len(prev)-1]
+                        start_curr = road_segmented[i]['geometry']['coordinates'][0]
+
+                        if end_prev != start_curr:
+                            errors += 1
+                            error_message += "Veglenkeid: " + str(road['properties']['veglenkeid']) + \
+                                ", does not start at " + str(end_prev) + ", instead: " + str(start_curr) + "\n"
         self.assertLess(errors, 1, error_message)
 
     def test_split_segment_road_length(self):
@@ -91,7 +116,7 @@ class TestSegmenting(unittest.TestCase):
         """
         Given a list of road segments, the length of the split segments should all be
         within a margin of error given by the variable "margin"
-        :return:
+        :return: Nothing
         """
         margin = 50
         errors = 0
