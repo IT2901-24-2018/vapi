@@ -5,9 +5,9 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
+from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
 from api.serializers import ProductionDataSerializer
-from api.mapper import mapper
 
 
 class InsertOneProductionDataTest(APITestCase):
@@ -15,43 +15,22 @@ class InsertOneProductionDataTest(APITestCase):
     Test ProductionData model.
     """
     def setUp(self):
-        linestring = GEOSGeometry('LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,'
-                                  '266826 7037325,266835 7037327,266876 7037333,266916 7037334,266955 7037332,'
-                                  '267032 7037323,267127 7037314,267174 7037300,267181 7037296,267185 7037296,'
-                                  '267191 7037300)', 32633)
+        linestring = GEOSGeometry(
+            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
+            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
+            '267185 7037296,267191 7037300)', 32633
+        )
         RoadSegment.objects.create(
-            the_geom=linestring,
-            from_meter=1,
-            county=1,
-            hp=1,
-            href=1,
-            category=1,
-            municipality=1,
-            connlink=1,
-            shortform=1,
-            medium=1,
-            startdate=1,
-            number=1,
-            region=1,
-            endnode=1,
-            endposition=1,
-            startnode=1,
-            startposition=1,
-            status=1,
-            stretchdistance=1,
-            themecode=1,
-            to_meter=1,
-            typeofroad=1,
-            roadsection=1,
-            roadsectionid=1,
-            vrefshortform=1
+            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
+            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
+            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
+            roadsectionid=1, vrefshortform=1
         )
         d = RoadSegment.objects.get()
 
         ProductionData.objects.create(
             time=timezone.now(), startlat=60.7758584, startlong=20.756444, endlat=60.45454, endlong=20.57575,
-            plow_active=True,
-            segment=d
+            plow_active=True, segment=d
         )
 
     def test_prod_data(self):
@@ -83,53 +62,30 @@ class GetAllProductionDataTest(APITestCase):
         User.objects.create_user(username="normal_user", password="testpassword")
         User.objects.create_user(username="staff", password="testpassword", is_staff=True)
 
-        linestring = GEOSGeometry('LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,'
-                                  '266826 7037325,266835 7037327,266876 7037333,266916 7037334,266955 7037332,'
-                                  '267032 7037323,267127 7037314,267174 7037300,267181 7037296,267185 7037296,'
-                                  '267191 7037300)', 32633)
+        linestring = GEOSGeometry(
+            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
+            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
+            '267185 7037296,267191 7037300)', 32633
+        )
         RoadSegment.objects.create(
-            the_geom=linestring,
-            from_meter=1,
-            county=1,
-            hp=1,
-            href=1,
-            category=1,
-            municipality=1,
-            connlink=1,
-            shortform=1,
-            medium=1,
-            startdate=1,
-            number=1,
-            region=1,
-            endnode=1,
-            endposition=1,
-            startnode=1,
-            startposition=1,
-            status=1,
-            stretchdistance=1,
-            themecode=1,
-            to_meter=1,
-            typeofroad=1,
-            roadsection=1,
-            roadsectionid=1,
-            vrefshortform=1
+            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
+            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
+            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
+            roadsectionid=1, vrefshortform=1
         )
         d = RoadSegment.objects.get()
 
         # Create data in db
         ProductionData.objects.create(
             time=timezone.now(), startlat=60.7758584, startlong=20.756444, endlat=60.45454, endlong=20.57575,
-            plow_active=True,
-            segment=d
+            plow_active=True, segment=d
         )
         ProductionData.objects.create(
-            time=timezone.now(), startlat=60.4564577, startlong=20.465565, endlat=60.646566, endlong=20.4564,
-            segment=d
+            time=timezone.now(), startlat=60.4564577, startlong=20.465565, endlat=60.646566, endlong=20.4564, segment=d
         )
         ProductionData.objects.create(
             time=timezone.now(), startlat=60.56345345, startlong=20.3453453, endlat=60.3453453, endlong=20.4354,
-            wet_spreader_active=True,
-            segment=d
+            wet_spreader_active=True, segment=d
         )
 
     def test_get_all_prod_data_authenticated_staff(self):
@@ -182,36 +138,16 @@ class PostProductionDataTest(APITestCase):
         User.objects.create_user(username="normal_user", password="testpassword")
         User.objects.create_user(username="staff", password="testpassword", is_staff=True)
 
-        linestring = GEOSGeometry('LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,'
-                                  '266826 7037325,266835 7037327,266876 7037333,266916 7037334,266955 7037332,'
-                                  '267032 7037323,267127 7037314,267174 7037300,267181 7037296,267185 7037296,'
-                                  '267191 7037300)', 32633)
+        linestring = GEOSGeometry(
+            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
+            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
+            '267185 7037296,267191 7037300)', 32633
+        )
         RoadSegment.objects.create(
-            the_geom=linestring,
-            from_meter=1,
-            county=1,
-            hp=1,
-            href=1,
-            category=1,
-            municipality=1,
-            connlink=1,
-            shortform=1,
-            medium=1,
-            startdate=1,
-            number=1,
-            region=1,
-            endnode=1,
-            endposition=1,
-            startnode=1,
-            startposition=1,
-            status=1,
-            stretchdistance=1,
-            themecode=1,
-            to_meter=1,
-            typeofroad=1,
-            roadsection=1,
-            roadsectionid=1,
-            vrefshortform=1
+            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
+            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
+            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
+            roadsectionid=1, vrefshortform=1
         )
 
         # Make the test data
@@ -273,7 +209,8 @@ class MapperTest(APITestCase):
         linestring = GEOSGeometry(
             'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
             '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
-            '267185 7037296,267191 7037300)', 32633)
+            '267185 7037296,267191 7037300)', 32633
+        )
         RoadSegment.objects.create(
             the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
             shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
