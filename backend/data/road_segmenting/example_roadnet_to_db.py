@@ -1,7 +1,7 @@
 import re
 
 import requests
-from road_segmenter import road_segmentor
+from road_segmenter import road_segmenter
 
 municipality = 5001
 type_of_road = 'kg'
@@ -60,7 +60,7 @@ def format_to_db(municipality, type_road, max_distance, min_segments):
     """
     :return: Returns a filtered road network
     """
-    road_network = road_segmentor(municipality, type_road, max_distance, min_segments)
+    road_network = road_segmenter(municipality, type_road, max_distance, min_segments)
     filtered_road_network = []
     for road in road_network:
         road_done = filter_road(road)
