@@ -9,8 +9,13 @@ max_distance = 100
 min_segments = 2
 
 # Credentials for connecting and writing to the API
-API_username = ""
-API_password = ""
+try:
+    from backend.settings.local import API_AUTHENTICATION
+    API_username = API_AUTHENTICATION["username"]
+    API_password = API_AUTHENTICATION["password"]
+except ImportError:
+    API_username = ""
+    API_password = ""
 
 
 def filter_road(road):
@@ -19,16 +24,21 @@ def filter_road(road):
     :param road: A dictionary containing a road segment
     :return: A filtered dict with the road segment
     """
+    # Quick temporary fix for empty and single point coordinates
+    if len(road['geometry']['coordinates']) <= 1:
+        return None
 
-    unfiltered_coordinates = ', '.join(str(item) for innerlist in road['geometry']['coordinates']
-                                       for item in innerlist)
-    separated_coordinates = re.sub('(,)([^,]*)(,)', r'\2\3', unfiltered_coordinates)
+    # Format the linestring correctly
+    linestring = ''
+    for pair in road['geometry']['coordinates']:
+        linestring += str(pair[0]) + ' ' + str(pair[1]) + ','
+    linestring = linestring.rstrip(',')
+    geometry = 'SRID={};LINESTRING({})'.format(road['properties']['geometri']['srid'], linestring)
 
     filtered_road = {
-        'coordinates':     separated_coordinates,
+        'the_geom':        geometry,
         'from_meter':      road['properties']['fra_meter'],
         'county':          road['properties']['fylke'],
-        'srid':            road['properties']['geometri']['srid'],
         'hp':              road['properties']['hp'],
         'href':            road['properties']['href'],
         'category':        road['properties']['kategori'],
@@ -64,7 +74,7 @@ def format_to_db(municipality, type_road, max_distance, min_segments):
     filtered_road_network = []
     for road in road_network:
         road_done = filter_road(road)
-        if road_done['coordinates']:
+        if road_done:
             filtered_road_network.append(road_done)
     return filtered_road_network
 

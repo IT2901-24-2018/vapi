@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from django.contrib.gis.geos import GEOSGeometry
 
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
@@ -36,6 +37,13 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
             many = True
+
+        # print('\n\n\n{}\n\n\n'.format(request.data[0]["the_geom"]))
+
+        # r = GEOSGeometry(request.data[0]["the_geom"])
+
+        # for data in request.data:
+        #     data["the_geom"] = GEOSGeometry(data["the_geom"])
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=request.data, many=many)

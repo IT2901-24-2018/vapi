@@ -15,10 +15,8 @@ class BaseModel(models.Model):
 
 
 class RoadSegment(BaseModel):
-    coordinates = models.TextField()
     from_meter = models.IntegerField()
     county = models.IntegerField()
-    srid = models.IntegerField()
     hp = models.IntegerField()
     href = models.CharField(max_length=150)
     category = models.CharField(max_length=4)
@@ -41,6 +39,7 @@ class RoadSegment(BaseModel):
     roadsection = models.IntegerField()
     roadsectionid = models.IntegerField()
     vrefshortform = models.CharField(max_length=255)
+    the_geom = models.LineStringField()
 
 
 class ProductionData(BaseModel):
