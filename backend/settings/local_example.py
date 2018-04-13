@@ -10,7 +10,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '',
         # Replace with your own settings
-        'USER': 'user',
+        'USER': 'username',
         'PASSWORD': 'password',
     }
 }
