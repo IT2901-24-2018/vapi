@@ -7,6 +7,7 @@ from rest_framework.test import APITestCase
 
 from api.models import ProductionData, RoadSegment
 from api.serializers import ProductionDataSerializer
+from api.mapper import mapper
 
 
 class InsertOneProductionDataTest(APITestCase):
@@ -262,3 +263,32 @@ class PostProductionDataTest(APITestCase):
         response = self.client.post(url, self.data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class MapperTest(APITestCase):
+    """
+    Tests for mapper
+    """
+    def setUp(self):
+        linestring = GEOSGeometry(
+            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
+            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
+            '267185 7037296,267191 7037300)', 32633)
+        RoadSegment.objects.create(
+            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
+            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
+            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
+            roadsectionid=1, vrefshortform=1
+        )
+
+    def test_map_to_segment(self):
+        # Make test production data
+        production_data_out_of_range = [{"startlat": 63.387075002372903, "startlong": 10.3277250005425}]
+        production_data_in_range = [{"startlat": 63.387691997704202, "startlong": 10.3290819995141}]
+
+        # Check that the out of range one does not map
+        mapped_data = mapper.map_to_segment(production_data_out_of_range)
+        self.assertAlmostEquals(len(mapped_data), 0)
+        # Check that the in range one maps
+        mapped_data = mapper.map_to_segment(production_data_in_range)
+        self.assertAlmostEquals(len(mapped_data), 1)
