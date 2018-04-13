@@ -27,21 +27,39 @@ When your virtual environment is set up, get the required dependencies for the b
 
 ### Database
 
-[For installing Postgres with PostGIS.](http://trac.osgeo.org/postgis/wiki/UsersWikiPostGIS23UbuntuPGSQL96Apt) Then skip to "Boot up postgres user promt"
-
 We haven't noted down instructions for Windows, but try downloading Postgres [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads#windows) and installing it [here](http://www.postgresqltutorial.com/install-postgresql/). The following instructions are designed for Linux and potentially OS X.
 
-First, get the postgresql packages through apt.
+[For installing Postgres with PostGIS.](http://trac.osgeo.org/postgis/wiki/UsersWikiPostGIS23UbuntuPGSQL96Apt)
 
-`sudo apt install postgresql postgresql-contrib`
+Add Respository to sources.list
 
-Boot up postgres user prompt
+For xenial (16.04.2 LTS)
 
-`sudo su - postgres`
+`sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt xenial-pgdg main" >> /etc/apt/sources.list'`
 
-You should now be in a shell session as the `postgres` user. Begin a Postgres session:
+Replace xenial with your version
 
-`psql`
+Add Keys
+
+`wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -`
+
+`sudo apt-get update`
+
+Install
+
+`sudo apt-get install postgresql-9.6`
+
+`sudo apt-get install postgresql-9.6-postgis-2.3 postgresql-contrib-9.6 postgresql-9.6-postgis-scripts`
+
+For commandline tools and such
+
+`sudo apt-get install postgis`
+
+#### 
+
+Boot up psql as the postgres user
+
+`sudo -u postgres psql`
 
 Make the database
 

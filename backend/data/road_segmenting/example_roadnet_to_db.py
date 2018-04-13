@@ -1,5 +1,3 @@
-import re
-
 import requests
 from road_segmenter import road_segmenter
 

@@ -1,6 +1,5 @@
 from backend.settings.constants import INPUT_LIST_LIMIT
 from django.contrib.auth.models import User
-from django.contrib.gis.geos import GEOSGeometry
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response

@@ -12,19 +12,19 @@ def point_to_linestring_distance(point):
     """
     with connection.cursor() as cursor:
         stmt = '''
-        WITH segment (id, distance) 
+        WITH segment (id, distance)
         AS
         -- Find distance to segment and id
         (
-          SELECT S.id AS id, 
-          ST_Distance(S.the_geom::geography, 
-          ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography) AS distance 
+          SELECT S.id AS id,
+          ST_Distance(S.the_geom::geography,
+          ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography) AS distance
           FROM api_roadsegment S
-        ) 
-        SELECT id, distance 
-        FROM segment 
-        WHERE distance <= %s 
-        ORDER BY distance ASC 
+        )
+        SELECT id, distance
+        FROM segment
+        WHERE distance <= %s
+        ORDER BY distance ASC
         LIMIT 1
         '''
         cursor.execute(stmt, [point[0], point[1], MAX_MAPPING_DISTANCE])
