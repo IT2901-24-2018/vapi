@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 
-from api.models import DummyModel, ProductionData
+from api.models import RoadSegment, ProductionData
 from api.serializers import ProductionDataSerializer
 
 
@@ -18,8 +18,34 @@ class InsertOneProductionDataTest(APITestCase):
                                   '266826 7037325,266835 7037327,266876 7037333,266916 7037334,266955 7037332,'
                                   '267032 7037323,267127 7037314,267174 7037300,267181 7037296,267185 7037296,'
                                   '267191 7037300)', 32633)
-        DummyModel.objects.create(the_geom=linestring)
-        d = DummyModel.objects.get()
+        RoadSegment.objects.create(
+            the_geom=linestring,
+            from_meter=1,
+            county=1,
+            hp=1,
+            href=1,
+            category=1,
+            municipality=1,
+            connlink=1,
+            shortform=1,
+            medium=1,
+            startdate=1,
+            number=1,
+            region=1,
+            endnode=1,
+            endposition=1,
+            startnode=1,
+            startposition=1,
+            status=1,
+            stretchdistance=1,
+            themecode=1,
+            to_meter=1,
+            typeofroad=1,
+            roadsection=1,
+            roadsectionid=1,
+            vrefshortform=1
+        )
+        d = RoadSegment.objects.get()
 
         ProductionData.objects.create(
             time=timezone.now(), startlat=60.7758584, startlong=20.756444, endlat=60.45454, endlong=20.57575,
@@ -60,9 +86,34 @@ class GetAllProductionDataTest(APITestCase):
                                   '266826 7037325,266835 7037327,266876 7037333,266916 7037334,266955 7037332,'
                                   '267032 7037323,267127 7037314,267174 7037300,267181 7037296,267185 7037296,'
                                   '267191 7037300)', 32633)
-        DummyModel.objects.create(the_geom=linestring)
-        d = DummyModel.objects.get()
-
+        RoadSegment.objects.create(
+            the_geom=linestring,
+            from_meter=1,
+            county=1,
+            hp=1,
+            href=1,
+            category=1,
+            municipality=1,
+            connlink=1,
+            shortform=1,
+            medium=1,
+            startdate=1,
+            number=1,
+            region=1,
+            endnode=1,
+            endposition=1,
+            startnode=1,
+            startposition=1,
+            status=1,
+            stretchdistance=1,
+            themecode=1,
+            to_meter=1,
+            typeofroad=1,
+            roadsection=1,
+            roadsectionid=1,
+            vrefshortform=1
+        )
+        d = RoadSegment.objects.get()
 
         # Create data in db
         ProductionData.objects.create(
@@ -134,8 +185,33 @@ class PostProductionDataTest(APITestCase):
                                   '266826 7037325,266835 7037327,266876 7037333,266916 7037334,266955 7037332,'
                                   '267032 7037323,267127 7037314,267174 7037300,267181 7037296,267185 7037296,'
                                   '267191 7037300)', 32633)
-        DummyModel.objects.create(the_geom=linestring)
-
+        RoadSegment.objects.create(
+            the_geom=linestring,
+            from_meter=1,
+            county=1,
+            hp=1,
+            href=1,
+            category=1,
+            municipality=1,
+            connlink=1,
+            shortform=1,
+            medium=1,
+            startdate=1,
+            number=1,
+            region=1,
+            endnode=1,
+            endposition=1,
+            startnode=1,
+            startposition=1,
+            status=1,
+            stretchdistance=1,
+            themecode=1,
+            to_meter=1,
+            typeofroad=1,
+            roadsection=1,
+            roadsectionid=1,
+            vrefshortform=1
+        )
 
         # Make the test data
         self.data = [{
@@ -144,9 +220,6 @@ class PostProductionDataTest(APITestCase):
         }, {
             "time": "2018-02-02T00:01:00", "startlat": 63.387691997704202, "startlong": 10.3290819995141,
             "endlat": 60.646566, "endlong": 20.45645, "plow_active": True
-        }, {
-            "time": "2018-02-02T00:02:00", "startlat": 63.387642998353499, "startlong": 10.3282330021124,
-            "endlat": 60.3453453, "endlong": 20.4354, "wet_spreader_active": True
         }]
 
     def test_post_prod_data_list_authenticated(self):
@@ -175,7 +248,6 @@ class PostProductionDataTest(APITestCase):
         # Post the data
         url = reverse('productiondata-list')
         response = self.client.post(url, self.data, format='json')
-
 
         # Check the status code, then check that the number of objects in the database matches the number
         # of objects that are within range in the POST request
