@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('dry_spreader_active', models.NullBooleanField()),
                 ('plow_active', models.NullBooleanField()),
                 ('wet_spreader_active', models.NullBooleanField()),
-                ('time', models.DateTimeField(default=datetime.datetime(2018, 3, 9, 11, 54, 19, 786156))),
+                ('time', models.DateTimeField(default=django.utils.timezone.now)),
                 ('material_type_code', models.IntegerField(null=True)),
                 ('brush_active', models.NullBooleanField()),
             ],

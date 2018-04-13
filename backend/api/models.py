@@ -43,10 +43,6 @@ class RoadSegment(BaseModel):
     vrefshortform = models.CharField(max_length=255)
 
 
-class DummyModel(BaseModel):
-    the_geom = models.LineStringField()
-
-
 class ProductionData(BaseModel):
     time = models.DateTimeField()
     startlat = models.FloatField()
@@ -58,4 +54,4 @@ class ProductionData(BaseModel):
     wet_spreader_active = models.NullBooleanField()
     brush_active = models.NullBooleanField()
     material_type_code = models.IntegerField(null=True)
-    segment = models.ForeignKey(DummyModel, on_delete=models.CASCADE)
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)

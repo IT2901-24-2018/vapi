@@ -1,9 +1,5 @@
-import utm
 from backend.settings.constants import MAX_MAPPING_DISTANCE
-from django.contrib.gis.geos import GEOSGeometry
 from django.db import connection
-
-from api.models import DummyModel
 
 
 def point_to_linestring_distance(point):
@@ -23,7 +19,7 @@ def point_to_linestring_distance(point):
           SELECT S.id AS id, 
           ST_Distance(S.the_geom::geography, 
           ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography) AS distance 
-          FROM api_dummymodel S
+          FROM api_roadsegment S
         ) 
         SELECT id, distance 
         FROM segment 
@@ -81,21 +77,6 @@ def main():
         print("id: {}".format(mapped_prod_data[0]["segment"]))
     else:
         print("No mapped data")
-
-
-def save_dummy_segment(linestring, srid):
-    """
-    Save segment geo data.
-    :param linestring:
-    :param srid:
-    :return:
-    """
-    if srid is not None:
-        linestring = GEOSGeometry(linestring, srid=srid)
-    else:
-        linestring = GEOSGeometry(linestring)
-    d = DummyModel(the_geom=linestring)
-    d.save()
 
 
 # if __name__ == '__main__':
