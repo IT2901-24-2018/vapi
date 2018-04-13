@@ -89,7 +89,6 @@ class TestSegmenting(unittest.TestCase):
         Every connected segment should start with the end gps point of the previous segment
         :return: Nothing
         """
-        margin = 8
         errors = 0
         error_message = "Issues are with these links: \n"
         for key, values in self.road_net.items():
