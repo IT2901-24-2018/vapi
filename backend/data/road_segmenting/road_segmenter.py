@@ -30,12 +30,6 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     segment_after_split['properties']['strekningslengde'] = (before_til_meter -
                                                              segment_after_split['properties']['fra_meter'])
 
-#    print(meter)
-#    print("original:", road_segment['geometry']['coordinates'])
-#    print("Split at:", index)
-#    print("before:", segment_before_split['geometry']['coordinates'])
-#    print("after:", segment_after_split['geometry']['coordinates'])
-
     if len(segment_before_split['geometry']['coordinates']) >= min_gps:
         segmented_road_network.append(segment_before_split)
     else:
@@ -83,6 +77,13 @@ def road_segmenter(kommune, vegref, max_distance, min_gps):
 
 
 def segment_network(road_network, len_road_network, max_distance, min_gps):
+    """
+    :param road_network: A dict containing the road network. Specified in the wiki
+    :param len_road_network: The total number of road segments in the road network
+    :param max_distance: Max distance for each road segment
+    :param min_gps: Minimum number of gps points for each road segment
+    :return: The segmented road network
+    """
     segmented_road_network = []
     for key, values in road_network.items():
         if key != 'crs':
