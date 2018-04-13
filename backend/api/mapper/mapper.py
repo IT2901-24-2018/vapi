@@ -51,7 +51,6 @@ def map_to_segment(production_data):
 
         point = (prod_data["startlong"], prod_data["startlat"])
         segment = point_to_linestring_distance(point)
-        print(segment)
 
         # Only do if segment is not None
         if segment:
