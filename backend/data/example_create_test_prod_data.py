@@ -13,13 +13,12 @@ except ImportError:
 
 def data_in():
     url = 'http://localhost:8000/api/prod-data/'
-    data = filter.production_data_filter('../../../Driftsdata_SubSet_Small.geojson')
+    prod_data_path = '../Driftsdata_SubSet_Small.geojson'
+    data = filter.production_data_filter(prod_data_path)
 
     # Choose a sequence from data
     # roads = data[121:]
     roads = data[1:2]
-
-    print(roads)
 
     r = requests.post(url, json=roads, auth=(API_username, API_password))
     print("Status: {}\n{}".format(r.status_code, r.text))
