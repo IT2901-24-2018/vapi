@@ -49,7 +49,8 @@ class TestSegmenting(unittest.TestCase):
         :return: Nothing
         """
         count = 0
-        error_message = "These segments have less than " + str(self.min_segment_length) + " GPS points \n"
+        error_message = "These " + str(count) + " segments have less than " \
+                        + str(self.min_segment_length) + " GPS points \n"
         for road in self.split_segments:
             if len(road['geometry']['coordinates']) < self.min_segment_length:
                 count += 1
@@ -65,7 +66,7 @@ class TestSegmenting(unittest.TestCase):
         """
         margin = 8
         errors = 0
-        error_message = "Issues are with these segments: \n"
+        error_message = "Issues are with these " + str(errors) + " segments: \n"
         for key, values in self.road_net.items():
             if key != 'crs':
                 for i in range(0, self.count):
@@ -90,17 +91,17 @@ class TestSegmenting(unittest.TestCase):
         :return: Nothing
         """
         errors = 0
-        error_message = "Issues are with these links: \n"
+        error_message = "Issues are with these " + str(errors) + " links: \n"
         for key, values in self.road_net.items():
             if key != 'crs':
                 for i in range(0, self.count):
                     road = self.road_net['features'][i]
                     road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
 
-                    for i in range(1, len(road_segmented)):
-                        prev = road_segmented[i-1]['geometry']['coordinates']
+                    for segment in range(1, len(road_segmented)):
+                        prev = road_segmented[segment-1]['geometry']['coordinates']
                         end_prev = prev[len(prev)-1]
-                        start_curr = road_segmented[i]['geometry']['coordinates'][0]
+                        start_curr = road_segmented[segment]['geometry']['coordinates'][0]
 
                         if end_prev != start_curr:
                             errors += 1
@@ -123,7 +124,7 @@ class TestSegmenting(unittest.TestCase):
             if (road['properties']['strekningslengde'] - self.max_segment_length) > margin:
                 errors += 1
         error_message = (str(errors) + ' roads exceeded the road length limit')
-        self.assertLess(errors, 20, error_message)
+        self.assertLess(errors, 50, error_message)
 
 
 if __name__ == '__main__':
