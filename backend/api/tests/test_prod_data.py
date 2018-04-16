@@ -1,3 +1,4 @@
+from backend.settings.constants import MAX_MAPPING_DISTANCE
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import GEOSGeometry
 from django.utils import timezone
@@ -217,6 +218,17 @@ class MapperTest(APITestCase):
             startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
             roadsectionid=1, vrefshortform=1
         )
+
+    def test_distance_from_point_to_linestring(self):
+        production_data = [{"startlat": 63.387691997704202, "startlong": 10.3290819995141},
+                           {"startlat": 63.387441999029399, "startlong": 10.3290930003037}]
+        result = []
+        for data in production_data:
+            result.append(mapper.point_to_linestring_distance((data["startlong"], data["startlat"]),
+                                                              MAX_MAPPING_DISTANCE))
+
+        self.assertAlmostEqual(result[0]["distance"], 19.7805, 3)
+        self.assertAlmostEqual(result[1]["distance"], 9.9352, 3)
 
     def test_map_to_segment(self):
         # Make test production data
