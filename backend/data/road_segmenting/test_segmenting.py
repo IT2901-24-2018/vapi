@@ -16,7 +16,7 @@ class TestSegmenting(unittest.TestCase):
         network = vegnet_to_geojson(cls.kommune, cls.vegref)
         cls.count, cls.road_net = network[0], network[1]
         cls.split_segments = segment_network(cls.road_net, cls.count,
-                                              cls.max_segment_length, cls.min_segment_length)
+                                             cls.max_segment_length, cls.min_segment_length)
 
     def setUp(self):
         pass
@@ -125,6 +125,13 @@ class TestSegmenting(unittest.TestCase):
                 errors += 1
 
         self.assertLess(errors, 50, (errors, "roads exceeded the road length limit"))
+
+    def test_split_segment_negative_length(self):
+        """
+        No road segments should have a negative road length
+        :return:
+        """
+        pass
 
 
 if __name__ == '__main__':
