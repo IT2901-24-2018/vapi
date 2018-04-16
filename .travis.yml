@@ -6,10 +6,10 @@ install:
   - cd frontend
   - npm install
 script:
-  - npm run lint-js
-  - npm run lint-css
+  - npm run lint
   - cd ../
   - flake8 backend/api backend/data
   - isort -c
+  - python manage.py test
 notifications:
   email: false
