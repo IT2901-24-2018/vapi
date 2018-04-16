@@ -1,6 +1,6 @@
 import copy
 
-from calculate_distance import calculate_road_length
+from calculate_distance import calculate_road_length, calculate_road_length_simple
 from road_fetcher import vegnet_to_geojson
 
 
@@ -16,19 +16,18 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     coordinates = road_segment['geometry']['coordinates']
     index, meter = (calculate_road_length(coordinates, max_distance, False))
     before_fra_meter = road_segment['properties']['fra_meter']
-    before_til_meter = road_segment['properties']['til_meter']
 
     segment_before_split = copy.deepcopy(road_segment)
     segment_before_split['geometry']['coordinates'] = segment_before_split['geometry']['coordinates'][:index]
     segment_before_split['properties']['til_meter'] = (before_fra_meter + int(meter))
-    segment_before_split['properties']['strekningslengde'] = (segment_before_split['properties']['til_meter'] -
-                                                              before_fra_meter)
+    segment_before_split['properties']['strekningslengde'] = calculate_road_length_simple(
+        segment_before_split['geometry']['coordinates'])
 
     segment_after_split = copy.deepcopy(road_segment)
     segment_after_split['geometry']['coordinates'] = segment_after_split['geometry']['coordinates'][index-1:]
     segment_after_split['properties']['fra_meter'] = segment_before_split['properties']['til_meter']
-    segment_after_split['properties']['strekningslengde'] = (before_til_meter -
-                                                             segment_after_split['properties']['fra_meter'])
+    segment_after_split['properties']['strekningslengde'] = calculate_road_length_simple(
+        segment_after_split['geometry']['coordinates'])
 
     if len(segment_before_split['geometry']['coordinates']) >= min_gps:
         segmented_road_network.append(segment_before_split)

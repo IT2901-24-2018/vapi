@@ -67,4 +67,12 @@ def calculate_road_length(point_list, max_length_meter, haversine):
             length += distance_formula(point_list[prev], point_list[i])
         if length >= max_length_meter:
             return i, math.ceil(length)
-    return len(point_list)-1, math.ceil(length)
+    return len(point_list)-1, round(length)
+
+
+def calculate_road_length_simple(point_list):
+    length = 0
+    for i in range(1, len(point_list)):
+        prev = i - 1
+        length += distance_formula(point_list[prev], point_list[i])
+    return round(length)
