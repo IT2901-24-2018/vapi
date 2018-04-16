@@ -51,10 +51,6 @@ Install
 
 `sudo apt-get install postgresql-9.6-postgis-2.3 postgresql-contrib-9.6 postgresql-9.6-postgis-scripts`
 
-For commandline tools and such
-
-`sudo apt-get install postgis`
-
 #### 
 
 Boot up psql as the postgres user
@@ -83,6 +79,10 @@ ALTER ROLE username SET timezone TO 'UTC';
 Now we need to grant the database user access rights to the database we created.
 
 `GRANT ALL PRIVILEGES ON DATABASE orm TO username;`
+
+Make your user superuser to be able to create postgis extension with migration.
+
+`ALTER ROLE username SUPERUSER;`
 
 
 Exit the SQL prompt to get back to the postgres user session.

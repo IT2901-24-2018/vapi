@@ -37,13 +37,6 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
         if isinstance(request.data, list):
             many = True
 
-        # print('\n\n\n{}\n\n\n'.format(request.data[0]["the_geom"]))
-
-        # r = GEOSGeometry(request.data[0]["the_geom"])
-
-        # for data in request.data:
-        #     data["the_geom"] = GEOSGeometry(data["the_geom"])
-
         # Instantiate the serializer
         serializer = self.get_serializer(data=request.data, many=many)
 
@@ -71,8 +64,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         """
         Create new prod-data from list mapped to road segment
         """
-        # TODO: Handle incoming segment field in a more slick way
-
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
@@ -91,7 +82,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             error = {"detail": "No segments within range"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        # TODO: Handle old prod-data
+        # TODO: Handle old prod-data story24
         # latest_time = mapped_data[len(mapped_data)]["time"]
         # mapper.delete_old_production_data(latest_time)
 

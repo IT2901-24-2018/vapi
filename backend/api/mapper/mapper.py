@@ -5,9 +5,12 @@ from django.db import connection
 def point_to_linestring_distance(point):
     """
     Returns closest segment and distance.
+    Uses built in postgis functions to find the distance in meters between
+    a point (input) and all the segments in the database. Then it returns
+    the closest one or None if no segments in database.
     :param point: lon lat
     :type point: tuple
-    :return:
+    :return: Segment id and distance to it
     :rtype: dict
     """
     with connection.cursor() as cursor:
@@ -16,10 +19,13 @@ def point_to_linestring_distance(point):
         AS
         -- Find distance to segment and id
         (
-          SELECT S.id AS id,
-          ST_Distance(S.the_geom::geography,
-          ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography) AS distance
-          FROM api_roadsegment S
+          SELECT segment.id AS id,
+          ST_Distance(
+            segment.the_geom::geography,
+            -- Make a point with srid 4326 since the point is lon lat
+            ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography
+          ) AS distance
+          FROM api_roadsegment segment
         )
         SELECT id, distance
         FROM segment
@@ -38,10 +44,11 @@ def point_to_linestring_distance(point):
 
 def map_to_segment(production_data):
     """
-    Maps production data to road segments
-    :param production_data:
+    Maps production data to road segments.
+    Returns the prod-data dicts that mapped to a segment with the db id of the segment
+    :param production_data: List of dicts that include a startlon and startlat
     :type production_data: list
-    :return:
+    :return: Mapped prod-data
     :rtype: list
     """
 
@@ -53,30 +60,8 @@ def map_to_segment(production_data):
         segment = point_to_linestring_distance(point)
 
         # Only do if segment is not None
-        if segment:
+        if segment is not None:
             prod_data["segment"] = segment["id"]
             mapped_data.append(prod_data)
 
     return mapped_data
-
-
-def delete_old_production_data(time):
-    """
-    Delete prod-data that is older than input
-    :param time:
-    """
-    pass
-
-
-def main():
-    prod_data = [{'startlat': 63.387691997704202, 'startlong': 10.3290819995141, 'time': '2016-11-04T08:45:15'}]
-
-    mapped_prod_data = map_to_segment(prod_data)
-    if len(mapped_prod_data) > 0:
-        print("id: {}".format(mapped_prod_data[0]["segment"]))
-    else:
-        print("No mapped data")
-
-
-# if __name__ == '__main__':
-#     pass
