@@ -8,15 +8,15 @@ from road_segmenter import segment_network, split_segment
 class TestSegmenting(unittest.TestCase):
 
     @classmethod
-    def setUpClass(self):
-        self.kommune = 5001
-        self.vegref = 'kg'
-        self.max_segment_length = 100
-        self.min_segment_length = 2
-        network = vegnet_to_geojson(self.kommune, self.vegref)
-        self.count, self.road_net = network[0], network[1]
-        self.split_segments = segment_network(self.road_net, self.count,
-                                              self.max_segment_length, self.min_segment_length)
+    def setUpClass(cls):
+        cls.kommune = 5001
+        cls.vegref = 'kg'
+        cls.max_segment_length = 100
+        cls.min_segment_length = 2
+        network = vegnet_to_geojson(cls.kommune, cls.vegref)
+        cls.count, cls.road_net = network[0], network[1]
+        cls.split_segments = segment_network(cls.road_net, cls.count,
+                                              cls.max_segment_length, cls.min_segment_length)
 
     def setUp(self):
         pass
@@ -30,7 +30,7 @@ class TestSegmenting(unittest.TestCase):
 
     def test_road_segmenter_list_elements(self):
         """
-        every element in the split segments should be a dict
+        Every element in the split segments should be a dict
         :return: Nothing
         """
         count = 0
@@ -49,14 +49,14 @@ class TestSegmenting(unittest.TestCase):
         :return: Nothing
         """
         count = 0
-        error_message = "These " + str(count) + " segments have less than " \
+        error_message = "These segments have less than " \
                         + str(self.min_segment_length) + " GPS points \n"
         for road in self.split_segments:
             if len(road['geometry']['coordinates']) < self.min_segment_length:
                 count += 1
                 error_message += "Veglenkeid: " + str(road['properties']['veglenkeid']) + ", coordinates: " + \
                                  str(road['geometry']['coordinates']) + "\n"
-        self.assertLess(count, 1, error_message)
+        self.assertLess(count, 1, (count, "errors:", error_message))
 
     def test_calculate_road_length(self):
         """
@@ -66,7 +66,7 @@ class TestSegmenting(unittest.TestCase):
         """
         margin = 8
         errors = 0
-        error_message = "Issues are with these " + str(errors) + " segments: \n"
+        error_message = "Issues are with these segments: \n"
         for key, values in self.road_net.items():
             if key != 'crs':
                 for i in range(0, self.count):
@@ -83,7 +83,7 @@ class TestSegmenting(unittest.TestCase):
                         error_message += "Veglenkeid: " + str(road['properties']['veglenkeid']) + \
                                          ", actual length: " + str(length_actual) + ", original: " + \
                                          str(length_original) + ", new:" + str(length_new) + "\n"
-        self.assertLess(errors, 1, error_message)
+        self.assertLess(errors, 1, (errors, "errors:", error_message))
 
     def test_split_segment_chaining(self):
         """
@@ -107,7 +107,7 @@ class TestSegmenting(unittest.TestCase):
                             errors += 1
                             error_message += "Veglenkeid: " + str(road['properties']['veglenkeid']) + \
                                 ", does not start at " + str(end_prev) + ", instead: " + str(start_curr) + "\n"
-        self.assertLess(errors, 1, error_message)
+        self.assertLess(errors, 1, (errors, "errors:", error_message))
 
     def test_split_segment_road_length(self):
         # This test is a little useless to be honest, we don't necessarily care
@@ -123,8 +123,8 @@ class TestSegmenting(unittest.TestCase):
         for road in self.split_segments:
             if (road['properties']['strekningslengde'] - self.max_segment_length) > margin:
                 errors += 1
-        error_message = (str(errors) + ' roads exceeded the road length limit')
-        self.assertLess(errors, 50, error_message)
+
+        self.assertLess(errors, 50, (errors, "roads exceeded the road length limit"))
 
 
 if __name__ == '__main__':
