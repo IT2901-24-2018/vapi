@@ -4,7 +4,8 @@ python:
 services:
   - postgresql
 before_script:
-  - psql -c 'CREATE DATABASE travis_ci_test;' -U postgres
+  - psql -U postgres -c 'CREATE EXTENSION postgis;'
+  - psql -U postgres -c 'CREATE DATABASE travis_ci_test;'
 test:
   adapter: postgresql
   database: travis_ci_test
