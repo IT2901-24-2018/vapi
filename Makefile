@@ -1,10 +1,13 @@
-.PHONY: default, build, start, test, lint-only, lint-backend, lint-frontend, test-backend
+.PHONY: default build start stop restart migrate makemigrations shell status \
+        down test lint-only test-only lint-backend lint-frontend test-backend
 
+# Variables
 BACKEND_SERVICE_NAME = django
 BACKEND_LINT_FOLDERS = backend/api backend/data
 
 FRONTEND_SERVICE_NAME = webpack
 
+# General usage
 default: build start
 
 build:
@@ -13,6 +16,27 @@ build:
 start:
 	docker-compose up
 
+stop:
+	docker-compose stop
+
+restart: stop start
+
+migrate:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py migrate
+
+makemigrations:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py makemigrations
+
+shell:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell
+
+status:
+	docker-compose ps
+
+down:
+	docker-compose down
+
+# Testing
 test: lint-only test-only
 
 lint-only: lint-backend lint-frontend
