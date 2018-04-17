@@ -1,8 +1,8 @@
 import unittest
 
-from calculate_distance import calculate_road_length
-from road_fetcher import vegnet_to_geojson
-from road_segmenter import road_segmenter
+from data.road_segmenting.calculate_distance import calculate_road_length
+from data.road_segmenting.road_fetcher import vegnet_to_geojson
+from data.road_segmenting.road_segmenter import road_segmenter
 
 
 class TestSegmenting(unittest.TestCase):
