@@ -1,7 +1,12 @@
-.PHONY: default, test, lint-only, lint-backend, lint-frontend, test-backend
+.PHONY: default, build, start, test, lint-only, lint-backend, lint-frontend, test-backend
 
-default:
-	echo "This is where I would build, by default."
+default: build start
+
+build:
+	docker-compose build
+
+start:
+	docker-compose up
 
 test: lint-only test-backend
 
