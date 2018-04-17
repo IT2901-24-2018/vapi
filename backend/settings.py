@@ -46,6 +46,15 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+# Database definition for Travis
+
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'travis_ci_test',
+        }
+    }
 
 
 # Application definition
