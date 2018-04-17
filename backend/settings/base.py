@@ -35,6 +35,17 @@ Debug = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
+# Database definition for Travis
+
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'travis_ci_test',
+        }
+    }
+
+
 # Application definition
 
 INSTALLED_APPS = [
