@@ -1,7 +1,7 @@
 import copy
 
-from calculate_distance import calculate_road_length
-from road_fetcher import vegnet_to_geojson
+from data.road_segmenting.calculate_distance import calculate_road_length
+from data.road_segmenting.road_fetcher import vegnet_to_geojson
 
 
 def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
