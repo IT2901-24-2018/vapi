@@ -17,9 +17,8 @@ import sys
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-SETTINGS_DIR = os.path.dirname(globals()['__file__'])
-BACKEND_DIR = os.path.join(SETTINGS_DIR, '..')
-ROOT_DIR = os.path.join(SETTINGS_DIR, '..', '..')
+BACKEND_DIR = os.path.dirname(globals()['__file__'])
+ROOT_DIR = os.path.join(BACKEND_DIR, '..')
 
 sys.path.insert(0, os.path.join(ROOT_DIR, 'backend'))
 
