@@ -19,7 +19,7 @@ class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
         model = RoadSegment
         fields = ('url', 'id', 'county', 'href',
                   'category', 'municipality', 'startdate', 'region', 'status',
-                  'stretchdistance', 'typeofroad', 'roadsectionid', 'vrefshortform','the_geom')
+                  'stretchdistance', 'typeofroad', 'roadsectionid', 'vrefshortform', 'the_geom')
 
 
 class ProductionDataSerializer(serializers.ModelSerializer):
