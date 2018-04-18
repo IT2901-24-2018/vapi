@@ -1,7 +1,8 @@
 import copy
 
-from calculate_distance import calculate_road_length
-from road_fetcher import vegnet_to_geojson
+from data.road_segmenting.calculate_distance import (calculate_road_length,
+                                                     calculate_road_length_simple)
+from data.road_segmenting.road_fetcher import vegnet_to_geojson
 
 
 def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
@@ -15,29 +16,31 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     """
     coordinates = road_segment['geometry']['coordinates']
     index, meter = (calculate_road_length(coordinates, max_distance, False))
-    before_fra_meter = road_segment['properties']['fra_meter']
-    before_til_meter = road_segment['properties']['til_meter']
 
     segment_before_split = copy.deepcopy(road_segment)
     segment_before_split['geometry']['coordinates'] = segment_before_split['geometry']['coordinates'][:index]
-    segment_before_split['properties']['til_meter'] = (before_fra_meter + int(meter))
-    segment_before_split['properties']['strekningslengde'] = (segment_before_split['properties']['til_meter'] -
-                                                              before_fra_meter)
+    segment_before_split['properties']['strekningslengde'] = calculate_road_length_simple(
+        segment_before_split['geometry']['coordinates'])
 
     segment_after_split = copy.deepcopy(road_segment)
-    segment_after_split['geometry']['coordinates'] = segment_after_split['geometry']['coordinates'][index:]
-    segment_after_split['properties']['fra_meter'] = segment_before_split['properties']['til_meter']
-    segment_after_split['properties']['strekningslengde'] = (before_til_meter -
-                                                             segment_after_split['properties']['fra_meter'])
+    segment_after_split['geometry']['coordinates'] = segment_after_split['geometry']['coordinates'][index-1:]
+    segment_after_split['properties']['strekningslengde'] = calculate_road_length_simple(
+        segment_after_split['geometry']['coordinates'])
 
-    segmented_road_network.append(segment_before_split)
+    if len(segment_before_split['geometry']['coordinates']) >= min_gps:
+        segmented_road_network.append(segment_before_split)
+    else:
+        segmented_road_network.append(road_segment)
+        return segmented_road_network
 
     if check_split(segment_after_split, meter):
         if len(segment_after_split['geometry']['coordinates']) <= min_gps:
-            return segmented_road_network.append(road_segment)
+            segmented_road_network.append(road_segment)
+            return segmented_road_network
         segmented_road_network = split_segment(segment_after_split, meter, segmented_road_network, min_gps)
     else:
-        segmented_road_network.append(segment_after_split)
+        if len(segment_after_split['geometry']['coordinates']) >= min_gps:
+            segmented_road_network.append(segment_after_split)
     return segmented_road_network
 
 
@@ -48,15 +51,14 @@ def check_split(road_segment, max_distance):
     :param max_distance: Max length of a road segment
     :return: True or False, True meaning the road segment should be split
     """
-    from_meter = road_segment['properties']['fra_meter']
-    to_meter = road_segment['properties']['til_meter']
-    if (to_meter - from_meter) > max_distance:
+
+    if (calculate_road_length_simple(road_segment['geometry']['coordinates'])) > max_distance:
         return True
     else:
         return False
 
 
-def road_segmentor(kommune, vegref, max_distance, min_gps):
+def road_segmenter(kommune, vegref, max_distance, min_gps):
     """
     Segments a list of road segments into a new list of shorter segments based on the max_distance
     :param kommune: Int, commune number
@@ -65,18 +67,30 @@ def road_segmentor(kommune, vegref, max_distance, min_gps):
     :param min_gps: Minimum amount of gps points a road segment can have
     :return: New list of road segments split into shorter lengths
     """
-    segmented_road_network = []
     results = vegnet_to_geojson(kommune, vegref)
     count, road_net = results[0], results[1]
-    for key, values in road_net.items():
+    return segment_network(road_net, count, max_distance, min_gps)
+
+
+def segment_network(road_network, len_road_network, max_distance, min_gps):
+    """
+    :param road_network: A dict containing the road network. Specified in the wiki
+    :param len_road_network: The total number of road segments in the road network
+    :param max_distance: Max distance for each road segment
+    :param min_gps: Minimum number of gps points for each road segment
+    :return: The segmented road network
+    """
+    segmented_road_network = []
+    for key, values in road_network.items():
         if key != 'crs':
-            for road_segment in range(0, count):
-                if check_split(road_net['features'][road_segment], max_distance):
-                    split_roads = split_segment(road_net['features'][road_segment],
-                                                max_distance, [], min_gps)
-                    if split_roads is not None:
-                        for new_road in split_roads:
-                            segmented_road_network.append(new_road)
-                else:
-                    segmented_road_network.append(road_net['features'][road_segment])
+            for road_segment in range(0, len_road_network):
+                if len(road_network['features'][road_segment]['geometry']['coordinates']) > min_gps:
+                    if check_split(road_network['features'][road_segment], max_distance):
+                        split_roads = split_segment(road_network['features'][road_segment],
+                                                    max_distance, [], min_gps)
+                        if split_roads is not None:
+                            for new_road in split_roads:
+                                segmented_road_network.append(new_road)
+                    else:
+                        segmented_road_network.append(road_network['features'][road_segment])
     return segmented_road_network
