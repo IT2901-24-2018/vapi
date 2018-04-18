@@ -131,7 +131,12 @@ class TestSegmenting(unittest.TestCase):
         No road segments should have a negative road length
         :return:
         """
-        pass
+        errors = 0
+        for road in self.split_segments:
+            if road['properties']['strekningslengde'] < 0:
+                errors += 1
+
+        self.assertLess(errors, 1, ("This many segments are under 0 meters:", errors))
 
 
 if __name__ == '__main__':

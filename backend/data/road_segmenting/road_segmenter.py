@@ -50,9 +50,8 @@ def check_split(road_segment, max_distance):
     :param max_distance: Max length of a road segment
     :return: True or False, True meaning the road segment should be split
     """
-    from_meter = road_segment['properties']['fra_meter']
-    to_meter = road_segment['properties']['til_meter']
-    if (to_meter - from_meter) > max_distance:
+
+    if (calculate_road_length_simple(road_segment['geometry']['coordinates'])) > max_distance:
         return True
     else:
         return False
