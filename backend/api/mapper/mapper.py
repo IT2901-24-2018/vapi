@@ -1,4 +1,4 @@
-from backend.settings.constants import MAX_MAPPING_DISTANCE
+from backend.constants import MAX_MAPPING_DISTANCE
 from django.db import connection
 
 
