@@ -4,6 +4,7 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
+from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer
@@ -61,20 +62,32 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Add support for creating when the input data is a list
+        Create new prod-data from list mapped to road segment
         """
-        many = False
-
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
-            many = True
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            error = {"detail": "Format error: Input should be a list"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+        # Map prod data to road a road segment
+        mapped_data = mapper.map_to_segment(request.data)
+
+        # Check that there are successfully mapped prod-data
+        if len(mapped_data) == 0:
+            error = {"detail": "No segments within range"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+
+        # TODO: Handle old prod-data story24
+        # latest_time = mapped_data[len(mapped_data)]["time"]
+        # mapper.delete_old_production_data(latest_time)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=request.data, many=many)
+        serializer = self.get_serializer(data=mapped_data, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
