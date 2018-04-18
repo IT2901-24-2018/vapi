@@ -22,10 +22,8 @@ class InsertOneProductionDataTest(APITestCase):
             '267185 7037296,267191 7037300)', 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
-            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
-            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
-            roadsectionid=1, vrefshortform=1
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
         d = RoadSegment.objects.get()
 
@@ -69,10 +67,8 @@ class GetAllProductionDataTest(APITestCase):
             '267185 7037296,267191 7037300)', 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
-            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
-            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
-            roadsectionid=1, vrefshortform=1
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
         d = RoadSegment.objects.get()
 
@@ -145,10 +141,8 @@ class PostProductionDataTest(APITestCase):
             '267185 7037296,267191 7037300)', 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
-            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
-            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
-            roadsectionid=1, vrefshortform=1
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
 
         # Make the test data
@@ -213,10 +207,8 @@ class MapperTest(APITestCase):
             '267185 7037296,267191 7037300)', 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, from_meter=1, county=1, hp=1, href=1, category=1, municipality=1, connlink=1,
-            shortform=1, medium=1, startdate=1, number=1, region=1, endnode=1, endposition=1, startnode=1,
-            startposition=1, status=1, stretchdistance=1, themecode=1, to_meter=1, typeofroad=1, roadsection=1,
-            roadsectionid=1, vrefshortform=1
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
 
     def test_distance_from_point_to_linestring(self):
