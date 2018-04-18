@@ -94,7 +94,7 @@ const App = () => (
   <MuiThemeProvider muiTheme={THEME}>
     <div>
       <AppBar
-        title="Orm"
+        title="Vegnett API"
         showMenuIconButton={false}
       />
       <Paper style={styles.paper} zDepth={1}>

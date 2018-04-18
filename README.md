@@ -19,7 +19,7 @@ It will automatically open your browser at localhost:3000, but you can close tha
 While the frontend server is running in your terminal, open up another terminal to set up the backend.
 
 We recommend setting up a virtualenv to contain the backend dependencies. [Here's](https://gist.github.com/IamAdiSri/a379c36b70044725a85a1216e7ee9a46) a solid guide on installing virtualenvwrapper for Python3. 
-Make yourself a virtualenv for the project with `mkvirtualenv orm` and remember to run `workon orm` to have access to the backend dependencies.
+Make yourself a virtualenv for the project with `mkvirtualenv vapi` and remember to run `workon vapi` to have access to the backend dependencies.
 
 When your virtual environment is set up, get the required dependencies for the backend:
 
@@ -43,7 +43,7 @@ You should now be in a shell session as the `postgres` user. Begin a Postgres se
 
 Make the database
 
-`CREATE DATABASE orm;`
+`CREATE DATABASE vapi;`
 
 Make a database user which will connect to and interact with the database. Remember the username and password,
 
@@ -62,7 +62,7 @@ ALTER ROLE username SET timezone TO 'UTC';
 
 Now we need to grant the database user access rights to the database we created.
 
-`GRANT ALL PRIVILEGES ON DATABASE orm TO username;`
+`GRANT ALL PRIVILEGES ON DATABASE vapi TO username;`
 
 Exit the SQL prompt to get back to the postgres user session.
 
