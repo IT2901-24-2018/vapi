@@ -1,7 +1,7 @@
 import re
 
 import requests
-from road_segmenter import road_segmentor
+from road_segmenter import road_segmenter
 
 municipality = 5001
 type_of_road = 'kg'
@@ -9,8 +9,8 @@ max_distance = 100
 min_segments = 2
 
 # Credentials for connecting and writing to the API
-API_username = ""
-API_password = ""
+API_username = "haavahe"
+API_password = "123qweasd"
 
 
 def filter_road(road):
@@ -26,31 +26,18 @@ def filter_road(road):
 
     filtered_road = {
         'coordinates':     separated_coordinates,
-        'from_meter':      road['properties']['fra_meter'],
         'county':          road['properties']['fylke'],
         'srid':            road['properties']['geometri']['srid'],
-        'hp':              road['properties']['hp'],
         'href':            road['properties']['href'],
         'category':        road['properties']['kategori'],
         'municipality':    road['properties']['kommune'],
-        'connlink':        road['properties']['konnekteringslenke'],
-        'shortform':       road['properties']['kortform'],
-        'medium':          road['properties']['medium'],
         'startdate':       road['properties']['metadata']['startdato'],
-        'number':          road['properties']['nummer'],
         'region':          road['properties']['region'],
-        'endnode':         road['properties']['sluttnode'],
-        'endposition':     road['properties']['sluttposisjon'],
-        'startnode':       road['properties']['startnode'],
-        'startposition':   road['properties']['startposisjon'],
         'status':          road['properties']['status'],
         'stretchdistance': road['properties']['strekningslengde'],
-        'themecode':       road['properties']['temakode'],
-        'to_meter':        road['properties']['til_meter'],
         'typeofroad':      road['properties']['typeVeg'],
-        'roadsection':     road['properties']['vegavdeling'],
         'roadsectionid':   road['properties']['veglenkeid'],
-        'vrefshortform':   road['properties']['vrefkortform']
+        'vrefshortform':   road['properties']['vrefkortform'],
     }
 
     return filtered_road
@@ -60,7 +47,7 @@ def format_to_db(municipality, type_road, max_distance, min_segments):
     """
     :return: Returns a filtered road network
     """
-    road_network = road_segmentor(municipality, type_road, max_distance, min_segments)
+    road_network = road_segmenter(municipality, type_road, max_distance, min_segments)
     filtered_road_network = []
     for road in road_network:
         road_done = filter_road(road)

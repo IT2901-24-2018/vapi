@@ -13,9 +13,9 @@ import copy
 from warnings import warn
 
 import geojson
-import nvdbapi
 import shapely.wkt
-from road_filter import remove_keys
+from data.road_segmenting import nvdbapi
+from data.road_segmenting.road_filter import remove_keys
 
 # How to install shapely on windows:
 # http://deparkes.co.uk/2015/01/29/install-shapely-on-anaconda/
