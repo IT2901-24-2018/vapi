@@ -13,6 +13,9 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     :param min_gps: Minimum amount of GPS points in a segment
     :return: Final compiled list of all segmented_road_network after being passed down recursively
     """
+    # Todo: find a way to check if we need to keep the segment_after_split fra_meter
+    # since it might suddenly go down to less than the previous, meaning a new segment has started
+    # Todo: use calculate_road_distance_simple to calculate from_meter and to_meter
     coordinates = road_segment['geometry']['coordinates']
     index, meter = (calculate_road_length(coordinates, max_distance, False))
     before_fra_meter = road_segment['properties']['fra_meter']
