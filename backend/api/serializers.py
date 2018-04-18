@@ -17,11 +17,9 @@ from api.models import ProductionData, RoadSegment
 class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RoadSegment
-        fields = ('url', 'id', 'from_meter', 'county', 'hp', 'href',
-                  'category', 'municipality', 'connlink', 'shortform', 'medium', 'startdate',
-                  'number', 'region', 'endnode', 'endposition', 'startnode', 'startposition',
-                  'status', 'stretchdistance', 'themecode', 'to_meter', 'typeofroad', 'roadsection',
-                  'roadsectionid', 'vrefshortform', 'the_geom')
+        fields = ('url', 'id', 'county', 'href',
+                  'category', 'municipality', 'startdate', 'region', 'status',
+                  'stretchdistance', 'typeofroad', 'roadsectionid', 'vrefshortform','the_geom')
 
 
 class ProductionDataSerializer(serializers.ModelSerializer):
