@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 
 
 class BaseModel(models.Model):
@@ -15,9 +15,7 @@ class BaseModel(models.Model):
 
 
 class RoadSegment(BaseModel):
-    coordinates = models.TextField()
     county = models.IntegerField()
-    srid = models.IntegerField()
     href = models.CharField(max_length=150)
     category = models.CharField(max_length=4)
     municipality = models.IntegerField()
@@ -28,6 +26,7 @@ class RoadSegment(BaseModel):
     typeofroad = models.CharField(max_length=100)
     roadsectionid = models.IntegerField()
     vrefshortform = models.CharField(max_length=255)
+    the_geom = models.LineStringField()
 
 
 class ProductionData(BaseModel):
@@ -41,3 +40,4 @@ class ProductionData(BaseModel):
     wet_spreader_active = models.NullBooleanField()
     brush_active = models.NullBooleanField()
     material_type_code = models.IntegerField(null=True)
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
