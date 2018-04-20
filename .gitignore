@@ -1,7 +1,7 @@
 /assets/
 static/
 
-backend/settings/local.py
+.env
 
 .DS_Store
 *.pyc
