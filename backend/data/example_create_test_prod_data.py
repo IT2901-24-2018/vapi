@@ -1,14 +1,11 @@
+import os
+
 import data_filter
 import requests
 
 # Credentials for connecting and writing to the API
-try:
-    from backend.settings.local import API_AUTHENTICATION
-    API_username = API_AUTHENTICATION["username"]
-    API_password = API_AUTHENTICATION["password"]
-except ImportError:
-    API_username = ""
-    API_password = ""
+API_username = os.environ["API_USERNAME"]
+API_password = os.environ["API_PASSWORD"]
 
 
 def data_in():
