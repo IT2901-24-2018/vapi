@@ -29,7 +29,7 @@ sys.path.insert(0, os.path.join(ROOT_DIR, 'backend'))
 SECRET_KEY = '_26^m9#xs0hi*bi_ak+o@n_2yyq^8wc8t-p26zc*^&_1a*ui7c'
 
 # Overwrite for production
-Debug = True
+DEBUG = os.environ["DJANGO_DEBUG"]
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
