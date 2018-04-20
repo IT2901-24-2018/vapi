@@ -85,12 +85,19 @@ def find_newest_prod_on_segment(prod_data):
     return relevant_data
 
 
-def delete_old_production_data(prod_data):
+def handle_prod_data_overlap(prod_data):
     """
-    Deletes obsolete production data after inserting new
+    Deletes obsolete production data before inserting new
     :param prod_data: Production data mapped to a segment
     :type prod_data: list
     :return: None
     """
     relevant_data = find_newest_prod_on_segment(prod_data)
 
+    with connection.cursor() as cursor:
+        stmt = """
+        DELETE FROM api_productiondata
+        WHERE segment_id = %s and time < %s
+        """
+        for segment in relevant_data:
+            cursor.execute(stmt, [segment, relevant_data[segment]])
