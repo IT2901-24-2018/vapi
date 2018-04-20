@@ -67,3 +67,30 @@ def map_to_segment(production_data):
             mapped_data.append(prod_data)
 
     return mapped_data
+
+
+def find_newest_prod_on_segment(prod_data):
+    """
+    Finds the segment id and latest time connected to it
+    :param prod_data: Mapped production data
+    :return: dict of segments and the latest time they were handled
+    """
+    relevant_data = {}
+    for data in prod_data:
+        if data['segment'] not in relevant_data:
+            relevant_data[str(data['segment'])] = data['time']
+        elif relevant_data[str(data['segment'])] < data['time']:
+            relevant_data[str(data['segment'])] = data['time']
+
+    return relevant_data
+
+
+def delete_old_production_data(prod_data):
+    """
+    Deletes obsolete production data after inserting new
+    :param prod_data: Production data mapped to a segment
+    :type prod_data: list
+    :return: None
+    """
+    relevant_data = find_newest_prod_on_segment(prod_data)
+

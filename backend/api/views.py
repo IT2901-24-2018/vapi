@@ -83,8 +83,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: Handle old prod-data story24
-        # latest_time = mapped_data[len(mapped_data)]["time"]
-        # mapper.delete_old_production_data(latest_time)
+        # mapper.delete_old_production_data(mapped_data)
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_data, many=True)

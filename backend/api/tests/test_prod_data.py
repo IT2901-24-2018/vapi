@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
+import datetime
 
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
@@ -229,7 +230,40 @@ class MapperTest(APITestCase):
 
         # Check that the out of range one does not map
         mapped_data = mapper.map_to_segment(production_data_out_of_range)
-        self.assertAlmostEquals(len(mapped_data), 0)
+        self.assertEqual(len(mapped_data), 0)
         # Check that the in range one maps
         mapped_data = mapper.map_to_segment(production_data_in_range)
-        self.assertAlmostEquals(len(mapped_data), 1)
+        self.assertEqual(len(mapped_data), 1)
+
+
+class OverlapHandlingTest(APITestCase):
+    """
+    Tests for handling overlapping production data
+    """
+    def setUp(self):
+        linestring = GEOSGeometry(
+            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
+            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
+            '267185 7037296,267191 7037300)', 32633
+        )
+        RoadSegment.objects.create(
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
+        )
+        d = RoadSegment.objects.get()
+
+        ProductionData.objects.create(
+            time=timezone.datetime(2018, 1, 1, 0, 0, 0), startlat=63.387691997704202, startlong=10.3290819995141, endlat=60.45454, endlong=20.57575,
+            plow_active=True, segment=d
+        )
+        self.mapped_data = [
+            {"time": timezone.now(), "startlat": 63.387441999029399, "startlong": 10.3290930003037, "endlat": 1,
+             "endlong": 1, "segment": d.id},
+            {"time": timezone.now(), "startlat": 63.387441999029399, "startlong": 10.3290930003037, "endlat": 1,
+             "endlong": 1, "segment": d.id}
+        ]
+
+    def test_find_segments_and_latest_time(self):
+        # relevant_segments = mapper.find_newest_prod_on_segment(self.mapped_data)
+        # self.assertEqual(len(relevant_segments), 1)
+        pass
