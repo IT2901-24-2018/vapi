@@ -30,6 +30,9 @@ makemigrations:
 shell:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell
 
+createsuperuser:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py createsuperuser
+
 status:
 	docker-compose ps
 
