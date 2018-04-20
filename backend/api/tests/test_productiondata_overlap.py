@@ -124,25 +124,44 @@ class OverlapHandlingTest(APITestCase):
              "segment": segments[1].id},
             {"time": timezone.datetime(2018, 2, 1, 0, 0, 30), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
              "segment": segments[1].id},
-            {"time": timezone.datetime(2018, 2, 1, 0, 0, 0), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
+            {"time": timezone.datetime(2018, 2, 1, 1, 0, 0), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
              "segment": segments[2].id},
-            {"time": timezone.datetime(2018, 2, 1, 0, 0, 30), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
+            {"time": timezone.datetime(2018, 2, 1, 1, 0, 30), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
              "segment": segments[3].id},
-            {"time": timezone.datetime(2018, 2, 1, 0, 1, 0), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
+            {"time": timezone.datetime(2018, 2, 1, 1, 1, 0), "startlat": 1, "startlong": 1, "endlat": 1, "endlong": 1,
              "segment": segments[4].id}
         ]
 
     def test_find_segments_and_latest_time(self):
-        relevant_segments = mapper.find_newest_prod_on_segment(self.mapped_data)
+        """
+        Test for finding earliest and latest times for a segment in mapped production data
+        """
+        relevant_segments = mapper.find_time_period_per_segment(self.mapped_data)
         self.assertEqual(len(relevant_segments), 4)
-        correct_result = {str(self.mapped_data[1]["segment"]): self.mapped_data[1]["time"],
-                          str(self.mapped_data[2]["segment"]): self.mapped_data[2]["time"],
-                          str(self.mapped_data[3]["segment"]): self.mapped_data[3]["time"],
-                          str(self.mapped_data[4]["segment"]): self.mapped_data[4]["time"]}
+        correct_result = {str(self.mapped_data[1]["segment"]): {"earliest_time": self.mapped_data[0]["time"],
+                                                                "latest_time": self.mapped_data[1]["time"]},
+                          str(self.mapped_data[2]["segment"]): {"earliest_time": self.mapped_data[2]["time"],
+                                                                "latest_time": self.mapped_data[2]["time"]},
+                          str(self.mapped_data[3]["segment"]): {"earliest_time": self.mapped_data[3]["time"],
+                                                                "latest_time": self.mapped_data[3]["time"]},
+                          str(self.mapped_data[4]["segment"]): {"earliest_time": self.mapped_data[4]["time"],
+                                                                "latest_time": self.mapped_data[4]["time"]}
+                          }
+
         for segment in relevant_segments:
-            self.assertEqual(relevant_segments[segment], correct_result[segment])
+            self.assertEqual(relevant_segments[segment]["earliest_time"], correct_result[segment]["earliest_time"])
+            self.assertEqual(relevant_segments[segment]["latest_time"], correct_result[segment]["latest_time"])
 
     def test_delete_overlapped_prod_data(self):
+        """
+        Test for deleting overlapped production data
+        """
         mapper.handle_prod_data_overlap(self.mapped_data)
         prod_data = ProductionData.objects.all()
         self.assertEqual(len(prod_data), 1)
+
+    def test_filter_prod_data(self):
+        """
+        Test for filtering out outdated production data based on the data already in db
+        """
+        pass

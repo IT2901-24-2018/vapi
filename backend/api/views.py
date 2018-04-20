@@ -12,7 +12,7 @@ from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, Use
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 1000
 
 
@@ -83,7 +83,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
         # TODO: Handle old prod-data story24
-        # mapper.delete_old_production_data(mapped_data)
+        # mapped_data = mapper.delete_old_production_data(mapped_data)
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_data, many=True)
