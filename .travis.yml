@@ -23,6 +23,6 @@ script:
   - cd ../
   - flake8 backend/api backend/data
   - isort -c
-  - python manage.py test
+  - py.test
 notifications:
   email: false

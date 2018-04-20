@@ -57,4 +57,4 @@ lint-frontend:
 	docker-compose run --rm $(FRONTEND_SERVICE_NAME) npm run lint
 
 test-backend:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py test
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test

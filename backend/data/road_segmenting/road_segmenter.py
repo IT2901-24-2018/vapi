@@ -1,7 +1,6 @@
 import copy
 
-from calculate_distance import (calculate_road_length,
-                                                     calculate_road_length_simple)
+from calculate_distance import calculate_road_length, calculate_road_length_simple
 from road_fetcher import vegnet_to_geojson
 
 
