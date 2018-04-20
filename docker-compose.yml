@@ -3,7 +3,7 @@ services:
   postgres:
     image: mdillon/postgis
     ports:
-      - "5432:5432"
+      - "8071:5432"
   django:
     build:
       context: .
