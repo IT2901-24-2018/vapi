@@ -1,5 +1,5 @@
 .PHONY: default build start stop restart migrate makemigrations shell status \
-        down segment test lint-only test-only lint-backend lint-frontend test-backend
+        down test lint-only test-only lint-backend lint-frontend test-backend
 
 # Variables
 BACKEND_SERVICE_NAME = django
@@ -38,10 +38,6 @@ status:
 
 down:
 	docker-compose down
-
-# Vapi-specific
-segment:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) python backend/data/road_segmenting/example_roadnet_to_db.py
 
 # Testing
 test: lint-only test-only
