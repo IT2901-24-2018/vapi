@@ -1,8 +1,8 @@
 import json
 
-from nvdb_to_geojson import vegnett2geojson
-from nvdbapi import NvdbVegnett
-from road_filter import remove_keys
+from data.road_segmenting.nvdb_to_geojson import vegnett2geojson
+from data.road_segmenting.nvdbapi import NvdbVegnett
+from data.road_segmenting.road_filter import remove_height, remove_keys
 
 
 def format_vegnet(kommune, vegref):
@@ -37,6 +37,7 @@ def vegnet_to_geojson(kommune, vegref):
     v = NvdbVegnett()
     v.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
     raw_geojson, counter = vegnett2geojson(v)
+    raw_geojson = remove_height(raw_geojson)
     formatted_geojson = json.dumps(raw_geojson, sort_keys=True, indent=2, separators=(',', ':'))
     return counter, raw_geojson, formatted_geojson
 

@@ -5,8 +5,8 @@ from api import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'roadsegments', views.RoadSegmentViewSet, 'roadsegments')
-router.register(r'prod-data', views.ProductionDataViewSet, 'prod-data')
+router.register(r'roadsegments', views.RoadSegmentViewSet, 'roadsegment')
+router.register(r'prod-data', views.ProductionDataViewSet, 'productiondata')
 router.register(r'users', views.UserViewSet)
 
 # The API URLs are determined automatically by the router.

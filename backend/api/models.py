@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 
 
 class BaseModel(models.Model):
@@ -15,19 +15,18 @@ class BaseModel(models.Model):
 
 
 class RoadSegment(BaseModel):
-    time = models.DateTimeField()
-    startlat = models.FloatField()
-    startlong = models.FloatField()
-    endlat = models.FloatField()
-    endlong = models.FloatField()
-    torrsprederaktiv = models.BooleanField()
-    plogaktiv = models.BooleanField()
-    vatsprederaktiv = models.BooleanField()
-    materialtype_kode = models.BooleanField()
-    from_vegref = models.CharField(max_length=22)
-    to_vegref = models.CharField(max_length=22)
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=100)
+    county = models.IntegerField()
+    href = models.CharField(max_length=150)
+    category = models.CharField(max_length=4)
+    municipality = models.IntegerField()
+    startdate = models.DateField()
+    region = models.IntegerField()
+    status = models.CharField(max_length=4)
+    stretchdistance = models.IntegerField()
+    typeofroad = models.CharField(max_length=100)
+    roadsectionid = models.IntegerField()
+    vrefshortform = models.CharField(max_length=255)
+    the_geom = models.LineStringField()
 
 
 class ProductionData(BaseModel):
@@ -41,3 +40,4 @@ class ProductionData(BaseModel):
     wet_spreader_active = models.NullBooleanField()
     brush_active = models.NullBooleanField()
     material_type_code = models.IntegerField(null=True)
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)

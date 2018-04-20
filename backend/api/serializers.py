@@ -17,15 +17,16 @@ from api.models import ProductionData, RoadSegment
 class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = RoadSegment
-        fields = ('url', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'torrsprederaktiv', 'plogaktiv',
-                  'vatsprederaktiv', 'materialtype_kode', 'from_vegref', 'to_vegref', 'name', 'description')
+        fields = ('url', 'id', 'county', 'href',
+                  'category', 'municipality', 'startdate', 'region', 'status',
+                  'stretchdistance', 'typeofroad', 'roadsectionid', 'vrefshortform', 'the_geom')
 
 
 class ProductionDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductionData
         fields = ('created', 'updated', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'dry_spreader_active',
-                  'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code')
+                  'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code', 'segment')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

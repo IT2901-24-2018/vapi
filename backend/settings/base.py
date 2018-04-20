@@ -35,12 +35,24 @@ Debug = True
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
+# Database definition for Travis
+
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.contrib.gis.db.backends.postgis',
+            'NAME': 'travis_ci_test',
+        }
+    }
+
+
 # Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.gis',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
