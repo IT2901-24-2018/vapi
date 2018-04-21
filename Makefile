@@ -1,5 +1,5 @@
-.PHONY: default build start stop restart migrate makemigrations shell status \
-        down test lint-only test-only lint-backend lint-frontend test-backend
+.PHONY: default build start stop restart migrate migrations shell superuser \
+        status test lint-only test-only lint-backend lint-frontend test-backend
 
 # Variables
 BACKEND_SERVICE_NAME = django
@@ -24,20 +24,17 @@ restart: stop start
 migrate:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py migrate
 
-makemigrations:
+migrations:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py makemigrations
 
 shell:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell
 
-createsuperuser:
+superuser:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py createsuperuser
 
 status:
 	docker-compose ps
-
-down:
-	docker-compose down
 
 # Testing
 test: lint-only test-only
