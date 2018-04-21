@@ -2,9 +2,9 @@
 
 Vapi is an API that gathers Norways digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
 
-Vapi was built by a team of seven students in their sixth semester of the Bachelor’s in Informatics programme at [NTNU](https://www.ntnu.edu/), as a part of the course [IT2902](https://www.ntnu.edu/studies/courses/IT2901) Informatics Project II, colloquially known as the bachelor's thesis. Vapi was developed for the [Norwegian Public Roads Administration](https://www.vegvesen.no/en/home).
+Vapi was built by a team of seven students in their sixth semester of the Bachelor’s in Informatics programme at [NTNU](https://www.ntnu.edu/), as a part of the course [IT2901](https://www.ntnu.edu/studies/courses/IT2901) - Informatics Project II, colloquially known as the bachelor's thesis. Vapi was developed for the [Norwegian Public Roads Administration](https://www.vegvesen.no/en/home).
 
-Additional documentation and information can be found in our [wiki](https://github.com/it2901-24-2018/vapi/wiki). As this is a student project, the wiki also contains a lot of administrative information that maybe isn't relevant for further development or usage.
+Additional documentation and information can be found in our [wiki](https://github.com/it2901-24-2018/vapi/wiki). As this is a student project, the wiki also contains a lot of administrative information related to the project. 
 
 Vapi was built with React (setup with [create-react-app](https://github.com/facebook/create-react-app)), and [Django](https://www.djangoproject.com/). The two were combined with [this guide](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) by Vikas Yadav. Vapi is built as a multi-container [Docker](https://www.docker.com/) application, with huge thanks to [Christian Duvholt](https://github.com/duvholt) for setup guidance.
 
@@ -26,14 +26,18 @@ Run `sudo make migrate` to apply database migrations, and you're good to go. `su
 
 We recommend cloning the repository with SSH (see [here](https://help.github.com/articles/connecting-to-github-with-ssh/) for adding SSH key if you haven't already):
 
-`git clone git@github.com:dotkom/onlineweb4.git`
-`cd vapi`
+```
+git clone git@github.com:dotkom/onlineweb4.git
+cd vapi
+```
 
 If you wish to contribute to Vapi, we would also appreciate you setting the following configuration options:
 
-`git config --global core.autocrlf false`
-`git config --global user.name "<your github username>"`
-`git config --global user.email your.github@email.com`
+```
+git config --global core.autocrlf false
+git config --global user.name "<your github username>"
+git config --global user.email your.github@email.com
+```
 
 ## Dependencies
 
@@ -48,9 +52,9 @@ Start up the application for the first time, building your containers and starti
 
 `sudo make`
 
-Your Postgres container might be slower than the Django container when starting Vapi for the first time, and you'll need to setup your environment variables.
+Your Postgres container might be slower than the Django container when starting Vapi for the first time, but the server won't work regardless before you set up your environment variables.
 
-## Env
+## Environment variables
 
 Create a superuser in Django:
 
@@ -58,7 +62,7 @@ Create a superuser in Django:
 
 While we plan to remove the need for this in the future, we have an .env file that needs to be filled in with your username and password for the superuser. This file will not be checked in to Git.
 
-Make a `.env` file at the root directory. Inside this file, add the following, replacing yourusername with your username, and yourpassword with your password. :)
+Make a `.env` file at the root directory. Inside this file, add the following, replacing yourusername with your username, and yourpassword with your password:
 
 ```
 DJANGO_DEBUG=True
