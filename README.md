@@ -45,6 +45,12 @@ Docker (Compose) will handle most of our dependencies, but first you need to ins
 
 The Developer Desktop for Mac and Windows already include Docker Compose, but Linux users will have to install Compose [here](https://docs.docker.com/compose/install/).
 
+Our Django container depends on environment variables. Make an `.env` file at the root directory, with the following contents:
+
+```
+DJANGO_DEBUG=True
+```
+
 ## Initial build
 We have a Makefile that simplifies interaction with our Docker containers. You will likely need to use `sudo` for most Docker commands, but you can omit it depending on your installation.
 
@@ -52,23 +58,7 @@ Start up the application for the first time, building your containers and starti
 
 `sudo make`
 
-Your Postgres container might be slower than the Django container when starting Vapi for the first time, but the server won't work regardless before you set up your environment variables.
-
-## Environment variables
-
-Create a superuser in Django:
-
-`sudo make superuser`
-
-While we plan to remove the need for this in the future, we have an .env file that needs to be filled in with your username and password for the superuser. This file will not be checked in to Git.
-
-Make a `.env` file at the root directory. Inside this file, add the following, replacing yourusername with your username, and yourpassword with your password:
-
-```
-DJANGO_DEBUG=True
-API_USERNAME=yourusername
-API_PASSWORD=yourpassword
-```
+Your Postgres container might be slower than the Django container when starting Vapi for the first time, but the server isn't ready yet anyways, so that's hardly an issue. Stop the server with `CTRL+C`.
 
 ## Migrations
 
@@ -76,9 +66,27 @@ Get your database up to speed by applying existing migrations:
 
 `sudo make migrate`
 
+## Superuser
+
+Create a superuser in Django:
+
+`sudo make superuser`
+
+While we plan to remove the need for this in the future, we need to fill in the superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
+
+```
+DJANGO_DEBUG=True
+API_USERNAME=yourusername
+API_PASSWORD=yourpassword
+```
+
 ## Vapi example scripts
 
-To run our example road segmenter `example_roadnet_to_db.py`, ensure your server is running, then make a bash-shell in your container with:
+Start the server again:
+
+`sudo make start`
+
+To run our example road segmenter `example_roadnet_to_db.py`, open a new terminal, then make a bash-shell in your container with:
 
 `sudo docker exec -t -i vapi_django_1 /bin/bash`
 
