@@ -10,24 +10,12 @@ Vapi was built with React (setup with [create-react-app](https://github.com/face
 
 # Setup
 
-For a more detailed walkthrough, [move past this introduction](#github).
-
-In short, clone the repository, install [Docker Compose](https://docs.docker.com/compose/install/), run `sudo make`, which will likely fail because you need to add your superuser with `sudo make superuser` and fill in an `.env` file in the project root with the following:
-
-```
-DJANGO_DEBUG=True
-API_USERNAME=yourusername
-API_PASSWORD=yourpassword
-```
-
-Run `sudo make migrate` to apply database migrations, and you're good to go. `sudo make start` will be sufficient for starting the containers, as you should only need to build when changing dependencies or Docker configuration.
-
 ## Github
 
 We recommend cloning the repository with SSH (see [here](https://help.github.com/articles/connecting-to-github-with-ssh/) for adding SSH key if you haven't already):
 
 ```
-git clone git@github.com:dotkom/onlineweb4.git
+git@github.com:IT2901-24-2018/vapi.git
 cd vapi
 ```
 
@@ -45,7 +33,7 @@ Docker (Compose) will handle most of our dependencies, but first you need to ins
 
 The Developer Desktop for Mac and Windows already include Docker Compose, but Linux users will have to install Compose [here](https://docs.docker.com/compose/install/).
 
-Our Django container depends on environment variables. Make an `.env` file at the root directory, with the following contents:
+Our Django container depends on environment variables. Make a file called `.env` at the root directory, with the following contents:
 
 ```
 DJANGO_DEBUG=True
