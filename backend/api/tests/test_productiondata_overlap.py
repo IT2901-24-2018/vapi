@@ -253,7 +253,7 @@ class OverlapHandlingOutdatedInputDataTest(APITestCase):
                                   "latest_time": self.mapped_data[7]["time"]}
         }
 
-    def test_filter_prod_data(self):
+    def test_remove_outdated_prod_data(self):
         """
         Test for filtering out outdated production data based on the data already in db
         """
