@@ -82,8 +82,8 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             error = {"detail": "No segments within range"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        # TODO: Handle old prod-data story24
-        # mapped_data = mapper.delete_old_production_data(mapped_data)
+        # Handle overlap with old prod-data
+        mapped_data = mapper.handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_data, many=True)
