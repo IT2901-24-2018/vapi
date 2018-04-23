@@ -1,3 +1,4 @@
+import pytz
 from backend.settings.constants import MAX_MAPPING_DISTANCE
 from django.contrib.auth.models import User
 from django.contrib.gis.geos import GEOSGeometry
@@ -9,6 +10,8 @@ from rest_framework.test import APITestCase
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
 from api.serializers import ProductionDataSerializer
+
+TIMEZONE = pytz.UTC
 
 
 class InsertOneProductionDataTest(APITestCase):
@@ -147,11 +150,13 @@ class PostProductionDataTest(APITestCase):
 
         # Make the test data
         self.data = [{
-            "time": "2018-02-02T00:00:00", "startlat": 63.387075002372903, "startlong": 10.3277250005425,
-            "endlat": 60.45454, "endlong": 20.57575, "plow_active": True
+            "time": timezone.make_aware(timezone.datetime(2018, 2, 2, 0, 0, 0), TIMEZONE),
+            "startlat": 63.387075002372903, "startlong": 10.3277250005425, "endlat": 60.45454,
+            "endlong": 20.57575, "plow_active": True
         }, {
-            "time": "2018-02-02T00:01:00", "startlat": 63.387691997704202, "startlong": 10.3290819995141,
-            "endlat": 60.646566, "endlong": 20.45645, "plow_active": True
+            "time": timezone.make_aware(timezone.datetime(2018, 2, 2, 0, 1, 0), TIMEZONE),
+            "startlat": 63.387691997704202, "startlong": 10.3290819995141, "endlat": 60.646566,
+            "endlong": 20.45645, "plow_active": True
         }]
 
     def test_post_prod_data_list_authenticated(self):
