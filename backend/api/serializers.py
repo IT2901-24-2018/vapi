@@ -11,7 +11,7 @@ Also includes a url field.
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from api.models import ProductionData, RoadSegment
+from api.models import ProductionData, RoadSegment, WeatherData
 
 
 class RoadSegmentSerializer(serializers.HyperlinkedModelSerializer):
@@ -27,6 +27,12 @@ class ProductionDataSerializer(serializers.ModelSerializer):
         model = ProductionData
         fields = ('created', 'updated', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'dry_spreader_active',
                   'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code', 'segment')
+
+
+class WeatherDataSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = WeatherData
+        fields = ('url', 'created', 'updated', 'time', 'municipality', 'value', 'unit', 'degrees', 'segment')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
