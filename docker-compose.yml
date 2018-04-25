@@ -1,0 +1,28 @@
+version: '3'
+services:
+  postgres:
+    image: mdillon/postgis
+    ports:
+      - "8071:5432"
+  django:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file: .env
+    volumes:
+      - .:/app/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+  webpack:
+    build:
+      context: ./frontend/
+      dockerfile: Dockerfile
+    command: npm start
+    volumes:
+      - ./frontend:/app/frontend/
+      - /app/frontend/node_modules
+    ports:
+      - "3000:3000"

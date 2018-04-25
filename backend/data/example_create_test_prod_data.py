@@ -1,20 +1,17 @@
+import os
+
 import data_filter
 import requests
 
 # Credentials for connecting and writing to the API
-try:
-    from backend.settings.local import API_AUTHENTICATION
-    API_username = API_AUTHENTICATION["username"]
-    API_password = API_AUTHENTICATION["password"]
-except ImportError:
-    API_username = ""
-    API_password = ""
+API_username = os.environ["API_USERNAME"]
+API_password = os.environ["API_PASSWORD"]
 
 
 def data_in():
     url = 'http://localhost:8000/api/prod-data/'
-    prod_data_path = '../../../demo2.geojson'
-    data = data_filter.production_data_filter(prod_data_path)
+    prod_data_path = '../Driftsdata_SubSet_Small.geojson'
+    data = data_filter.production_data_filter(os.path.join(os.path.dirname(os.path.realpath(__file__)), prod_data_path))
 
     # Choose a sequence from data
     # roads = data[121:]

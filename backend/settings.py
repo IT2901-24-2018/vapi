@@ -17,9 +17,8 @@ import sys
 # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-SETTINGS_DIR = os.path.dirname(globals()['__file__'])
-BACKEND_DIR = os.path.join(SETTINGS_DIR, '..')
-ROOT_DIR = os.path.join(SETTINGS_DIR, '..', '..')
+BACKEND_DIR = os.path.dirname(globals()['__file__'])
+ROOT_DIR = os.path.join(BACKEND_DIR, '..')
 
 sys.path.insert(0, os.path.join(ROOT_DIR, 'backend'))
 
@@ -30,11 +29,23 @@ sys.path.insert(0, os.path.join(ROOT_DIR, 'backend'))
 SECRET_KEY = '_26^m9#xs0hi*bi_ak+o@n_2yyq^8wc8t-p26zc*^&_1a*ui7c'
 
 # Overwrite for production
-Debug = True
+DEBUG = os.environ["DJANGO_DEBUG"]
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 
+# Database
+# https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'HOST': 'postgres',
+        'PORT': '5432'
+    }
+}
 # Database definition for Travis
 
 if 'TRAVIS' in os.environ:
@@ -135,7 +146,7 @@ STATIC_ROOT = os.path.join(ROOT_DIR, "static")
 WEBPACK_LOADER = {
     'DEFAULT': {
             'BUNDLE_DIR_NAME': 'bundles/',
-            'STATS_FILE': os.path.join(ROOT_DIR, 'webpack-stats.dev.json'),
+            'STATS_FILE': os.path.join(ROOT_DIR, 'frontend/webpack-stats.dev.json'),
         }
 }
 

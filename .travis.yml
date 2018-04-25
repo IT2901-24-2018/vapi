@@ -18,11 +18,13 @@ install:
   - pip install -r requirements.txt
   - cd frontend
   - npm install
+env:
+  - DJANGO_DEBUG=True
 script:
   - npm run lint
   - cd ../
   - flake8 backend/api backend/data
   - isort -c
-  - python manage.py test
+  - py.test
 notifications:
   email: false

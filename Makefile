@@ -1,19 +1,53 @@
-.PHONY: default, test, lint-only, lint-backend, lint-frontend, test-backend
+.PHONY: default build start stop restart migrate migrations shell superuser \
+        status test lint-only test-only lint-backend lint-frontend test-backend
 
-default:
-	echo "This is where I would build, by default."
+# Variables
+BACKEND_SERVICE_NAME = django
+BACKEND_LINT_FOLDERS = backend/api backend/data
 
-test: lint-only test-backend
+FRONTEND_SERVICE_NAME = webpack
+
+# General usage
+default: build start
+
+build:
+	docker-compose build
+
+start:
+	docker-compose up
+
+stop:
+	docker-compose stop
+
+restart: stop start
+
+migrate:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py migrate
+
+migrations:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py makemigrations
+
+shell:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell
+
+superuser:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py createsuperuser
+
+status:
+	docker-compose ps
+
+# Testing
+test: lint-only test-only
 
 lint-only: lint-backend lint-frontend
+test-only: test-backend
 
 lint-backend:
-	flake8 backend/api backend/data
-	isort -c
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) flake8 $(BACKEND_LINT_FOLDERS)
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
 lint-frontend:
-	cd frontend/; npm run lint
+	docker-compose run --rm $(FRONTEND_SERVICE_NAME) npm run lint
 
 test-backend:
-	python manage.py test
-
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test
