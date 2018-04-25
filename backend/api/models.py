@@ -41,3 +41,13 @@ class ProductionData(BaseModel):
     brush_active = models.NullBooleanField()
     material_type_code = models.IntegerField(null=True)
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
+
+class WeatherData(BaseModel):
+    time = models.DateTimeField()
+    municipality = models.IntegerField()
+    value = models.IntegerField()
+    unit = models.CharField(max_length=2)
+    degrees = models.IntegerField()
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
+
+
