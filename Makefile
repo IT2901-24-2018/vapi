@@ -1,5 +1,5 @@
-.PHONY: default build start stop restart migrate migrations shell superuser \
-        status test lint-only test-only lint-backend lint-frontend test-backend
+.PHONY: default build start stop restart migrate migrations shell superuser status \
+        psql test lint-only test-only lint-backend lint-frontend test-backend
 
 # Variables
 BACKEND_SERVICE_NAME = django
@@ -35,6 +35,9 @@ superuser:
 
 status:
 	docker-compose ps
+
+psql:
+	docker exec -it vapi_postgres_1 psql -U postgres
 
 # Testing
 test: lint-only test-only
