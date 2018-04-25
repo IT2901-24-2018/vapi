@@ -138,6 +138,19 @@ class TestSegmenting(unittest.TestCase):
 
         self.assertLess(errors, 1, ("This many segments are under 0 meters:", errors))
 
+    def test_duplicate_segments(self):
+        """
+        Test if there are duplicate segments
+        """
+        length = len(self.split_segments)
+        start_index = 0
+        for i in range(length):
+            for y in range(start_index, length):
+                if i != y:
+                    self.assertNotEqual(self.split_segments[i]["geometry"]["coordinates"],
+                                        self.split_segments[y]["geometry"]["coordinates"])
+            start_index += 1
+
 
 if __name__ == "__main__":
     unittest.main()
