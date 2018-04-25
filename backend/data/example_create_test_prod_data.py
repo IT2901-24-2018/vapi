@@ -15,7 +15,7 @@ def data_in():
 
     # Choose a sequence from data
     # roads = data[121:]
-    roads = data[:5]
+    roads = data
 
     r = requests.post(url, json=roads, auth=(API_username, API_password))
     print("Status: {}\n{}".format(r.status_code, r.text))

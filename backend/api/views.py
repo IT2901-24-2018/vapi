@@ -12,7 +12,7 @@ from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, Use
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
-    page_size_query_param = 'page_size'
+    page_size_query_param = "page_size"
     max_page_size = 1000
 
 
@@ -82,9 +82,8 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             error = {"detail": "No segments within range"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        # TODO: Handle old prod-data story24
-        # latest_time = mapped_data[len(mapped_data)]["time"]
-        # mapper.delete_old_production_data(latest_time)
+        # Handle overlap with old prod-data
+        mapped_data = mapper.handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_data, many=True)
