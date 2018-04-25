@@ -80,16 +80,14 @@ def segment_network(road_network, len_road_network, max_distance, min_gps):
     :return: The segmented road network
     """
     segmented_road_network = []
-    for key, values in road_network.items():
-        if key != 'crs':
-            for road_segment in range(0, len_road_network):
-                if len(road_network['features'][road_segment]['geometry']['coordinates']) > min_gps:
-                    if check_split(road_network['features'][road_segment], max_distance):
-                        split_roads = split_segment(road_network['features'][road_segment],
-                                                    max_distance, [], min_gps)
-                        if split_roads is not None:
-                            for new_road in split_roads:
-                                segmented_road_network.append(new_road)
-                    else:
-                        segmented_road_network.append(road_network['features'][road_segment])
+    for road_segment in range(0, len_road_network):
+        if len(road_network['features'][road_segment]['geometry']['coordinates']) > min_gps:
+            if check_split(road_network['features'][road_segment], max_distance):
+                split_roads = split_segment(road_network['features'][road_segment],
+                                            max_distance, [], min_gps)
+                if split_roads is not None:
+                    for new_road in split_roads:
+                        segmented_road_network.append(new_road)
+            else:
+                segmented_road_network.append(road_network['features'][road_segment])
     return segmented_road_network
