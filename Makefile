@@ -36,6 +36,9 @@ superuser:
 status:
 	docker-compose ps
 
+psql:
+	docker exec -it vapi_postgres_1 psql -U postgres
+
 # Testing
 test: lint-only test-only
 
