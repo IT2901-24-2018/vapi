@@ -5,6 +5,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from api.mapper import mapper
+from api.weather import weather
 from api.models import ProductionData, RoadSegment, WeatherData
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer, WeatherDataSerializer
@@ -74,7 +75,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             error = {"detail": "Format error: Input should be a list"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        # Map prod data to road a road segment
+        # Map prod data to road segment
         mapped_data = mapper.map_to_segment(request.data)
 
         # Check that there are successfully mapped prod-data
@@ -110,7 +111,7 @@ class WeatherViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Create new prod-data from list mapped to road segment
+        Create new weather data from list mapped to road segment
         """
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
@@ -122,19 +123,11 @@ class WeatherViewSet(viewsets.ModelViewSet):
             error = {"detail": "Format error: Input should be a list"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
 
-        # Map prod data to road a road segment
-        mapped_data = mapper.map_to_segment(request.data)
-
-        # Check that there are successfully mapped prod-data
-        if len(mapped_data) == 0:
-            error = {"detail": "No segments within range"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
-
-        # Handle overlap with old prod-data
-        mapped_data = mapper.handle_prod_data_overlap(mapped_data)
+        # Map weather data to road a road segment
+        mapped_weather = weather.map_weather_to_segment(request.data)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=mapped_data, many=True)
+        serializer = self.get_serializer(data=mapped_weather, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
