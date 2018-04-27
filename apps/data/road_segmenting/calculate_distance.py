@@ -61,7 +61,7 @@ def calculate_road_length(point_list, max_length_meter, haversine):
     for i in range(1, len(point_list)):
         prev = i - 1
         if haversine:
-            coordinates = utm_to_latlon(point_list[i], point_list[prev], 32, 'V')
+            coordinates = utm_to_latlon(point_list[i], point_list[prev], 32, "V")
             length += haversine_formula(coordinates[0], coordinates[1])
         else:
             length += distance_formula(point_list[prev], point_list[i])

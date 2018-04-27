@@ -11,7 +11,7 @@ def production_data_filter(file_name):
     data = json.load(open(file_name))
     out_data = []
 
-    for feature in data['features']:
+    for feature in data["features"]:
         properties = feature["properties"]
         # Format the time string to "YYYY-MM-DDThh:mm:ss" format
         time = properties["time"].replace("/", "-")
