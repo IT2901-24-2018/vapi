@@ -1,7 +1,6 @@
 import json
 from os import path
 
-from backend.constants import MAX_MAPPING_DISTANCE
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework.test import APITestCase
 from vapi.constants import MAX_MAPPING_DISTANCE
