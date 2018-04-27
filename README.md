@@ -72,7 +72,7 @@ API_PASSWORD=yourpassword
 
 Start the server again:
 
-`sudo make start`
+`sudo make`
 
 To run our example road segmenter `example_roadnet_to_db.py`, open a new terminal, then make a bash-shell in your container with:
 
