@@ -17,13 +17,13 @@ def format_vegnet(kommune, vegref):
     counter = 0
 
     vegnett = NvdbVegnett()
-    vegnett.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
+    vegnett.addfilter_geo({"kommune": int(kommune), "vegreferanse": str(vegref)})
     veg = vegnett.nesteForekomst()
     while veg:
         raw_road_network.append(remove_keys(veg))
         counter += 1
         veg = vegnett.nesteForekomst()
-    formated_road_network = json.dumps(raw_road_network, sort_keys=True, indent=2, separators=(',', ':'))
+    formated_road_network = json.dumps(raw_road_network, sort_keys=True, indent=2, separators=(",", ":"))
     return counter, raw_road_network, formated_road_network
 
 
@@ -35,10 +35,10 @@ def vegnet_to_geojson(kommune, vegref):
     formated_geojson - formated geojson readibly by the human mind(duh)
     """
     v = NvdbVegnett()
-    v.addfilter_geo({'kommune': int(kommune), 'vegreferanse': str(vegref)})
+    v.addfilter_geo({"kommune": int(kommune), "vegreferanse": str(vegref)})
     raw_geojson, counter = vegnett2geojson(v)
     raw_geojson = remove_height(raw_geojson)
-    formatted_geojson = json.dumps(raw_geojson, sort_keys=True, indent=2, separators=(',', ':'))
+    formatted_geojson = json.dumps(raw_geojson, sort_keys=True, indent=2, separators=(",", ":"))
     return counter, raw_geojson, formatted_geojson
 
 
@@ -48,5 +48,5 @@ def road_network_to_file(filename, road_network):
     :param road_network: Unformatted geojson road network or raw_road_network
     :return: Nothing. Produces a file
     """
-    with open(filename, 'w') as outfile:
-        json.dump(road_network, outfile, sort_keys=True, indent=2, separators=(',', ':'))
+    with open(filename, "w") as outfile:
+        json.dump(road_network, outfile, sort_keys=True, indent=2, separators=(",", ":"))
