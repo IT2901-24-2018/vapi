@@ -67,22 +67,20 @@ class TestSegmenting(unittest.TestCase):
         margin = 8
         errors = 0
         error_message = "Issues are with these segments: \n"
-        for key, values in self.road_net.items():
-            if key != "crs":
-                for i in range(0, self.count):
-                    road = self.road_net["features"][i]
-                    length_actual = road["properties"]["strekningslengde"]
-                    length_original = calculate_road_length(road["geometry"]["coordinates"], 1000, False)[1]
-                    road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
+        for i in range(0, self.count):
+            road = self.road_net["features"][i]
+            length_actual = road["properties"]["strekningslengde"]
+            length_original = calculate_road_length(road["geometry"]["coordinates"], 1000, False)[1]
+            road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
 
-                    length_new = 0
-                    for segment in road_segmented:
-                        length_new += calculate_road_length(segment["geometry"]["coordinates"], 1000, False)[1]
-                    if abs(length_actual - length_new) > margin:
-                        errors += 1
-                        error_message += "Veglenkeid: " + str(road["properties"]["veglenkeid"]) + \
-                                         ", actual length: " + str(length_actual) + ", original: " + \
-                                         str(length_original) + ", new:" + str(length_new) + "\n"
+            length_new = 0
+            for segment in road_segmented:
+                length_new += calculate_road_length(segment["geometry"]["coordinates"], 1000, False)[1]
+            if abs(length_actual - length_new) > margin:
+                errors += 1
+                error_message += "Veglenkeid: " + str(road["properties"]["veglenkeid"]) + \
+                                 ", actual length: " + str(length_actual) + ", original: " + \
+                                 str(length_original) + ", new:" + str(length_new) + "\n"
         self.assertLess(errors, 1, (errors, "errors:", error_message))
 
     def test_split_segment_chaining(self):
@@ -92,21 +90,19 @@ class TestSegmenting(unittest.TestCase):
         """
         errors = 0
         error_message = "Issues are with these " + str(errors) + " links: \n"
-        for key, values in self.road_net.items():
-            if key != "crs":
-                for i in range(0, self.count):
-                    road = self.road_net["features"][i]
-                    road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
+        for i in range(0, self.count):
+            road = self.road_net["features"][i]
+            road_segmented = split_segment(road, self.max_segment_length, [], self.min_segment_length)
 
-                    for segment in range(1, len(road_segmented)):
-                        prev = road_segmented[segment-1]["geometry"]["coordinates"]
-                        end_prev = prev[len(prev)-1]
-                        start_curr = road_segmented[segment]["geometry"]["coordinates"][0]
+            for segment in range(1, len(road_segmented)):
+                prev = road_segmented[segment-1]["geometry"]["coordinates"]
+                end_prev = prev[len(prev)-1]
+                start_curr = road_segmented[segment]["geometry"]["coordinates"][0]
 
-                        if end_prev != start_curr:
-                            errors += 1
-                            error_message += "Veglenkeid: " + str(road["properties"]["veglenkeid"]) + \
-                                ", does not start at " + str(end_prev) + ", instead: " + str(start_curr) + "\n"
+                if end_prev != start_curr:
+                    errors += 1
+                    error_message += "Veglenkeid: " + str(road["properties"]["veglenkeid"]) + \
+                        ", does not start at " + str(end_prev) + ", instead: " + str(start_curr) + "\n"
         self.assertLess(errors, 1, (errors, "errors:", error_message))
 
     def test_split_segment_road_length(self):
