@@ -1,12 +1,12 @@
+import json
+from os import path
+
 from backend.constants import MAX_MAPPING_DISTANCE
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework.test import APITestCase
 
 from api.mapper import mapper
 from api.models import RoadSegment
-
-import json
-from os import path
 
 
 class MapperSingleSegmentTest(APITestCase):
