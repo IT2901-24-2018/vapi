@@ -1,7 +1,7 @@
 from django.conf.urls import include, url
-from rest_framework.routers import DefaultRouter
-from rest_framework.documentation import include_docs_urls
 from django.views.generic import RedirectView
+from rest_framework.documentation import include_docs_urls
+from rest_framework.routers import DefaultRouter
 
 from api import views
 

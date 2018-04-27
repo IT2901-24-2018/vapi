@@ -1,6 +1,6 @@
-from vapi.constants import MAX_MAPPING_DISTANCE
 from django.contrib.gis.geos import GEOSGeometry
 from rest_framework.test import APITestCase
+from vapi.constants import MAX_MAPPING_DISTANCE
 
 from api.mapper import mapper
 from api.models import RoadSegment
