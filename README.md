@@ -80,11 +80,11 @@ To run our example road segmenter `example_roadnet_to_db.py`, open a new termina
 
 When you're inside, run:
 
-`python /app/backend/data/road_segmenting/example_roadnet_to_db.py`
+`python /app/apps/data/road_segmenting/example_roadnet_to_db.py`
 
-You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `backend/Driftsdata_SubSet_Small.geojson` file:
+You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/Driftsdata_SubSet_Small.geojson` file:
 
-`python /app/backend/data/example_create_test_prod_data.py`
+`python /app/apps/data/example_create_test_prod_data.py`
 
 ## Other make commands
 
