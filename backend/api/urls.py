@@ -1,6 +1,7 @@
 from django.conf.urls import include, url
 from rest_framework.routers import DefaultRouter
 from rest_framework.documentation import include_docs_urls
+from django.views.generic import RedirectView
 
 from api import views
 
@@ -12,6 +13,12 @@ router.register(r"users", views.UserViewSet)
 
 # The API URLs are determined automatically by the router.
 urlpatterns = [
+    # Handle api/
     url(r"api/", include(router.urls)),
-    url(r'^docs/', include_docs_urls(title='VAPI Documentation'))
+    # Redirect api to api/
+    url(r'^api$', RedirectView.as_view(url='/api/')),
+    # Handle docs/
+    url(r'^docs/', include_docs_urls(title='VAPI Documentation')),
+    # Redirect docs to docs/
+    url(r'^docs$', RedirectView.as_view(url='/docs/'))
 ]
