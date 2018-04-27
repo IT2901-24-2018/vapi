@@ -94,7 +94,7 @@ Generally speaking, you will only need to build your containers when updating th
 
 `sudo make test`
 
-This will run our tests and lint the frontend and backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
+This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
 
 `sudo make migrations`
 

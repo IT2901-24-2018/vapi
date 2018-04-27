@@ -143,13 +143,6 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(ROOT_DIR, "static")
 
-WEBPACK_LOADER = {
-    'DEFAULT': {
-            'BUNDLE_DIR_NAME': 'bundles/',
-            'STATS_FILE': os.path.join(ROOT_DIR, 'frontend/webpack-stats.dev.json'),
-        }
-}
-
 REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
