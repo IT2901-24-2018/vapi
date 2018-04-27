@@ -4,8 +4,8 @@ ENV PYTHONUNBUFFERED 1
 # GeoDjango!
 RUN apt-get --assume-yes update; apt-get --assume-yes install binutils libproj-dev gdal-bin
 
-WORKDIR /app
+WORKDIR /vapi
 
-COPY requirements.txt /app/requirements.txt
+COPY requirements.txt /vapi/requirements.txt
 
 RUN pip3 --no-cache-dir install -r requirements.txt
