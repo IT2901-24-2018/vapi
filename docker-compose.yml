@@ -16,13 +16,3 @@ services:
       - "8000:8000"
     depends_on:
       - postgres
-  webpack:
-    build:
-      context: ./frontend/
-      dockerfile: Dockerfile
-    command: npm start
-    volumes:
-      - ./frontend:/app/frontend/
-      - /app/frontend/node_modules
-    ports:
-      - "3000:3000"
