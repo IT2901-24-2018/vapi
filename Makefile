@@ -3,7 +3,7 @@
 
 # Variables
 BACKEND_SERVICE_NAME = django
-BACKEND_LINT_FOLDERS = backend/api backend/data
+BACKEND_LINT_FOLDERS = apps/api apps/data
 
 # General usage
 default: build start

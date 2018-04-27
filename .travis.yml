@@ -19,7 +19,7 @@ install:
 env:
   - DJANGO_DEBUG=True
 script:
-  - flake8 backend/api backend/data
+  - flake8 apps/api apps/data
   - isort -c
   - py.test
 notifications:
