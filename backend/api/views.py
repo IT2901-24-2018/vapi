@@ -23,13 +23,13 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
     list: Returns all the elements. Road segments in this case.
 
-    read: Retrieving road segment. #ID of the road segment needed.
+    read: Retrieve a road segment. #ID of the road segment needed.
 
-    update: Updates a road segment. All fields are mandatory.
+    update: Update a road segment. All fields are mandatory.
 
-    partial_update: Updates a road segment. No fields are mandatory.
+    partial_update: Update a road segment. No fields are mandatory.
 
-    destroy: POST request for deleting element.
+    destroy: Request for deleting an element.
     """
     pagination_class = StandardResultsSetPagination
     queryset = RoadSegment.objects.all()
@@ -64,7 +64,18 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
 class ProductionDataViewSet(viewsets.ModelViewSet):
     """
-    This viewset supports `create` and `list` actions.
+    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
+    and `destroy` actions.
+
+    list: Returns all the elements. Production data in this case.
+
+    read: Retrieve production data. #ID of the production needed.
+
+    update: Updates one single production data. All fields are mandatory.
+
+    partial_update: Updates one single production data. No fields are mandatory.
+
+    destroy: Request for deleting an element.
     """
     queryset = ProductionData.objects.all()
     serializer_class = ProductionDataSerializer
@@ -112,7 +123,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    This viewset automatically provides `list` and `read` actions.
+
+    list: Lists all users.
+
+    read: Returns the user with a given ID.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
