@@ -1,4 +1,4 @@
-from backend.constants import MAX_MAPPING_DISTANCE
+from vapi.constants import MAX_MAPPING_DISTANCE
 from django.db import connection
 
 from api.models import ProductionData
