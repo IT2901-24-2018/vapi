@@ -29,7 +29,7 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
     partial_update: Update a road segment. No fields are mandatory.
 
-    destroy: Request for deleting an element.
+    destroy: Request for deleting a road segment element.
     """
     pagination_class = StandardResultsSetPagination
     queryset = RoadSegment.objects.all()
@@ -75,7 +75,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
     partial_update: Updates one single production data. No fields are mandatory.
 
-    destroy: Request for deleting an element.
+    destroy: Request for deleting a production data element.
     """
     queryset = ProductionData.objects.all()
     serializer_class = ProductionDataSerializer
@@ -84,7 +84,8 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Create new prod-data from list mapped to road segment
+        Input new production data. The data will be mapped to a road segment defined by set parameters.
+        This will not work on the documentation page due to element ot being a list. 
         """
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
