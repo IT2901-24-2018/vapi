@@ -58,13 +58,13 @@ class MapperMultiSegmentTest(APITestCase):
         for feature in geojson["features"]:
             linestrings.append(GEOSGeometry(str(feature["geometry"])))
         self.segments1 = []
-        for i in [6, 7, 9, 10, 11]:
+        for i in [5, 6, 8, 9, 10]:
             self.segments1.append(RoadSegment.objects.create(
                 the_geom=linestrings[i], county=1, href=1, category=1, municipality=1, startdate="2018-1-1", region=1,
                 stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
             ))
         self.segments2 = []
-        for i in [0, 1, 2, 4, 5, 8]:
+        for i in [0, 1, 2, 3, 4, 7]:
             self.segments2.append(RoadSegment.objects.create(
                 the_geom=linestrings[i], county=1, href=1, category=1, municipality=1, startdate="2018-1-1", region=1,
                 stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
