@@ -18,8 +18,18 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
+    and `destroy` actions.
+
+    list: Returns all the elements. Road segments in this case.
+
+    read: Retrieving road segment. #ID of the road segment needed.
+
+    update: Updates a road segment. All fields are mandatory.
+
+    partial_update: Updates a road segment. No fields are mandatory.
+
+    destroy: POST request for deleting element.
     """
     pagination_class = StandardResultsSetPagination
     queryset = RoadSegment.objects.all()
@@ -28,7 +38,8 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Add support for creating when the input data is a list
+        Inputs a list of road segments. NOTE: This will not work on the API documentation
+        page because of obvious reasons as of now.
         """
         many = False
 
