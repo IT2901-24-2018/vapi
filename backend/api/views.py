@@ -85,7 +85,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         """
         Input new production data. The data will be mapped to a road segment defined by set parameters.
-        This will not work on the documentation page due to element ot being a list. 
+        This will not work on the documentation page due to element not being a list.
         """
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
