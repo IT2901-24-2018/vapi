@@ -8,8 +8,6 @@ static/
 .vscode/
 .idea/
 
-webpack-stats.dev.json
-webpack-stats.prod.json
 nvdbapi-clientinfo.json
 roadnet.gjson
 
