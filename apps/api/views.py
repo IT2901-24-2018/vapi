@@ -85,15 +85,12 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         """
         Input new production data. The data will be mapped to a road segment defined by set parameters.
         """
-
-        many = False
         data = []
 
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
 
         if isinstance(request.data, list):
-            many = True
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
@@ -113,7 +110,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         mapped_data = mapper.handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=mapped_data, many=many)
+        serializer = self.get_serializer(data=mapped_data, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
