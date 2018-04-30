@@ -3,11 +3,12 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT
+from rest_framework.schemas import AutoSchema
 
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
-from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer
+from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer, ProductionDataInputSerializer
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -77,9 +78,10 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
     destroy: Request for deleting a production data element.
     """
     queryset = ProductionData.objects.all()
-    serializer_class = ProductionDataSerializer
+    serializer_class = ProductionDataInputSerializer
     # Only registered users can use this view
     permission_classes = (permissions.IsAuthenticated, IsStaffOrCreateOnly,)
+    schema = AutoSchema()
 
     def create(self, request, *args, **kwargs):
         """
@@ -98,6 +100,10 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         else:
             data.append(request.data)
 
+        serializer = self.get_serializer(data=data, many=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         # Map prod data to road a road segment
         mapped_data = mapper.map_to_segment(data)
 
@@ -110,17 +116,35 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         mapped_data = mapper.handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=mapped_data, many=True)
+        serializer = ProductionDataSerializer(data=mapped_data, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
             serializer.save()
-            headers = self.get_success_headers(serializer.data)
+            # headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
+                            # headers=headers
+                            )
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = ProductionDataSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        pass
+
+    def update(self, request, *args, **kwargs):
+        pass
+
+    def partial_update(self, request, *args, **kwargs):
+        pass
+
+    def destroy(self, request, *args, **kwargs):
+        pass
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

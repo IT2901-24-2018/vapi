@@ -68,6 +68,8 @@ def map_to_segment(production_data):
             prod_data["segment"] = segment["id"]
             mapped_data.append(prod_data)
 
+
+
     return mapped_data
 
 

@@ -29,6 +29,22 @@ class ProductionDataSerializer(serializers.ModelSerializer):
                   'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code', 'segment')
 
 
+class ProductionDataInputSerializer(serializers.Serializer):
+    """
+    Serializer for validating the input of the production data endpoint
+    """
+    time = serializers.DateTimeField()
+    startlat = serializers.FloatField()
+    startlong = serializers.FloatField()
+    endlat = serializers.FloatField()
+    endlong = serializers.FloatField()
+    dry_spreader_active = serializers.NullBooleanField(required=False)
+    plow_active = serializers.NullBooleanField(required=False)
+    wet_spreader_active = serializers.NullBooleanField(required=False)
+    brush__active = serializers.NullBooleanField(required=False)
+    material_type_code = serializers.IntegerField(allow_null=True, required=False)
+
+
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
