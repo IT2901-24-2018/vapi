@@ -6,13 +6,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width"/>
     <title>Vegnett API</title>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}">
+    {% block stylesheets %}
+    {% endblock %}
   </head>
   <body>
-    <div id="container">
-      <h1>{% block h1 %}Vapi{% endblock %}</h1>
+    <div id="root">
+      <div id="container">
+        <div id="header">
+          <h1 id="heading">{% block h1 %}Vapi - Vegnett API{% endblock %}</h1>
+        </div>
+        <div id="content">
+          {% block content %}
+          {% endblock %}
+        </div>
+      </div>
     </div>
-    {% block content %}
-    {% endblock %}
   </body>
 </html>

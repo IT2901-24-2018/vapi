@@ -1,5 +1,27 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
+{% block stylesheets %}
+<link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
+{% endblock %}
+
 {% block content %}
-  <p>c'est moi!</p>
+  <div id="index-content">
+    <div id="description">
+      <p>
+        Vapi is an API that gathers Norways digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
+      </p>
+      <p>
+        Vapi was built by a team of seven students in their sixth semester of the <a href="https://www.ntnu.edu/studies/bit">Bachelor in Informatics</a> programme at <a href="https://www.ntnu.edu/">NTNU</a>, as part of the course <a href="https://www.ntnu.edu/studies/courses/IT2901">IT2901 - Informatics Project II</a>, colloquially known as the bachelor's thesis.
+      </p>
+      <p>
+        Vapi was developed for the <a href="https://www.vegvesen.no/">Norwegian Public Roads Administration</a>.
+      </p>
+    </div>
+    <div id="redirects">
+      <a href="/api/">API</a>
+      <a href="/docs/">Documentation</a>
+    </div>
+  </div>
 {% endblock %}

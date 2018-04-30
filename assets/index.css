@@ -1,0 +1,75 @@
+#index-content {
+  height: 100%;
+
+  font-size: 125%;
+  color: hsl(201, 11%, 30%);
+}
+
+#description {
+  padding: 16px 16px 8px;
+}
+
+#description a {
+  text-decoration: none;
+  transition: 0.1s;
+  color: hsl(35, 100%, 50%);
+}
+
+#description a:focus {
+  color: hsl(35, 100%, 50%);
+  border-bottom: 2px solid;
+  outline: none;
+}
+
+#description a:hover {
+  border-bottom: 2px solid;
+}
+
+#description a:active {
+  color: inherit;
+}
+
+#description a:visited:not(:active) {
+  color: hsl(35, 100%, 50%);
+}
+
+#redirects {
+  display: flex;
+  justify-content: flex-end;
+  padding: 8px 16px 16px;
+}
+
+#redirects a {
+  font-size: inherit;
+  padding: 8px;
+
+  font-weight: bold;
+  text-align: center;
+  color: hsl(201, 11%, 30%);
+  background: hsl(0, 0%, 93%);
+  border: 2px solid hsl(201, 11%, 30%);
+
+  transition: 0.2s;
+}
+
+#redirects a:not(:last-child) {
+  margin-right: 8px;
+}
+
+#redirects a:link {
+  text-decoration: none;
+}
+
+#redirects a:focus {
+  outline: none;
+}
+
+#redirects a:hover {
+  cursor: pointer;
+  background-color: hsl(201, 11%, 30%);
+  color: hsl(0, 0%, 93%);
+}
+
+#redirects a:active {
+  background-color: #888;
+}
