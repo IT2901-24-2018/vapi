@@ -3,11 +3,16 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT
+from vapi.constants import MAX_SEGMENT_LENGTH
+from vapi.constants import MIN_COORDINATES_LENGTH
+
 
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer
+
+from api.segmenter.road_segmenter import segment_network
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -47,8 +52,11 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
         if isinstance(request.data, list):
             many = True
 
+        # segment stuff here
+        segments = segment_network(request.data, MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH)
+
         # Instantiate the serializer
-        serializer = self.get_serializer(data=request.data, many=many)
+        serializer = self.get_serializer(data=segments, many=many)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
