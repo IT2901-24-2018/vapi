@@ -16,14 +16,10 @@ test:
   database: travis_ci_test
 install:
   - pip install -r requirements.txt
-  - cd frontend
-  - npm install
 env:
   - DJANGO_DEBUG=True
 script:
-  - npm run lint
-  - cd ../
-  - flake8 backend/api backend/data
+  - flake8 apps/api apps/data
   - isort -c
   - py.test
 notifications:

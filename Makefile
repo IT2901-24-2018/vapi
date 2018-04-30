@@ -1,11 +1,9 @@
-.PHONY: default build start stop restart migrate migrations shell superuser status \
-        psql test lint-only test-only lint-backend lint-frontend test-backend
+.PHONY: default build start stop restart migrate migrations \
+		shell superuser status psql lint test
 
 # Variables
 BACKEND_SERVICE_NAME = django
-BACKEND_LINT_FOLDERS = backend/api backend/data
-
-FRONTEND_SERVICE_NAME = webpack
+BACKEND_LINT_FOLDERS = apps/api apps/data
 
 # General usage
 default: build start
@@ -40,17 +38,11 @@ psql:
 	docker exec -it vapi_postgres_1 psql -U postgres
 
 # Testing
-test: lint-only test-only
+test: lint test
 
-lint-only: lint-backend lint-frontend
-test-only: test-backend
-
-lint-backend:
+lint:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) flake8 $(BACKEND_LINT_FOLDERS)
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
-lint-frontend:
-	docker-compose run --rm $(FRONTEND_SERVICE_NAME) npm run lint
-
-test-backend:
+test:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test

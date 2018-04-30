@@ -1,8 +1,8 @@
-from backend.constants import INPUT_LIST_LIMIT
 from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from vapi.constants import INPUT_LIST_LIMIT
 
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
@@ -18,8 +18,18 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `retrieve`,
-    `update` and `destroy` actions.
+    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
+    and `destroy` actions.
+
+    list: Returns all the elements. Road segments in this case.
+
+    read: Retrieve a road segment. #ID of the road segment needed.
+
+    update: Update a road segment. All fields are mandatory.
+
+    partial_update: Update a road segment. No fields are mandatory.
+
+    destroy: Request for deleting a road segment element.
     """
     pagination_class = StandardResultsSetPagination
     queryset = RoadSegment.objects.all()
@@ -28,7 +38,7 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Add support for creating when the input data is a list
+        Inputs a list of road segments.
         """
         many = False
 
@@ -53,7 +63,18 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
 class ProductionDataViewSet(viewsets.ModelViewSet):
     """
-    This viewset supports `create` and `list` actions.
+    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
+    and `destroy` actions.
+
+    list: Returns all the elements. Production data in this case.
+
+    read: Retrieve production data. #ID of the production needed.
+
+    update: Updates one single production data. All fields are mandatory.
+
+    partial_update: Updates one single production data. No fields are mandatory.
+
+    destroy: Request for deleting a production data element.
     """
     queryset = ProductionData.objects.all()
     serializer_class = ProductionDataSerializer
@@ -62,25 +83,28 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """
-        Create new prod-data from list mapped to road segment
+        Input new production data. The data will be mapped to a road segment defined by set parameters.
         """
+        data = []
+
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
+
         if isinstance(request.data, list):
+            data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
-            error = {"detail": "Format error: Input should be a list"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+            data.append(request.data)
 
         # Map prod data to road a road segment
-        mapped_data = mapper.map_to_segment(request.data)
+        mapped_data = mapper.map_to_segment(data)
 
         # Check that there are successfully mapped prod-data
         if len(mapped_data) == 0:
             error = {"detail": "No segments within range"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+            return Response(error, status=status.HTTP_200_OK)
 
         # Handle overlap with old prod-data
         mapped_data = mapper.handle_prod_data_overlap(mapped_data)
@@ -101,7 +125,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    This viewset automatically provides `list` and `detail` actions.
+    This viewset automatically provides `list` and `read` actions.
+
+    list: Lists all users.
+
+    read: Returns the user with a given ID.
     """
     queryset = User.objects.all()
     serializer_class = UserSerializer
