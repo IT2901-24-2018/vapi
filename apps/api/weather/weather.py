@@ -1,27 +1,15 @@
-from django.db import connection
+from api.models import RoadSegment
 
 
 def map_weather_to_segment(weather_data):
     # Todo Map the weather to every segment.
     # Check if exisiting weather exists and add total value if needed
-    segments = get_segments(5001)
+    segments = get_segments()
 
 
-    return segments
+    return
 
 
 def get_segments(municipality):
-    with connection.cursor() as cursor:
-        stmt = """
-        SELECT * FROM api_roadsegment
-        WHERE api_roadsegment.municipality=municipality
-        """
-        cursor.execute(stmt, municipality)
-        data = cursor.fetchall()
-    if data:
-        return data
-    else:
-        return None
-
-
-map_weather_to_segment(3)
+    matched_segments = RoadSegment.objects.filter(municipality=municipality)
+    return matched_segments
