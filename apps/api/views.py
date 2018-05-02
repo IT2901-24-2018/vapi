@@ -101,7 +101,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
 
         # Map prod data to road segment
-        mapped_data = mapper.map_to_segment(request.data)
+        mapped_data = mapper.map_to_segment(data)
 
         # Check that there are successfully mapped prod-data
         if len(mapped_data) == 0:
@@ -141,16 +141,21 @@ class WeatherViewSet(viewsets.ModelViewSet):
         """
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
+        data = []
+
+        # Check if the incoming data is a list
+        # If it is a list set the many flag to True
+
         if isinstance(request.data, list):
+            data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
-            error = {"detail": "Format error: Input should be a list"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+            data.append(request.data)
 
         # Map weather data to road a road segment
-        mapped_weather = weather.map_weather_to_segment(request.data)
+        mapped_weather = weather.map_weather_to_segment(data)
 
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_weather, many=True)
