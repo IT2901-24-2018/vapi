@@ -22,10 +22,8 @@ p {
 
 #container {
   display: grid;
-  grid-template-rows: 90px 1fr;
-
   width: 512px;
-
+  grid-template-rows: 90px 1fr;
   background: white;
   box-shadow: 0 2px 4px 0 hsla(0, 0%, 0%, 0.2);
 }
