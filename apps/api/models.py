@@ -46,3 +46,12 @@ class ProductionData(BaseModel):
     material_type_code = models.IntegerField(null=True, help_text="Material type boolean. Optional")
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE, help_text="Segment ID to mapped segment. "
                                 "Will be autocompleted by the code. Enter dummy value.")
+
+
+class WeatherData(BaseModel):
+    time = models.DateTimeField()
+    municipality = models.IntegerField()
+    value = models.IntegerField()
+    unit = models.CharField(max_length=2)
+    degrees = models.IntegerField()
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
