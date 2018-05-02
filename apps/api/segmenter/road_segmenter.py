@@ -65,7 +65,7 @@ def segment_network(road_network, max_distance, min_gps):
     """
     segmented_road_network = []
     for road_segment in road_network:
-        road_segment["the_geom"] = geometry_to_array(road_segment["the_geom"])
+        road_segment["the_geom"] = geometry_to_list(road_segment["the_geom"])
         if len(road_segment["the_geom"]["coordinates"]) > min_gps:
             split_roads = split_segment(road_segment, max_distance, [], min_gps)
 
@@ -81,7 +81,7 @@ def segment_network(road_network, max_distance, min_gps):
     return segmented_road_network
 
 
-def geometry_to_array(geometry):
+def geometry_to_list(geometry):
     coordinates_list = []
     temp = geometry.split(";")
     srid, coordinates = temp[0], temp[1]
