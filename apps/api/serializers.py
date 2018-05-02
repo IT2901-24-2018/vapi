@@ -32,7 +32,8 @@ class ProductionDataSerializer(serializers.ModelSerializer):
 class WeatherDataSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = WeatherData
-        fields = ('url', 'created', 'updated', 'time', 'municipality', 'value', 'unit', 'degrees', 'segment')
+        fields = ('url', 'created', 'updated', 'time', 'county_and_municipality_id', 'value', 'unit',
+                  'degrees', 'segment')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):

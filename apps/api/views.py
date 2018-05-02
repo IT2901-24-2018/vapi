@@ -128,6 +128,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 class WeatherViewSet(viewsets.ModelViewSet):
     """
     This viewset supports `create` and `list` actions.
+    TODO: Write about all actions for documentation purposes.
     """
     queryset = WeatherData.objects.all()
     serializer_class = WeatherDataSerializer
