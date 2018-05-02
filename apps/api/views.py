@@ -3,12 +3,13 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT
-from rest_framework.schemas import AutoSchema
 
 from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
+from api.overlap_handler import overlap_handler
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
-from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer, ProductionDataInputSerializer
+from api.serializers import (ProductionDataInputSerializer, ProductionDataSerializer,
+                             RoadSegmentSerializer, UserSerializer)
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -81,7 +82,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
     serializer_class = ProductionDataInputSerializer
     # Only registered users can use this view
     permission_classes = (permissions.IsAuthenticated, IsStaffOrCreateOnly,)
-    schema = AutoSchema()
 
     def create(self, request, *args, **kwargs):
         """
@@ -113,7 +113,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_200_OK)
 
         # Handle overlap with old prod-data
-        mapped_data = mapper.handle_prod_data_overlap(mapped_data)
+        mapped_data = overlap_handler.handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
         serializer = ProductionDataSerializer(data=mapped_data, many=True)
@@ -122,9 +122,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             # headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            # headers=headers
-                            )
+            return Response(
+                "{} row(s) added".format(len(serializer.data)),
+                status=status.HTTP_201_CREATED,
+                # headers=headers
+            )
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
