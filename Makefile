@@ -37,7 +37,7 @@ status:
 	docker-compose ps
 
 psql:
-	docker exec -it vapi_postgres_1 psql -U postgres
+	docker-compose exec -u postgres postgres psql
 
 
 # Testing
