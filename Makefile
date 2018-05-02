@@ -1,9 +1,11 @@
 .PHONY: default build start stop restart migrate migrations \
-		shell superuser status psql lint test
+		shell superuser status psql test lint-only test-only
+
 
 # Variables
 BACKEND_SERVICE_NAME = django
 BACKEND_LINT_FOLDERS = apps/api apps/data
+
 
 # General usage
 default: build start
@@ -37,12 +39,13 @@ status:
 psql:
 	docker exec -it vapi_postgres_1 psql -U postgres
 
-# Testing
-test: lint test
 
-lint:
+# Testing
+test: lint-only test-only
+
+lint-only:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) flake8 $(BACKEND_LINT_FOLDERS)
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
-test:
+test-only:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test
