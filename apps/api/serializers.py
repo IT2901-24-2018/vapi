@@ -29,10 +29,10 @@ class ProductionDataSerializer(serializers.ModelSerializer):
                   'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code', 'segment')
 
 
-class WeatherDataSerializer(serializers.HyperlinkedModelSerializer):
+class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeatherData
-        fields = ('url', 'created', 'updated', 'time', 'county_and_municipality_id', 'value', 'unit',
+        fields = ('created', 'updated', 'time', 'county_and_municipality_id', 'value', 'unit',
                   'degrees', 'segment')
 
 
