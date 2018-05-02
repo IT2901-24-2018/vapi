@@ -72,7 +72,7 @@ API_PASSWORD=yourpassword
 
 Start the server again:
 
-`sudo make start`
+`sudo make`
 
 To run our example road segmenter `example_roadnet_to_db.py`, open a new terminal, then make a bash-shell in your container with:
 
@@ -80,11 +80,11 @@ To run our example road segmenter `example_roadnet_to_db.py`, open a new termina
 
 When you're inside, run:
 
-`python /app/backend/data/road_segmenting/example_roadnet_to_db.py`
+`python /vapi/apps/data/road_segmenting/example_roadnet_to_db.py`
 
-You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `backend/Driftsdata_SubSet_Small.geojson` file:
+You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/Driftsdata_SubSet_Small.geojson` file:
 
-`python /app/backend/data/example_create_test_prod_data.py`
+`python /vapi/apps/data/example_create_test_prod_data.py`
 
 ## Other make commands
 
@@ -94,7 +94,7 @@ Generally speaking, you will only need to build your containers when updating th
 
 `sudo make test`
 
-This will run our tests and lint the frontend and backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
+This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
 
 `sudo make migrations`
 
