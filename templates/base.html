@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width"/>
     <title>Vegnett API</title>
+    <link href="{% static 'favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'base.css' %}">
     {% block stylesheets %}
@@ -15,7 +16,7 @@
     <div id="root">
       <div id="container">
         <div id="header">
-          <h1 id="heading">{% block h1 %}Vapi - Vegnett API{% endblock %}</h1>
+          <h1 id="heading">{% block heading %}Vapi - Vegnett API{% endblock %}</h1>
         </div>
         <div id="content">
           {% block content %}
