@@ -1,7 +1,8 @@
 import os
 
 import requests
-from road_segmenter import road_segmenter
+
+from road_fetcher import vegnet_to_geojson
 
 municipality = 5001
 type_of_road = "kg"
@@ -44,11 +45,11 @@ def filter_road(road):
     return filtered_road
 
 
-def format_to_db(municipality, type_road, max_distance, min_segments):
+def format_to_db(municipality, type_road):
     """
     :return: Returns a filtered road network
     """
-    road_network = road_segmenter(municipality, type_road, max_distance, min_segments)
+    road_network = vegnet_to_geojson(municipality, type_road)[1]["features"]
     filtered_road_network = []
     for road in road_network:
         road_done = filter_road(road)
@@ -56,16 +57,16 @@ def format_to_db(municipality, type_road, max_distance, min_segments):
     return filtered_road_network
 
 
-def data_in(municipality, type_road, max_distance, min_segments):
+def data_in(municipality, type_road):
     """
     :return: The status code of the finished post request.
     """
     url = "http://localhost:8000/api/roadsegments/"
-    filtered_network = format_to_db(municipality, type_road, max_distance, min_segments)
+    filtered_network = format_to_db(municipality, type_road)
 
     r = requests.post(url, json=filtered_network, auth=(API_username, API_password))
     return "Status: {}\n{}".format(r.status_code, r.text)
 
 
 if __name__ == "__main__":
-    print(data_in(municipality, type_of_road, max_distance, min_segments))
+    print(data_in(municipality, type_of_road))
