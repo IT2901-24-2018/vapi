@@ -5,10 +5,11 @@ from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT
 
 from api.mapper import mapper
-from api.weather import weather
 from api.models import ProductionData, RoadSegment, WeatherData
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
-from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer, WeatherDataSerializer
+from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, UserSerializer,
+                             WeatherDataSerializer)
+from api.weather import weather
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -98,7 +99,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
             data.append(request.data)
-
 
         # Map prod data to road segment
         mapped_data = mapper.map_to_segment(data)
