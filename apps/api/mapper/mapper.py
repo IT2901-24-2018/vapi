@@ -40,10 +40,37 @@ def point_to_linestring_distance(point, search_radius):
         cursor.execute(stmt, [point[0], point[1], search_radius])
         row = cursor.fetchone()
 
-    if row:
+    if row is not None:
         return {"id": row[0], "distance": row[1]}
     else:
         return None
+
+
+def closest_point_on_linestring(point, segment):
+    """
+    Finds the closest point on the segment from point
+    :param point: lon/lat
+    :type point: tuple
+    :param segment: The id of a segment
+    :type segment: int
+    :return: The closest point on the segment
+    :rtype: string
+    """
+    with connection.cursor() as cursor:
+        stmt = """
+        WITH prod
+        AS
+        (
+          SELECT ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geometry AS point
+        )
+        SELECT ST_AsText(ST_ClosestPoint(segment.the_geom, prod.point))
+        FROM api_roadsegment AS segment, prod
+        WHERE id = %s
+        """
+        cursor.execute(stmt, [point[0], point[1], segment])
+        row = cursor.fetchone()
+
+    return row[0]
 
 
 def map_to_segment(production_data):
@@ -65,10 +92,12 @@ def map_to_segment(production_data):
 
         # Only do if segment is not None
         if segment is not None:
+
+            mapped_point = closest_point_on_linestring(point, segment["id"])
+
             prod_data["segment"] = segment["id"]
+            prod_data["closest_point"] = mapped_point
             mapped_data.append(prod_data)
-
-
 
     return mapped_data
 
