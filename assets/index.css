@@ -1,12 +1,6 @@
 #index-content {
   height: 100%;
-
-  font-size: 125%;
-  color: hsl(201, 11%, 30%);
-}
-
-#description {
-  padding: 16px 16px 8px;
+  padding: 16px;
 }
 
 #description a {
@@ -33,27 +27,55 @@
   color: hsl(35, 100%, 50%);
 }
 
-#redirects {
+#buttons {
   display: flex;
-  justify-content: flex-end;
-  padding: 8px 16px 16px;
+  justify-content: space-between;
+}
+
+#github {
+  width: 36px;
+  height: 36px;
+}
+
+#github #logo {
+  width: 100%;
+  height: 100%;
+  transition: 0.2s;
+  fill: hsl(201, 11%, 30%);
+}
+
+#github #logo:hover {
+  fill: hsl(35, 100%, 50%);
+}
+
+#github #logo:focus {
+  outline: none;
+  fill: hsl(35, 100%, 65%);
+}
+
+#github #logo:active {
+  fill: hsl(35, 100%, 65%);
 }
 
 #redirects a {
+  display: inline-block;
   font-size: inherit;
   padding: 8px;
+  min-width: 64px;
 
   font-weight: bold;
+  text-transform: uppercase;
   text-align: center;
-  color: hsl(201, 11%, 30%);
-  background: hsl(0, 0%, 93%);
-  border: 2px solid hsl(201, 11%, 30%);
+
+  color: white;
+  background: hsl(35, 100%, 50%);
 
   transition: 0.2s;
+  box-shadow: 0 2px 4px 0 hsla(0, 0%, 0%, 0.2);
 }
 
 #redirects a:not(:last-child) {
-  margin-right: 8px;
+  margin-right: 16px;
 }
 
 #redirects a:link {
@@ -62,14 +84,14 @@
 
 #redirects a:focus {
   outline: none;
+  background: hsl(35, 100%, 65%);
 }
 
 #redirects a:hover {
   cursor: pointer;
-  background-color: hsl(201, 11%, 30%);
-  color: hsl(0, 0%, 93%);
+  background: hsl(35, 100%, 65%);
 }
 
 #redirects a:active {
-  background-color: #888;
+  background: hsl(35, 100%, 80%);
 }

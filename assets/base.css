@@ -4,12 +4,13 @@ html, body, #root {
 
 body {
   margin: 0;
+  color: hsl(201, 11%, 30%);
   background: hsl(0, 0%, 93%);
   font-family: 'Source Sans Pro', sans-serif;
 }
 
 p {
-  margin: 0 0 8px;
+  margin: 0 0 16px;
 }
 
 #root {
@@ -21,7 +22,7 @@ p {
 
 #container {
   display: grid;
-  grid-template-rows: 100px 1fr;
+  grid-template-rows: 90px 1fr;
 
   width: 512px;
 
@@ -39,5 +40,5 @@ p {
   margin: 0;
   color: white;
   font-weight: 300;
-  font-size: 250%;
+  font-size: 200%;
 }
