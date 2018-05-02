@@ -4,9 +4,9 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT
 
-from api.mapper import mapper
+from api.mapper.mapper import map_to_segment
 from api.models import ProductionData, RoadSegment
-from api.overlap_handler import overlap_handler
+from api.overlap_handler.overlap_handler import handle_prod_data_overlap
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import (ProductionDataInputSerializer, ProductionDataSerializer,
                              RoadSegmentSerializer, UserSerializer)
@@ -91,7 +91,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
-
         if isinstance(request.data, list):
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
@@ -105,7 +104,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Map prod data to road a road segment
-        mapped_data = mapper.map_to_segment(data)
+        mapped_data = map_to_segment(data)
 
         # Check that there are successfully mapped prod-data
         if len(mapped_data) == 0:
@@ -113,7 +112,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_200_OK)
 
         # Handle overlap with old prod-data
-        mapped_data = overlap_handler.handle_prod_data_overlap(mapped_data)
+        mapped_data = handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
         serializer = ProductionDataSerializer(data=mapped_data, many=True)
@@ -135,18 +134,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         queryset = self.get_queryset()
         serializer = ProductionDataSerializer(queryset, many=True)
         return Response(serializer.data)
-
-    def retrieve(self, request, *args, **kwargs):
-        pass
-
-    def update(self, request, *args, **kwargs):
-        pass
-
-    def partial_update(self, request, *args, **kwargs):
-        pass
-
-    def destroy(self, request, *args, **kwargs):
-        pass
 
 
 class UserViewSet(viewsets.ReadOnlyModelViewSet):

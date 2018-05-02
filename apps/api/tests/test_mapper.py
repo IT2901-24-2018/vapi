@@ -5,7 +5,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from rest_framework.test import APITestCase
 from vapi.constants import MAX_MAPPING_DISTANCE
 
-from api.mapper import mapper
+from api.mapper.mapper import map_to_segment, production_data_to_linestring_distance
 from api.models import RoadSegment
 
 
@@ -29,7 +29,7 @@ class MapperSingleSegmentTest(APITestCase):
                            {"startlat": 63.387441999029399, "startlong": 10.3290930003037}]
         result = []
         for data in production_data:
-            result.append(mapper.point_to_linestring_distance((data["startlong"], data["startlat"]),
+            result.append(production_data_to_linestring_distance([(data["startlong"], data["startlat"])],
                                                               MAX_MAPPING_DISTANCE))
 
         self.assertAlmostEqual(result[0]["distance"], 19.7805, 3)
@@ -41,10 +41,10 @@ class MapperSingleSegmentTest(APITestCase):
         production_data_in_range = [{"startlat": 63.387691997704202, "startlong": 10.3290819995141}]
 
         # Check that the out of range one does not map
-        mapped_data = mapper.map_to_segment(production_data_out_of_range)
+        mapped_data = map_to_segment(production_data_out_of_range)
         self.assertEqual(len(mapped_data), 0)
         # Check that the in range one maps
-        mapped_data = mapper.map_to_segment(production_data_in_range)
+        mapped_data = map_to_segment(production_data_in_range)
         self.assertEqual(len(mapped_data), 1)
 
 
@@ -80,7 +80,7 @@ class MapperMultiSegmentTest(APITestCase):
             sequence.append({"startlong": feature["geometry"]["coordinates"][0],
                              "startlat": feature["geometry"]["coordinates"][1]})
 
-        mapped_sequence = mapper.map_to_segment(sequence)
+        mapped_sequence = map_to_segment(sequence)
 
         # Test that all the points were mapped
         self.assertEqual(len(sequence), len(mapped_sequence))
@@ -107,7 +107,7 @@ class MapperMultiSegmentTest(APITestCase):
             sequence.append({"startlong": feature["geometry"]["coordinates"][0],
                              "startlat": feature["geometry"]["coordinates"][1]})
 
-        mapped_sequence = mapper.map_to_segment(sequence)
+        mapped_sequence = map_to_segment(sequence)
 
         # Test that all the points were mapped
         self.assertEqual(len(sequence), len(mapped_sequence))

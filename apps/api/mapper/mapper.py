@@ -2,62 +2,28 @@ from django.db import connection
 from vapi.constants import MAX_MAPPING_DISTANCE
 
 
-def point_to_linestring_distance(point, search_radius):
-    """
-    Returns closest segment and distance.
-    Uses built in postgis functions to find the distance in meters between
-    a point (input) and all the segments in the database. Then it returns
-    the closest one or None if no segments within the MAX_MAPPING_DISTANCE.
-    :param point: lon lat
-    :type point: tuple
-    :param search_radius: Max distance to segment
-    :type search_radius: int
-    :return: Segment id and distance to it
-    :rtype: dict
-    """
-    with connection.cursor() as cursor:
-        stmt = """
-        WITH segment (id, distance)
-        AS
-        -- Find distance to segment and id
-        (
-          SELECT segment.id AS id,
-          ST_Distance(
-            segment.the_geom::geography,
-            -- Make a point with srid 4326 since the point is lon lat
-            ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography
-          ) AS distance
-          FROM api_roadsegment segment
-        )
-        SELECT id, distance
-        FROM segment
-        WHERE distance <= %s
-        ORDER BY distance ASC
-        LIMIT 1
-        """
-        cursor.execute(stmt, [point[0], point[1], search_radius])
-        row = cursor.fetchone()
-
-    if row is not None:
-        return {"id": row[0], "distance": row[1]}
-    else:
-        return None
-
-
-def line_to_linestring_distance(line, search_radius):
+def production_data_to_linestring_distance(geometry, search_radius):
     """
     Returns closest segment and distance.
     Uses built in postgis functions to find the distance in meters between
     a line (input) and all the segments in the database. Then it returns
     the closest one or None if no segments within the MAX_MAPPING_DISTANCE.
-    :param line: list with start and end points (lon/lat)
-    :type line: list
+    :param geometry: list with start and end points (lon/lat)
+    :type geometry: list
     :param search_radius: Max distance to segment
     :type search_radius: int
     :return: Segment id and distance to it
     :rtype: dict
     """
     with connection.cursor() as cursor:
+        # Use linestring for two points or point for single point
+        if len(geometry) > 1:
+            substring = "ST_MakeLine(ST_MakePoint(%s, %s), ST_MakePoint(%s, %s))"
+            params = [geometry[0][0], geometry[0][1], geometry[1][0], geometry[1][1]]
+        else:
+            substring = "ST_MakePoint(%s, %s)"
+            params = [geometry[0][0], geometry[0][1]]   
+
         stmt = """
         WITH segment (id, distance)
         AS
@@ -66,8 +32,8 @@ def line_to_linestring_distance(line, search_radius):
           SELECT segment.id AS id,
           ST_Distance(
             segment.the_geom::geography,
-            -- Make a point with srid 4326 since the point is lon lat
-            ST_SetSRID(ST_MakeLine(ST_MakePoint(%s, %s), ST_MakePoint(%s, %s)), 4326)::geography
+            -- Make a line with srid 4326 since the points are lon lat
+            ST_SetSRID({substring}, 4326)::geography
           ) AS distance
           FROM api_roadsegment segment
         )
@@ -76,8 +42,11 @@ def line_to_linestring_distance(line, search_radius):
         WHERE distance <= %s
         ORDER BY distance ASC
         LIMIT 1
-        """
-        cursor.execute(stmt, [line[0][0], line[0][1], line[1][0], line[1][1], search_radius])
+        """.format(substring=substring)
+
+        # Add search_radius to parameters
+        params.append(search_radius)
+        cursor.execute(stmt, params)
         row = cursor.fetchone()
 
     if row is not None:
@@ -131,10 +100,10 @@ def map_to_segment(production_data):
 
         if "endlat" in prod_data and "endlong" in prod_data:
             line = [(prod_data["startlong"], prod_data["startlat"]), (prod_data["endlong"], prod_data["endlat"])]
-            segment = line_to_linestring_distance(line, MAX_MAPPING_DISTANCE)
+            segment = production_data_to_linestring_distance(line, MAX_MAPPING_DISTANCE)
         else:
-            segment = point_to_linestring_distance(
-                (prod_data["startlong"], prod_data["startlat"]), MAX_MAPPING_DISTANCE
+            segment = production_data_to_linestring_distance(
+                [(prod_data["startlong"], prod_data["startlat"])], MAX_MAPPING_DISTANCE
             )
 
         if segment is not None:
