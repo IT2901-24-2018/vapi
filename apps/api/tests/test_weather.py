@@ -4,6 +4,12 @@ from rest_framework.test import APITestCase
 
 from api.models import RoadSegment, WeatherData
 
+# docker-compose run --rm django  py.test apps/api/tests/test_weather.py
+# check if more than one weather for each segment
+# put in rain, check if there is weather
+# update rain, check if it was updated
+# update temperature, check if it is updated
+
 
 class InsertOneWeatherDataTest(APITestCase):
     """
@@ -20,6 +26,7 @@ class InsertOneWeatherDataTest(APITestCase):
             stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
         segmentID = RoadSegment.objects.get()
+        print("the things: " + str(segmentID))
 
         WeatherData.objects.create(
             time=timezone.now(), county_and_municipality_id=5001, value=2, unit="mm", degrees="30", segment=segmentID
@@ -30,3 +37,8 @@ class InsertOneWeatherDataTest(APITestCase):
         Check that there is one and only one item in prod-data table
         """
         self.assertEqual(WeatherData.objects.count(), 1)
+
+    def test_for_rain(self):
+        entry = WeatherData.objects.get()
+        print("Amount of rain: " + str(entry.value))
+        self.assertEqual(entry.value, 2)
