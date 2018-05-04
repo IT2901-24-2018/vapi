@@ -95,6 +95,7 @@ def geometry_to_list(geometry):
         coordinates_list.append(coord_pair)
     return {"srid": int(srid), "coordinates": coordinates_list}
 
+
 def list_to_geometry(coord_list, srid):
     linestring = ""
     for pair in coord_list:
