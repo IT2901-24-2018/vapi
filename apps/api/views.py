@@ -11,6 +11,8 @@ from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, Us
                              WeatherDataSerializer, WeatherDataInputSerializer)
 from api.weather import weather
 
+import datetime
+
 
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
@@ -146,6 +148,10 @@ class WeatherViewSet(viewsets.ModelViewSet):
         """
         data = []
 
+        start = datetime.datetime.strptime(request.data['start_time_period'], "%Y-%m-%dT%H:%M:%S")
+        end = datetime.datetime.strptime(request.data['end_time_period'], "%Y-%m-%dT%H:%M:%S")
+        delta = end - start
+
         if isinstance(request.data, list):
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
@@ -156,6 +162,9 @@ class WeatherViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         elif request.data['value'] < 0:
             error = {"detail": "Can not enter negative value data"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        elif (delta.days) >= 1:
+            error = {"detail": "Only supports 1 day time frame for weather"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
             data.append(request.data)
