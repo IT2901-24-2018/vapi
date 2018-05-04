@@ -14,7 +14,7 @@ from warnings import warn
 
 import geojson
 import shapely.wkt
-from apps.data.road_segmenting.nvdbapi import *
+from apps.data.road_segmenting.nvdbapi import NvdbVegnett, NvdbFagdata, NvdbFagObjekt
 from apps.data.road_segmenting.road_filter import remove_keys
 
 # How to install shapely on windows:
