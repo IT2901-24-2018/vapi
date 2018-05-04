@@ -9,6 +9,12 @@ from apps.data.road_segmenting.road_filter import filter_road
 from apps.api.segmenter.road_segmenter import geometry_to_list
 
 
+def convert(road):
+    road = filter_road(road)
+    road["the_geom"] = geometry_to_list(road["the_geom"])
+    return road
+
+
 class TestSegmenting(unittest.TestCase):
 
     @classmethod
@@ -71,8 +77,7 @@ class TestSegmenting(unittest.TestCase):
         :return:
         """
         for road in self.road_net:
-            road = filter_road(road)
-            road["the_geom"] = geometry_to_list(road["the_geom"])
+            road = convert(road)
             self.assertIsInstance(road["the_geom"], dict, "geometry_to_list should return a "
                                                           "dictionary")
             self.assertIsInstance(road["the_geom"]["coordinates"], list, "geometry_to_list should return a turn the "
@@ -86,8 +91,7 @@ class TestSegmenting(unittest.TestCase):
         """
         margin = 3
         for road in self.road_net:
-            road = filter_road(road)
-            road["the_geom"] = geometry_to_list(road["the_geom"])
+            road = convert(road)
 
             length_before = calculate_road_length_simple(road["the_geom"]["coordinates"])
 
@@ -107,8 +111,7 @@ class TestSegmenting(unittest.TestCase):
         :return: Nothing
         """
         for road in self.road_net:
-            road = filter_road(road)
-            road["the_geom"] = geometry_to_list(road["the_geom"])
+            road = convert(road)
             road_segmented = split_segment(road, self.max_segment_distance, [], self.min_coordinates_length)
 
             for i in range(1, len(road_segmented)):
