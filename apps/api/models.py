@@ -18,8 +18,8 @@ class RoadSegment(BaseModel):
     county = models.IntegerField(help_text="County identifier.  Example: 50")
     href = models.CharField(max_length=150, help_text="Link to NVDB for this unique segment")
     category = models.CharField(max_length=4, help_text="Road segment category. Example: K")
-    municipality = models.IntegerField(help_text="Municipality number for that county."
-                                       "Example: 01 for Trondheim")
+    municipality = models.IntegerField(help_text="County and municipality number for that municipality."
+                                       "Example: 5001 for Trondheim")
     startdate = models.DateField(help_text="Start date for the road segment. Example: 2018-04-20")
     region = models.IntegerField(help_text="Region number. Example: 4")
     status = models.CharField(max_length=4, help_text="Road status. Example: G")
@@ -49,12 +49,9 @@ class ProductionData(BaseModel):
 
 
 class WeatherData(BaseModel):
-    time = models.DateTimeField(help_text="When the weather data was generated. Example: 2018-12-09T08:45:15Z")
-    county_and_municipality_id = models.IntegerField(help_text="County and municipality number put together."
-                                                     "Example: 5001 for Trondheim")
-    value = models.IntegerField(help_text="The amount of precipitation without the unit. Example: 2")
-    unit = models.CharField(max_length=2, help_text="The unit describing the value. Max two in length. "
-                            "Example: mm for millimeter")
-    degrees = models.IntegerField(help_text="The degree measured in celsius.")
-    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE, help_text="Segment ID to mapped segment. "
-                                "Will be autocompleted by the code. Enter dummy value.")
+    time = models.DateTimeField()
+    county_and_municipality_id = models.IntegerField()
+    value = models.IntegerField()
+    unit = models.CharField(max_length=2)
+    degrees = models.IntegerField()
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
