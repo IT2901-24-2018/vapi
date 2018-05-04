@@ -64,7 +64,7 @@ class TestSegmenting(unittest.TestCase):
     def test_road_filter(self):
         """
         Tests if road_filter returns a string, otherwise segmentation will crash in later stages
-        :return:
+        :return: Nothing
         """
         for road in self.road_net:
             road = filter_road(road)
@@ -73,7 +73,7 @@ class TestSegmenting(unittest.TestCase):
     def test_geometry_conversion(self):
         """
         Tests if geometry_to_list works properly, otherwise the segmenter can't split segments
-        :return:
+        :return: Nothing
         """
         for road in self.road_net:
             road = convert(road)
