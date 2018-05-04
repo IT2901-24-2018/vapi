@@ -26,7 +26,6 @@ class InsertOneWeatherDataTest(APITestCase):
             stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
         segmentID = RoadSegment.objects.get()
-        print("the things: " + str(segmentID))
 
         WeatherData.objects.create(
             time=timezone.now(), county_and_municipality_id=5001, value=2, unit="mm", degrees="30", segment=segmentID
@@ -40,5 +39,8 @@ class InsertOneWeatherDataTest(APITestCase):
 
     def test_for_rain(self):
         entry = WeatherData.objects.get()
-        print("Amount of rain: " + str(entry.value))
         self.assertEqual(entry.value, 2)
+
+    def test_for_temperature(self):
+        entry = WeatherData.objects.get()
+        self.assertEqual(entry.degrees, 30)
