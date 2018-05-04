@@ -1,12 +1,10 @@
 from api.models import RoadSegment, WeatherData
+from django.db.models import F
 from copy import deepcopy
 
 
 def map_weather_to_segment(weather_data):
-    # Todo Map the weather to every segment.
-    # Check if exisiting weather exists and add total value if needed
-    # Create PUT request for data that should be updated instead of created
-
+    number_of_updated_weather = 0
     mapped_weather = []
 
     for weather in weather_data:
@@ -15,15 +13,22 @@ def map_weather_to_segment(weather_data):
         for segment_id in mun_segments:
             has_weather = False
             for entry in weather_for_mun:
-                if segment_id == entry['segment_id']:
-                    #update
+                if segment_id['id'] == entry['segment_id']:
                     has_weather = True
+                    number_of_updated_weather += 1
+                    update_weather_data(weather, segment_id['id'])
             if not has_weather:
                 copy_weather = deepcopy(weather)
-                copy_weather['segment'] = segment_id
+                copy_weather['segment'] = segment_id['id']
                 mapped_weather.append(copy_weather)
-    print(mapped_weather)
-    return weather_data
+    return number_of_updated_weather, mapped_weather
+
+
+def update_weather_data(inserted_weather, segment_id):
+    weather = WeatherData.objects.get(segment=segment_id)
+    weather.value = F('value') + inserted_weather['value']
+    weather.degrees = inserted_weather['degrees']
+    weather.save(update_fields=['value', 'degrees'])
 
 
 def get_segments(municipality):
