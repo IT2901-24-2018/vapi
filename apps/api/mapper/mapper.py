@@ -2,86 +2,76 @@ from django.db import connection
 from vapi.constants import MAX_MAPPING_DISTANCE
 
 
-def production_data_to_linestring_distance(geometry, search_radius):
+def get_candidates(sequence, search_radius):
     """
     Returns closest segment and distance.
     Uses built in postgis functions to find the distance in meters between
     a line (input) and all the segments in the database. Then it returns
     the closest one or None if no segments within the MAX_MAPPING_DISTANCE.
-    :param geometry: list with start and end points (lon/lat)
-    :type geometry: list
+    :param sequence: list with start and end points (lon/lat)
+    :type sequence: list[dict]
     :param search_radius: Max distance to segment
     :type search_radius: int
     :return: Segment id and distance to it
     :rtype: dict
     """
     with connection.cursor() as cursor:
-        # Use linestring for two points or point for single point
-        if len(geometry) > 1:
-            substring = "ST_MakeLine(ST_MakePoint(%s, %s), ST_MakePoint(%s, %s))"
-            params = [geometry[0][0], geometry[0][1], geometry[1][0], geometry[1][1]]
-        else:
-            substring = "ST_MakePoint(%s, %s)"
-            params = [geometry[0][0], geometry[0][1]]   
+        params = []
+        for i in range(len(sequence)):
+            params.extend([i,
+                           sequence[i]["startlong"], sequence[i]["startlat"],
+                           sequence[i]["endlong"], sequence[i]["endlat"]])
+
+        placeholder = ", ".join("(%s, %s, %s, %s, %s)" for _ in range(len(sequence)))
 
         stmt = """
-        WITH segment (id, distance)
-        AS
-        -- Find distance to segment and id
+        WITH sequence (lid, slon, slat, elon, elat) AS (VALUES {placeholder}),
+        line AS
         (
-          SELECT segment.id AS id,
-          ST_Distance(
-            segment.the_geom::geography,
-            -- Make a line with srid 4326 since the points are lon lat
-            ST_SetSRID({substring}, 4326)::geography
-          ) AS distance
-          FROM api_roadsegment segment
+          SELECT *, (ST_SetSRID(ST_MakeLine(
+            ST_MakePoint(slon, slat), ST_MakePoint(elon, elat)
+          ), 4326)::geography) AS line,
+          ST_SetSRID(ST_MakePoint(slon, slat), 4326)::geography AS spoint,
+          ST_SetSRID(ST_MakePoint(elon, elat), 4326)::geography AS epoint
+          FROM sequence
         )
-        SELECT id, distance
-        FROM segment
-        WHERE distance <= %s
-        ORDER BY distance ASC
-        LIMIT 1
-        """.format(substring=substring)
+        
+        SELECT line.lid AS lid, segment.id AS sid,
+        -- Test (Remove this)
+        segment.county AS testid,
+        -- Test end
+        (
+        -- Find distance to segment
+          SELECT ST_Distance(
+            segment.the_geom::geography,
+            line.line
+          ) AS distance
+        ),
+        -- Map start point to closest point on segment
+        (SELECT ST_AsText(ST_ClosestPoint(
+          segment.the_geom, ST_SetSRID(ST_MakePoint(line.slon, line.slat), 4326))) AS start_mapped_point
+        ),
+        -- Map end point to closest point on segment
+        (SELECT ST_AsText(ST_ClosestPoint(
+          segment.the_geom, ST_SetSRID(ST_MakePoint(line.elon, line.elat), 4326))) AS end_mapped_point
+        ),
+        -- Find distance between start point and end point
+        (SELECT ST_Distance(line.spoint, line.epoint)) AS distance_between_start_end,
+        -- Find distance between the remapped start and end points
+        (SELECT ST_Distance(
+          ST_ClosestPoint(segment.the_geom, ST_SetSRID(ST_MakePoint(line.slon, line.slat), 4326))::geography,
+          ST_ClosestPoint(segment.the_geom, ST_SetSRID(ST_MakePoint(line.elon, line.elat), 4326))::geography
+        )) AS distance_on_segment
+        FROM api_roadsegment AS segment, line
+        WHERE ST_DWithin(line.line, segment.the_geom::geography, %s)
+        ORDER BY lid ASC, distance ASC
+        """.format(placeholder=placeholder)
 
         # Add search_radius to parameters
         params.append(search_radius)
         cursor.execute(stmt, params)
-        row = cursor.fetchone()
-
-    if row is not None:
-        return {"id": row[0], "distance": row[1]}
-    else:
-        return None
-
-
-def closest_point_on_linestring(points, segment):
-    """
-    Finds the closest point on the segment from point
-    :param points: List of one or two lon/lat points
-    :type points: list
-    :param segment: The id of a segment
-    :type segment: int
-    :return: List of the closest start and end points on the segment
-    :rtype: list
-    """
-    return_points = []
-    for point in points:
-        with connection.cursor() as cursor:
-            stmt = """
-            WITH prod
-            AS
-            (
-              SELECT ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geometry AS point
-            )
-            SELECT ST_AsText(ST_ClosestPoint(segment.the_geom, prod.point))
-            FROM api_roadsegment AS segment, prod
-            WHERE id = %s
-            """
-            cursor.execute(stmt, [point[0], point[1], segment])
-            return_points.append(cursor.fetchone()[0])
-
-    return return_points
+        columns = [col[0] for col in cursor.description]
+        return [dict(zip(columns, row)) for row in cursor.fetchall()]
 
 
 def map_to_segment(production_data):
@@ -89,39 +79,29 @@ def map_to_segment(production_data):
     Maps production data to road segments.
     Returns the prod-data dicts that mapped to a segment with the db id of the segment
     :param production_data: List of dicts that include a startlong and startlat attribute
-    :type production_data: list
+    :type production_data: list[dict]
     :return: Mapped prod-data
     :rtype: list
     """
 
+    candidates = get_candidates(production_data, MAX_MAPPING_DISTANCE)
+
     mapped_data = []
 
-    for prod_data in production_data:
+    # Check for each prod-data id what segment is best
+    # Criteria is the closest distance and most similar distance_between_start_end and distance_on_segment
 
-        if "endlat" in prod_data and "endlong" in prod_data:
-            line = [(prod_data["startlong"], prod_data["startlat"]), (prod_data["endlong"], prod_data["endlat"])]
-            segment = production_data_to_linestring_distance(line, MAX_MAPPING_DISTANCE)
-        else:
-            segment = production_data_to_linestring_distance(
-                [(prod_data["startlong"], prod_data["startlat"])], MAX_MAPPING_DISTANCE
-            )
+    for candidate in candidates:
 
-        if segment is not None:
+        # Check what segment to map to
 
-            if "endlat" in prod_data and "endlong" in prod_data:
-                mapped_points = closest_point_on_linestring(
-                    [(prod_data["startlong"], prod_data["startlat"]), (prod_data["endlong"], prod_data["endlat"])],
-                    segment["id"]
-                )
-            else:
-                mapped_points = closest_point_on_linestring(
-                    [(prod_data["startlong"], prod_data["startlat"])], segment["id"]
-                )
 
-            prod_data["segment"] = segment["id"]
-            prod_data["start_point"] = mapped_points[0]
-            if len(mapped_points) > 1:
-                prod_data["end_point"] = mapped_points[1]
-            mapped_data.append(prod_data)
+
+        if True:
+
+            production_data[int(candidate["lid"])]["segment"] = candidate["sid"]
+            production_data[int(candidate["lid"])]["start_point"] = candidate["start_mapped_point"]
+            production_data[int(candidate["lid"])]["end_point"] = candidate["end_mapped_point"]
+            mapped_data.append(production_data[int(candidate["lid"])])
 
     return mapped_data
