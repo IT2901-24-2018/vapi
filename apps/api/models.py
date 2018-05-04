@@ -49,7 +49,8 @@ class ProductionData(BaseModel):
 
 
 class WeatherData(BaseModel):
-    time = models.DateTimeField()
+    start_time_period = models.DateTimeField()
+    end_time_period = models.DateTimeField()
     county_and_municipality_id = models.IntegerField()
     value = models.IntegerField()
     unit = models.CharField(max_length=2)

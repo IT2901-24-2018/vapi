@@ -144,12 +144,7 @@ class WeatherViewSet(viewsets.ModelViewSet):
         """
         Create new weather data from list mapped to road segment
         """
-        # Check if the incoming data is a list
-        # If it is a list set the many flag to True
         data = []
-
-        # Check if the incoming data is a list
-        # If it is a list set the many flag to True
 
         if isinstance(request.data, list):
             data = request.data
