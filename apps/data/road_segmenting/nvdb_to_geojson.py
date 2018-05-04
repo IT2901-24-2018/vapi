@@ -13,9 +13,9 @@ import copy
 from warnings import warn
 
 import geojson
-import nvdbapi
 import shapely.wkt
-from road_filter import remove_keys
+from apps.data.road_segmenting.road_filter import remove_keys
+from apps.data.road_segmenting.nvdbapi import *
 
 # How to install shapely on windows:
 # http://deparkes.co.uk/2015/01/29/install-shapely-on-anaconda/
@@ -89,7 +89,7 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False):
     mygeojson = geojsontemplate()
 
     # Har vi et objekt for søk mot NVDB api?
-    if isinstance(vegnett, nvdbapi.NvdbVegnett):
+    if isinstance(vegnett, NvdbVegnett):
         if not vegnett.geofilter and not ignorewarning and not maxcount:
             warn('For mange lenker - bruk  ignorewarning=True for hele Norge')
             maxcount = 1000
@@ -262,7 +262,7 @@ def fagdata2geojson(fagdata, maxcount=False,
 
     mygeojson = geojsontemplate()
 
-    if isinstance(fagdata, nvdbapi.NvdbFagdata):
+    if isinstance(fagdata, NvdbFagdata):
 
         if strictGeometryType:
             geometrityper = fagdata.objektTypeDef['stedfesting']
@@ -290,7 +290,7 @@ def fagdata2geojson(fagdata, maxcount=False,
 
     elif isinstance(fagdata, dict) and 'egenskaper' in fagdata.keys():
 
-        mittobj = nvdbapi.NvdbFagdata(fagdata['metadata']['type']['id'])
+        mittobj = NvdbFagdata(fagdata['metadata']['type']['id'])
         if strictGeometryType:
             geometrityper = mittobj.objektTypeDef['stedfesting']
         else:
