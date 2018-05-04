@@ -26,6 +26,8 @@ class TestSegmenting(unittest.TestCase):
         network = vegnet_to_geojson(cls.kommune, cls.vegref)
         cls.count, cls.road_net = network[0], network[1]["features"]
 
+        # Apparently the setUpClass is a bit funky and the road_net does not stay filtered after setUpClass is run,
+        # so instead it is done in each test function it is needed instead of here.
         temp = []
         for road in cls.road_net:
             temp.append(filter_road(road))
@@ -36,7 +38,7 @@ class TestSegmenting(unittest.TestCase):
 
     def test_road_segmenter_list(self):
         """
-        road_segmenter should return a list
+        The road_segmenter function should return a list
         :return: Nothing
         """
         self.assertIsInstance(self.road_net_segmented, list, "The road segmenter did not return a list")
@@ -64,7 +66,7 @@ class TestSegmenting(unittest.TestCase):
 
     def test_road_filter(self):
         """
-        Tests if road_filter returns a string, otherwise segmentation will crash in later stages
+        The road_filter function should returns a string, otherwise segmentation will crash in later stages
         :return: Nothing
         """
         for road in self.road_net:
@@ -73,7 +75,8 @@ class TestSegmenting(unittest.TestCase):
 
     def test_geometry_conversion(self):
         """
-        Tests if geometry_to_list works properly, otherwise the segmenter can't split segments
+        The geometry_to_list function should return a dictionary containing coordinates as a list,
+        otherwise the segmenter can't split segments
         :return: Nothing
         """
         for road in self.road_net:
@@ -126,7 +129,7 @@ class TestSegmenting(unittest.TestCase):
     def test_split_segment_negative_length(self):
         """
         No road segments should have a negative road length
-        :return:
+        :return: Nothing
         """
         for segment in self.road_net_segmented:
             self.assertGreater(segment["stretchdistance"], 0, "Stretchdistance must be of at least 1 meter")
@@ -141,6 +144,23 @@ class TestSegmenting(unittest.TestCase):
             for x in range(i+1, length):
                 other_road = self.road_net_segmented[x]["the_geom"]
                 self.assertNotEqual(road, other_road, "Duplicate segment geometry coordinates")
+
+    def test_missing_coordinates(self):
+        """
+        All original coordinates should still be present after segmenting road network
+        :return: Nothing
+        """
+        for road in self.road_net:
+            road = convert(road)
+            coordinates_original = road["the_geom"]["coordinates"]
+
+            road_segmented = split_segment(road, self.max_segment_distance, [], self.min_coordinates_length)
+            coordinates_segmented = []
+            for segment in road_segmented:
+                coordinates_segmented.extend(segment["the_geom"]["coordinates"])
+
+            for coordinate in coordinates_original:
+                self.assertTrue(coordinate in coordinates_segmented, "Missing coordinate after segmenting")
 
 
 if __name__ == "__main__":
