@@ -118,6 +118,7 @@ def remove_outdated_prod_data(segment_times, prod_data):
     """
     filtered_prod_data = []
     for segment in segment_times:
+        # TODO: Hvis tiden for siste proddata for et segment er nyere enn siste tidspunkt for vær(?) slett
         # Check if there is not production data on the segment with a more recent time
         if len(ProductionData.objects.filter(segment=segment, time__gt=segment_times[segment]["latest_time"])) == 0:
             for prod in prod_data:
