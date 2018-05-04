@@ -37,10 +37,28 @@ class InsertOneWeatherDataTest(APITestCase):
         """
         self.assertEqual(WeatherData.objects.count(), 1)
 
-    def test_for_rain(self):
+    def test_for_precipitation(self):
+        """
+        Check that there is precipitation in the weather data
+        """
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
 
     def test_for_temperature(self):
+        """
+        Check that there is temperature in the weather data
+        """
         entry = WeatherData.objects.get()
         self.assertEqual(entry.degrees, 30)
+
+    def test_for_correct_segment(self):
+        """
+        Check that the road segment has the correct weather data
+        """
+        segment = RoadSegment.objects.get()
+        weather = WeatherData.objects.get()
+        self.assertEqual(segment.id, weather.segment.id)
+
+
+# class InsertMultiWeatherDataTest(APITestCase):
+#
