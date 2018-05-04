@@ -8,7 +8,7 @@ from api.mapper import mapper
 from api.models import ProductionData, RoadSegment, WeatherData
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, UserSerializer,
-                             WeatherDataSerializer)
+                             WeatherDataSerializer, WeatherDataInputSerializer)
 from api.weather import weather
 
 
@@ -131,9 +131,14 @@ class WeatherViewSet(viewsets.ModelViewSet):
     TODO: Write about all actions for documentation purposes.
     """
     queryset = WeatherData.objects.all()
-    serializer_class = WeatherDataSerializer
+    serializer_class = WeatherDataInputSerializer
     # Only registered users can use this view
     permission_classes = (permissions.IsAuthenticated, IsStaffOrCreateOnly,)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = WeatherDataSerializer(queryset, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         """
@@ -151,21 +156,38 @@ class WeatherViewSet(viewsets.ModelViewSet):
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        elif request.data['unit'] != "mm":
+            error = {"detail": "Unit must be mm"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        elif request.data['value'] < 0:
+            error = {"detail": "Can not enter negative value data"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
             data.append(request.data)
 
+        serializer = self.get_serializer(data=data, many=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         # Map weather data to road a road segment
-        mapped_weather = weather.map_weather_to_segment(data)
+        number_of_updated_weather, mapped_weather = weather.map_weather_to_segment(data)
+
+        # If mapped_weather is an empty list
+        if not mapped_weather and number_of_updated_weather == 0:
+            error = {"detail": "No weather was mapped to road segments for that municipality"}
+            return Response(error, status=status.HTTP_200_OK)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=mapped_weather, many=True)
+        serializer = WeatherDataSerializer(data=mapped_weather, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
             serializer.save()
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
+            #headers = self.get_success_headers(serializer.data)
+            return Response(
+                "{} row(s) added and {} weather objects updated".format(len(serializer.data), number_of_updated_weather),
+                status=status.HTTP_201_CREATED,
+            )
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
