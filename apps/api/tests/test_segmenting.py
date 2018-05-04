@@ -1,5 +1,4 @@
 import unittest
-import json
 
 from api.segmenter.calculate_distance import calculate_road_length_simple
 from apps.data.road_segmenting.road_fetcher import vegnet_to_geojson
@@ -141,6 +140,7 @@ class TestSegmenting(unittest.TestCase):
             for x in range(i+1, length):
                 other_road = self.road_net_segmented[x]["the_geom"]
                 self.assertNotEqual(road, other_road, "Duplicate segment geometry coordinates")
+
 
 if __name__ == "__main__":
     unittest.main()
