@@ -1,11 +1,12 @@
 import unittest
 
-from api.segmenter.calculate_distance import calculate_road_length_simple
-from apps.data.road_segmenting.road_fetcher import vegnet_to_geojson
-from api.segmenter.road_segmenter import segment_network, split_segment
-from vapi.constants import MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
-from apps.data.road_segmenting.road_filter import filter_road
 from apps.api.segmenter.road_segmenter import geometry_to_list
+from apps.data.road_segmenting.road_fetcher import vegnet_to_geojson
+from apps.data.road_segmenting.road_filter import filter_road
+from vapi.constants import MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
+
+from api.segmenter.calculate_distance import calculate_road_length_simple
+from api.segmenter.road_segmenter import segment_network, split_segment
 
 
 def convert(road):

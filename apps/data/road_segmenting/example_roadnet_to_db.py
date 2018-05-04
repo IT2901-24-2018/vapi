@@ -1,7 +1,6 @@
 import os
 
 import requests
-
 from road_fetcher import vegnet_to_geojson
 from road_filter import filter_road
 
