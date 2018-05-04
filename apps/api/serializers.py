@@ -32,7 +32,10 @@ class WeatherDataInputSerializer(serializers.Serializer):
     """
     Serializer for validating the weather data input. Does not need the save and update methods.
     """
-    time = serializers.DateTimeField(help_text="When the weather data was generated. Example: 2018-12-09T08:45:15Z")
+    start_time_period = serializers.DateTimeField(help_text="Start time for the weather period. "
+                                                            "Example: 2018-12-09T08:45:15Z")
+    end_time_period = serializers.DateTimeField(help_text="End time for the weather period. "
+                                                            "Example: 2018-12-10T08:45:15Z")
     county_and_municipality_id = serializers.IntegerField(help_text="County and municipality number put together."
                                                                "Example: 5001 for Trondheim")
     value = serializers.IntegerField(help_text="The amount of precipitation without the unit. Example: 2")
@@ -44,8 +47,8 @@ class WeatherDataInputSerializer(serializers.Serializer):
 class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeatherData
-        fields = ('created', 'updated', 'time', 'county_and_municipality_id', 'value', 'unit',
-                  'degrees', 'segment')
+        fields = ('created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id', 'value',
+                  'unit', 'degrees', 'segment')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
