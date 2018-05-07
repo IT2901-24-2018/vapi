@@ -14,8 +14,14 @@ from warnings import warn
 
 import geojson
 import shapely.wkt
-from apps.data.road_segmenting.nvdbapi import NvdbFagdata, NvdbVegnett
-from apps.data.road_segmenting.road_filter import remove_keys
+
+# Funky imports
+try:
+    from apps.data.road_segmenting.nvdbapi import NvdbFagdata, NvdbVegnett
+    from apps.data.road_segmenting.road_filter import remove_keys
+except ModuleNotFoundError:
+    from nvdbapi import NvdbFagdata, NvdbVegnett
+    from road_filter import remove_keys
 
 # How to install shapely on windows:
 # http://deparkes.co.uk/2015/01/29/install-shapely-on-anaconda/
