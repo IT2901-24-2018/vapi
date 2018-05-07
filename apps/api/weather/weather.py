@@ -41,8 +41,7 @@ def check_for_existing_data(entry):
     segment = entry['segment_id']
     prod_data_list = ProductionData.objects.filter(segment=segment)
     for data in prod_data_list:
-        if data.time <= end and data.time >= start:
-            return True
+        return data.time <= end and data.time >= start
     return False
 
 
