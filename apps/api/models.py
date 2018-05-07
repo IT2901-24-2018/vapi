@@ -29,7 +29,7 @@ class RoadSegment(BaseModel):
     vrefshortform = models.CharField(max_length=255, help_text="A combination of multiple fields. "
                                      "Example: 5001 Kg97587 hp1 m349-380")
     the_geom = models.LineStringField(help_text="Linestring according to ISO 19162:2015. "
-                                      "Example: SRID=4326;LINESTRING (10.37634290477487 63.3478716972899, "
+                                      "Example: SRID=4326;LINESTRING(10.37634290477487 63.3478716972899,"
                                       "10.37656821856063 63.34786722088941)")
 
 
