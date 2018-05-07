@@ -1,4 +1,4 @@
-from api.models import RoadSegment, WeatherData
+from api.models import RoadSegment, WeatherData, ProductionData
 from django.db.models import F
 from copy import deepcopy
 import datetime
@@ -17,12 +17,24 @@ def map_weather_to_segment(weather_data):
                 if segment_id['id'] == entry['segment_id']:
                     has_weather = True
                     number_of_updated_weather += 1
-                    update_weather_data(weather, segment_id['id'])
+                    if not check_for_existing_data(entry):
+                        update_weather_data(weather, segment_id['id'])
             if not has_weather:
                 copy_weather = deepcopy(weather)
                 copy_weather['segment'] = segment_id['id']
                 mapped_weather.append(copy_weather)
     return number_of_updated_weather, mapped_weather
+
+
+def check_for_existing_data(entry):
+    start = entry['start_time_period']
+    end = entry['end_time_period']
+    segment = entry['segment_id']
+    prod_data_list = ProductionData.objects.filter(segment=segment)
+    for data in prod_data_list:
+        if data.time <= end and data.time >= start:
+            return True
+    return False
 
 
 def handle_prod_weather_overlap(mapped_data):
