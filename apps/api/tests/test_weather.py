@@ -56,6 +56,9 @@ class InsertOneWeatherDataTest(APITestCase):
         self.assertEqual(segment.id, weather.segment.id)
 
     def test_for_updated_value(self):
+        """
+        Check if the weather data updates
+        """
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
         weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',
