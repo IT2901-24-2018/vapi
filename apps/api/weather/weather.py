@@ -1,9 +1,12 @@
 from api.models import RoadSegment, WeatherData
 from django.db.models import F
 from copy import deepcopy
+import datetime
+import pytz
 
 def map_weather_to_segment(weather_data):
     # Handle if the input has an old time associated with it
+    # TODO Handle every fucking edge case that has to do with updating weather within a segment of time
     number_of_updated_weather = 0
     mapped_weather = []
 
@@ -22,6 +25,33 @@ def map_weather_to_segment(weather_data):
                 copy_weather['segment'] = segment_id['id']
                 mapped_weather.append(copy_weather)
     return number_of_updated_weather, mapped_weather
+
+
+def handle_prod_weather_overlap(mapped_data):
+    # If prod data time corresponds to the 1 day weather in the database, zero the precipitation
+    for prod_data in mapped_data:
+        if prod_data['plow_active'] == 'True' or prod_data['brush_active'] == 'True':
+            if check_time_period(prod_data):
+                # Zero the precipitation
+                print('Resetting')
+                reset_precipitation(prod_data['segment'])
+
+
+def reset_precipitation(prod_data_segment):
+    weather = WeatherData.objects.get(segment=prod_data_segment)
+    weather.value = 0
+    weather.save(update_fields=['value'])
+
+
+def check_time_period(prod_data):
+    # Make this slicker
+    weather_element = list(WeatherData.objects.filter(segment=prod_data['segment']).values('start_time_period',
+                                                                                   'end_time_period'))
+    start_weather_time = weather_element[0]['start_time_period']
+    end_weather_time = weather_element[0]['end_time_period']
+    prod_data_time = datetime.datetime.strptime(prod_data['time'], "%Y-%m-%dT%H:%M:%S")
+    aware_prod_data_time = pytz.utc.localize(prod_data_time)
+    return start_weather_time <= aware_prod_data_time <= end_weather_time
 
 
 def update_weather_data(inserted_weather, segment_id):
