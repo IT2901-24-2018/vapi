@@ -52,11 +52,11 @@ def handle_prod_weather_overlap(mapped_data):
     """
     # If prod data time corresponds to the 1 day weather in the database, zero the precipitation
     for prod_data in mapped_data:
-        if prod_data['plow_active'].lower() == 'true' or prod_data['brush_active'].lower() == 'true':
-            print(prod_data)
-            if check_time_period(prod_data):
-                # Zero the precipitation
-                reset_precipitation(prod_data)
+        if 'plow_active' in prod_data or 'brush_active' in prod_data:
+            if prod_data['plow_active'] or prod_data['brush_active']:
+                if check_time_period(prod_data):
+                    # Zero the precipitation
+                    reset_precipitation(prod_data)
 
 
 def reset_precipitation(prod_data):
