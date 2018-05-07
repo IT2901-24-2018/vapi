@@ -74,11 +74,13 @@ def check_time_period(prod_data):
     # Make this slicker
     weather_element = list(WeatherData.objects.filter(segment=prod_data['segment']).values('start_time_period',
                                                                                            'end_time_period'))
-    start_weather_time = weather_element[0]['start_time_period']
-    end_weather_time = weather_element[0]['end_time_period']
-    prod_data_time = datetime.datetime.strptime(prod_data['time'], "%Y-%m-%dT%H:%M:%S")
-    aware_prod_data_time = pytz.utc.localize(prod_data_time)
-    return start_weather_time <= aware_prod_data_time <= end_weather_time
+    if weather_element:
+        start_weather_time = weather_element[0]['start_time_period']
+        end_weather_time = weather_element[0]['end_time_period']
+        prod_data_time = datetime.datetime.strptime(prod_data['time'], "%Y-%m-%dT%H:%M:%S")
+        aware_prod_data_time = pytz.utc.localize(prod_data_time)
+        return start_weather_time <= aware_prod_data_time <= end_weather_time
+    return False
 
 
 def update_weather_data(inserted_weather, segment_id):
