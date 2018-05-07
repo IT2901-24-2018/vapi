@@ -1,6 +1,6 @@
 import unittest
 
-from apps.api.segmenter.road_segmenter import geometry_to_list, list_to_geometry
+from apps.api.segmenter.road_segmenter import geometry_to_list
 from apps.data.road_segmenting.road_fetcher import vegnet_to_geojson
 from apps.data.road_segmenting.road_filter import filter_road
 from vapi.constants import MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
