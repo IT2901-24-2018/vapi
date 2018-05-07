@@ -132,8 +132,15 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
 class WeatherViewSet(viewsets.ModelViewSet):
     """
-    This viewset supports `create` and `list` actions.
-    TODO: Write about all actions for documentation purposes.
+    list: Returns all the elements. Weather data in this case.
+
+    read: Retrieve weather data. #ID of the weather needed.
+
+    update: Updates one single weather data. All fields are mandatory.
+
+    partial_update: Updates one single weather data. No fields are mandatory.
+
+    destroy: Request for deleting a weather data element.
     """
     queryset = WeatherData.objects.all()
     serializer_class = WeatherDataInputSerializer

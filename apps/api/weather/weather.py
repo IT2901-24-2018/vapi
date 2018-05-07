@@ -71,7 +71,10 @@ def reset_precipitation(prod_data):
 
 
 def check_time_period(prod_data):
-    # Make this slicker
+    """
+    :param prod_data: One production data JSON object
+    :return: True if the prod data is between start and end time for weather object
+    """
     weather_element = list(WeatherData.objects.filter(segment=prod_data['segment']).values('start_time_period',
                                                                                            'end_time_period'))
     if weather_element:
@@ -84,6 +87,11 @@ def check_time_period(prod_data):
 
 
 def update_weather_data(inserted_weather, segment_id):
+    """
+    :param inserted_weather: User entered weather as JSON
+    :param segment_id: ID to road segment
+    :return: Nothing. Updates connecting weather accordingly
+    """
     weather = WeatherData.objects.get(segment=segment_id)
     weather.value = F('value') + inserted_weather['value']
     weather.degrees = inserted_weather['degrees']
@@ -92,12 +100,20 @@ def update_weather_data(inserted_weather, segment_id):
 
 
 def get_segments(municipality):
+    """
+    :param municipality: Municipality number
+    :return: A list with all road segments with that municipality
+    """
     queryset = RoadSegment.objects.filter(municipality=municipality).values('id')
     matched_segments = list(queryset)
     return matched_segments
 
 
 def get_weather_for_mun(municipality):
+    """
+    :param municipality: Municipality number
+    :return: A list with all weather objects with that municipality
+    """
     queryset = WeatherData.objects.filter(county_and_municipality_id=municipality).values()
     matched_weather = list(queryset)
     return matched_weather
