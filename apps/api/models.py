@@ -34,7 +34,7 @@ class RoadSegment(BaseModel):
 
 
 class ProductionData(BaseModel):
-    time = models.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15Z")
+    time = models.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15")
     startlat = models.FloatField(help_text="Start latitude. Example: 63.3870750023729")
     startlong = models.FloatField(help_text="Start longitute. Example: 10.3277250005425")
     endlat = models.FloatField(help_text="End latitude. Example: 63.3874419990294")
