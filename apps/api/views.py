@@ -175,7 +175,7 @@ class WeatherViewSet(viewsets.ModelViewSet):
         elif request.data['value'] < 0:
             error = {"detail": "Can not enter negative value data"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        elif (delta.days) >= 1:
+        elif delta.days >= 1:
             error = {"detail": "Only supports 1 day time frame for weather"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         elif (days_ago.days > 1) or (end > now):
@@ -202,9 +202,10 @@ class WeatherViewSet(viewsets.ModelViewSet):
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
             serializer.save()
-            #headers = self.get_success_headers(serializer.data)
+            # headers = self.get_success_headers(serializer.data)
             return Response(
-                "{} row(s) added and {} weather objects updated".format(len(serializer.data), number_of_updated_weather),
+                "{} row(s) added and {} weather objects updated".format(len(serializer.data),
+                                                                        number_of_updated_weather),
                 status=status.HTTP_201_CREATED,
             )
 

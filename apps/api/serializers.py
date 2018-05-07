@@ -28,6 +28,7 @@ class ProductionDataSerializer(serializers.ModelSerializer):
         fields = ('created', 'updated', 'time', 'startlat', 'startlong', 'endlat', 'endlong', 'dry_spreader_active',
                   'plow_active', 'wet_spreader_active', 'brush_active', 'material_type_code', 'segment')
 
+
 class WeatherDataInputSerializer(serializers.Serializer):
     """
     Serializer for validating the weather data input. Does not need the save and update methods.
@@ -35,12 +36,12 @@ class WeatherDataInputSerializer(serializers.Serializer):
     start_time_period = serializers.DateTimeField(help_text="Start time for the weather period. "
                                                             "Example: 2018-12-09T08:45:15Z")
     end_time_period = serializers.DateTimeField(help_text="End time for the weather period. "
-                                                            "Example: 2018-12-10T08:45:15Z")
+                                                          "Example: 2018-12-10T08:45:15Z")
     county_and_municipality_id = serializers.IntegerField(help_text="County and municipality number put together."
-                                                               "Example: 5001 for Trondheim")
+                                                                    "Example: 5001 for Trondheim")
     value = serializers.IntegerField(help_text="The amount of precipitation without the unit. Example: 2")
     unit = serializers.CharField(max_length=2, help_text="The unit describing the value. Max two in length."
-                                                    "Only supports mm at the moment. Example: mm for millimeter")
+                                                         "Only supports mm at the moment. Example: mm for millimeter")
     degrees = serializers.IntegerField(help_text="The degree measured in celsius.")
 
 

@@ -29,9 +29,9 @@ class InsertOneWeatherDataTest(APITestCase):
         segment = RoadSegment.objects.get()
 
         WeatherData.objects.create(
-            start_time_period=timezone.now(), end_time_period=timezone.now() + timezone.timedelta(days=1), county_and_municipality_id=5001, value=2, unit="mm", degrees="30", segment=segment
+            start_time_period=timezone.now(), end_time_period=timezone.now() + timezone.timedelta(days=1),
+            county_and_municipality_id=5001, value=2, unit="mm", degrees="30", segment=segment
         )
-
 
     def test_prod_data(self):
         """
@@ -64,17 +64,17 @@ class InsertOneWeatherDataTest(APITestCase):
     def test_for_updated_value(self):
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
-        weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',"end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
-                                         "value": 4, "unit": 'mm',"degrees": 30, "segment": 4}])
+        weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',
+                                         "end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
+                                         "value": 4, "unit": 'mm', "degrees": 30, "segment": 4}])
         entry2 = WeatherData.objects.get()
         self.assertEqual(entry2.value, 6)
-
 
     def test_for_existing_production_data(self):
         """
         Check that if there is already production data within weather time delta, do not apply weather data
         """
-        entry=WeatherData.objects.get()
+        entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
         ProductionData.objects.create(
             time=timezone.now(), startlat=64.3870750023729, startlong=64.3870750023729, endlat=64.3870750023729,
@@ -87,7 +87,6 @@ class InsertOneWeatherDataTest(APITestCase):
                                          "value": 4, "unit": 'mm', "degrees": 30, "segment": 4}])
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
-
 
     def test_for_existing_weather_data(self):
         """
