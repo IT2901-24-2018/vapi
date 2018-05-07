@@ -2,7 +2,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from api.models import RoadSegment, WeatherData
+from api.models import RoadSegment, WeatherData, ProductionData
 from api.weather import weather
 
 # docker-compose run --rm django  py.test apps/api/tests/test_weather.py
@@ -29,8 +29,9 @@ class InsertOneWeatherDataTest(APITestCase):
         segment = RoadSegment.objects.get()
 
         WeatherData.objects.create(
-            start_time_period=timezone.now(), end_time_period=timezone.now(), county_and_municipality_id=5001, value=2, unit="mm", degrees="30", segment=segment
+            start_time_period=timezone.now(), end_time_period=timezone.now() + timezone.timedelta(days=1), county_and_municipality_id=5001, value=2, unit="mm", degrees="30", segment=segment
         )
+
 
     def test_prod_data(self):
         """
@@ -63,13 +64,31 @@ class InsertOneWeatherDataTest(APITestCase):
     def test_for_updated_value(self):
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
-        print(entry.segment.id)
         weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',"end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
                                          "value": 4, "unit": 'mm',"degrees": 30, "segment": 4}])
         entry2 = WeatherData.objects.get()
-
         self.assertEqual(entry2.value, 6)
 
+
+    def test_for_existing_production_data(self):
+        """
+        Check that if there is already production data within weather time delta, do not apply weather data
+        """
+        entry=WeatherData.objects.get()
+        self.assertEqual(entry.value, 2)
+        ProductionData.objects.create(
+            time=timezone.now(), startlat=64.3870750023729, startlong=64.3870750023729, endlat=64.3870750023729,
+            endlong=64.3870750023729, dry_spreader_active=True,
+            plow_active=True, wet_spreader_active=True, brush_active=True, material_type_code=True,
+            segment=RoadSegment.objects.get()
+        )
+
+        weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',
+                                         "end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
+                                         "value": 4, "unit": 'mm', "degrees": 30, "segment": 4}])
+
+        entry = WeatherData.objects.get()
+        self.assertEqual(entry.value, 2)
 
 # class InsertMultiWeatherDataTest(APITestCase):
 #
