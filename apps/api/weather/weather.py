@@ -4,10 +4,8 @@ from copy import deepcopy
 import datetime
 import pytz
 
-def map_weather_to_segment(weather_data):
 
-    # Handle if the input has an old time associated with it
-    # TODO Handle every fucking edge case that has to do with updating weather within a segment of time
+def map_weather_to_segment(weather_data):
     number_of_updated_weather = 0
     mapped_weather = []
     for weather in weather_data:
@@ -30,23 +28,23 @@ def map_weather_to_segment(weather_data):
 def handle_prod_weather_overlap(mapped_data):
     # If prod data time corresponds to the 1 day weather in the database, zero the precipitation
     for prod_data in mapped_data:
-        if prod_data['plow_active'] == 'True' or prod_data['brush_active'] == 'True':
+        if prod_data['plow_active'].lower() == 'true' or prod_data['brush_active'].lower() == 'true':
             if check_time_period(prod_data):
                 # Zero the precipitation
-                print('Resetting')
-                reset_precipitation(prod_data['segment'])
+                reset_precipitation(prod_data)
 
 
-def reset_precipitation(prod_data_segment):
-    weather = WeatherData.objects.get(segment=prod_data_segment)
+def reset_precipitation(prod_data):
+    weather = WeatherData.objects.get(segment=prod_data['segment'])
+    weather.start_time_period = prod_data['time']
     weather.value = 0
-    weather.save(update_fields=['value'])
+    weather.save(update_fields=['start_time_period', 'value'])
 
 
 def check_time_period(prod_data):
     # Make this slicker
     weather_element = list(WeatherData.objects.filter(segment=prod_data['segment']).values('start_time_period',
-                                                                                   'end_time_period'))
+                                                                                           'end_time_period'))
     start_weather_time = weather_element[0]['start_time_period']
     end_weather_time = weather_element[0]['end_time_period']
     prod_data_time = datetime.datetime.strptime(prod_data['time'], "%Y-%m-%dT%H:%M:%S")

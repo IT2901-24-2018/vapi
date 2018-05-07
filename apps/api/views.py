@@ -153,14 +153,18 @@ class WeatherViewSet(viewsets.ModelViewSet):
 
         start = datetime.datetime.strptime(request.data['start_time_period'], "%Y-%m-%dT%H:%M:%S")
         end = datetime.datetime.strptime(request.data['end_time_period'], "%Y-%m-%dT%H:%M:%S")
+        now = datetime.datetime.now()
         delta = end - start
+        days_ago = now - end
+
+        print(days_ago.days)
 
         if isinstance(request.data, list):
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        elif request.data['unit'] != "mm":
+        elif request.data['unit'].lower() != "mm":
             error = {"detail": "Unit must be mm"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         elif request.data['value'] < 0:
@@ -168,6 +172,9 @@ class WeatherViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         elif (delta.days) >= 1:
             error = {"detail": "Only supports 1 day time frame for weather"}
+            return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        elif (days_ago.days > 1) or (end > now):
+            error = {"detail": "Weather can not be over 24 hours old or in the future"}
             return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
             data.append(request.data)
