@@ -1,8 +1,10 @@
-from api.models import RoadSegment, WeatherData, ProductionData
-from django.db.models import F
-from copy import deepcopy
 import datetime
+from copy import deepcopy
+
 import pytz
+from django.db.models import F
+
+from api.models import ProductionData, RoadSegment, WeatherData
 
 
 def map_weather_to_segment(weather_data):

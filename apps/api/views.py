@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -8,10 +10,8 @@ from api.mapper import mapper
 from api.models import ProductionData, RoadSegment, WeatherData
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, UserSerializer,
-                             WeatherDataSerializer, WeatherDataInputSerializer)
+                             WeatherDataInputSerializer, WeatherDataSerializer)
 from api.weather import weather
-
-import datetime
 
 
 class StandardResultsSetPagination(PageNumberPagination):

@@ -2,7 +2,7 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from api.models import RoadSegment, WeatherData, ProductionData
+from api.models import ProductionData, RoadSegment, WeatherData
 from api.weather import weather
 
 # docker-compose run --rm django  py.test apps/api/tests/test_weather.py

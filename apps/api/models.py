@@ -56,4 +56,3 @@ class WeatherData(BaseModel):
     unit = models.CharField(max_length=2)
     degrees = models.IntegerField()
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
-
