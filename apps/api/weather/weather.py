@@ -5,11 +5,11 @@ import datetime
 import pytz
 
 def map_weather_to_segment(weather_data):
+
     # Handle if the input has an old time associated with it
     # TODO Handle every fucking edge case that has to do with updating weather within a segment of time
     number_of_updated_weather = 0
     mapped_weather = []
-
     for weather in weather_data:
         mun_segments = get_segments(weather['county_and_municipality_id'])
         weather_for_mun = get_weather_for_mun(weather['county_and_municipality_id'])
