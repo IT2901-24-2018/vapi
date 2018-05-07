@@ -6,6 +6,11 @@ import pytz
 
 
 def map_weather_to_segment(weather_data):
+    """
+    :param weather_data: List containing weather data as specified in models
+    :return: number_of_updated_weather: The total number of weather objects that were updated
+    :return: mapped_weather: List containing mapped weather linked to road segments
+    """
     number_of_updated_weather = 0
     mapped_weather = []
     for weather in weather_data:
@@ -27,6 +32,10 @@ def map_weather_to_segment(weather_data):
 
 
 def check_for_existing_data(entry):
+    """
+    :param entry: JSON weather object
+    :return: True or False if the same road segment has production data within the time range for the weather
+    """
     start = entry['start_time_period']
     end = entry['end_time_period']
     segment = entry['segment_id']
@@ -37,6 +46,10 @@ def check_for_existing_data(entry):
 
 
 def handle_prod_weather_overlap(mapped_data):
+    """
+    :param mapped_data: A list containing the mapped json production data.
+    :return: Nothing. Updated the weather associated with the road segment if true
+    """
     # If prod data time corresponds to the 1 day weather in the database, zero the precipitation
     for prod_data in mapped_data:
         if prod_data['plow_active'].lower() == 'true' or prod_data['brush_active'].lower() == 'true':
@@ -46,6 +59,10 @@ def handle_prod_weather_overlap(mapped_data):
 
 
 def reset_precipitation(prod_data):
+    """
+    :param prod_data: JSON production data object
+    :return: Nothing. Updates the weather object associated with the common road segment
+    """
     weather = WeatherData.objects.get(segment=prod_data['segment'])
     weather.start_time_period = prod_data['time']
     weather.value = 0
