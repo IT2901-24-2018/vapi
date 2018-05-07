@@ -1,6 +1,6 @@
 import unittest
 
-from apps.api.segmenter.road_segmenter import geometry_to_list
+from apps.api.segmenter.road_segmenter import geometry_to_list, list_to_geometry
 from apps.data.road_segmenting.road_fetcher import vegnet_to_geojson
 from apps.data.road_segmenting.road_filter import filter_road
 from vapi.constants import MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
@@ -161,6 +161,18 @@ class TestSegmenting(unittest.TestCase):
 
             for coordinate in coordinates_original:
                 self.assertTrue(coordinate in coordinates_segmented, "Missing coordinate after segmenting")
+
+    def test_oversegmenting(self):
+        """
+        The segmenter should only run on segments that are over the limit in length, it should never segment something
+        shorter than that. In other words the segmented road should still be only one segment
+        :return: Nothing
+        """
+        for road in self.road_net:
+            if road["properties"]["strekningslengde"] < self.max_segment_distance:
+                self.assertTrue(len(segment_network([filter_road(road)], self.max_segment_distance,
+                                                    self.min_coordinates_length)) == 1,
+                                "This road was segmented, but should not have been")
 
 
 if __name__ == "__main__":
