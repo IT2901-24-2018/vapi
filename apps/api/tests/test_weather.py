@@ -5,12 +5,6 @@ from rest_framework.test import APITestCase
 from api.models import ProductionData, RoadSegment, WeatherData
 from api.weather import weather
 
-# docker-compose run --rm django  py.test apps/api/tests/test_weather.py
-# check if more than one weather for each segment
-# put in rain, check if there is weather
-# update rain, check if it was updated
-# update temperature, check if it is updated
-
 
 class InsertOneWeatherDataTest(APITestCase):
     """
@@ -99,7 +93,3 @@ class InsertOneWeatherDataTest(APITestCase):
             plow_active=True, wet_spreader_active=True, brush_active=True, material_type_code=True,
             segment=RoadSegment.objects.get()
         )
-
-
-# class InsertMultiWeatherDataTest(APITestCase):
-#
