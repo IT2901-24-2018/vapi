@@ -84,15 +84,3 @@ class InsertOneWeatherDataTest(APITestCase):
                                          "value": 4, "unit": 'mm', "degrees": 30, "segment": 4}])
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
-
-    def test_for_existing_weather_data(self):
-        """
-        Check that when you input production data, if there is already weather, reset the weather precipitation and
-        update the start time period for the weather.
-        """
-        ProductionData.objects.create(
-            time=timezone.now(), startlat=64.3870750023729, startlong=64.3870750023729, endlat=64.3870750023729,
-            endlong=64.3870750023729, dry_spreader_active=True,
-            plow_active=True, wet_spreader_active=True, brush_active=True, material_type_code=True,
-            segment=RoadSegment.objects.get()
-        )
