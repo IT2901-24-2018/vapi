@@ -157,8 +157,6 @@ class WeatherViewSet(viewsets.ModelViewSet):
         delta = end - start
         days_ago = now - end
 
-        print(days_ago.days)
-
         if isinstance(request.data, list):
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
