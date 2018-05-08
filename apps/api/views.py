@@ -41,13 +41,11 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
         """
         Inputs a list of road segments.
         """
-        many = False
         data = []
 
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
         if isinstance(request.data, list):
-            many = True
             data = request.data
         else:
             data.append(request.data)
@@ -56,7 +54,7 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
         segments = segment_network(data, MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=segments, many=many)
+        serializer = self.get_serializer(data=segments, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
