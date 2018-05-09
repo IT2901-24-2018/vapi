@@ -1,6 +1,5 @@
 .PHONY: default build start stop restart migrate migrations \
-		shell superuser status psql test lint-only test-only
-
+		static shell superuser status psql test lint-only test-only
 
 # Variables
 BACKEND_SERVICE_NAME = django
@@ -26,6 +25,9 @@ migrate:
 
 migrations:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py makemigrations
+
+static:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py collectstatic
 
 shell:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell

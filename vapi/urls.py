@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.urls import path
-from django.views.generic import RedirectView
+from django.views.generic import TemplateView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^', include('api.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),
-    url(r'^$', RedirectView.as_view(url='/docs/')),
+    url(r'^$', TemplateView.as_view(template_name="index.html")),
 ]
