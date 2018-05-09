@@ -48,7 +48,7 @@ class WeatherDataInputSerializer(serializers.Serializer):
 class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeatherData
-        fields = ('created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id', 'value',
+        fields = ('id','created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id', 'value',
                   'unit', 'degrees', 'segment')
 
 

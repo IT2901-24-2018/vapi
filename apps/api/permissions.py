@@ -19,7 +19,7 @@ class IsStaffOrCreateOnly(permissions.BasePermission):
     """
     def has_permission(self, request, view):
         # Defining available request methods.
-        staff_methods = ("GET", "OPTIONS", "HEAD", "POST")
+        staff_methods = ("GET", "OPTIONS", "HEAD", "POST", "DELETE")
         not_staff_methods = ("OPTIONS", "POST")
 
         if request.user.is_staff and request.method in staff_methods:
