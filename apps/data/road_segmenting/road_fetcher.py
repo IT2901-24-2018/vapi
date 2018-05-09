@@ -1,8 +1,14 @@
 import json
 
-from nvdb_to_geojson import vegnett2geojson
-from nvdbapi import NvdbVegnett
-from road_filter import remove_height, remove_keys
+# Funky imports
+try:
+    from apps.data.road_segmenting.nvdb_to_geojson import vegnett2geojson
+    from apps.data.road_segmenting.nvdbapi import NvdbVegnett
+    from apps.data.road_segmenting.road_filter import remove_height, remove_keys
+except ModuleNotFoundError:
+    from nvdb_to_geojson import vegnett2geojson
+    from nvdbapi import NvdbVegnett
+    from road_filter import remove_height, remove_keys
 
 
 def format_vegnet(kommune, vegref):

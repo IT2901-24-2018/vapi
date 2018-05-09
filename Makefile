@@ -1,5 +1,5 @@
 .PHONY: default build start stop restart migrate migrations \
-		shell superuser status psql lint test
+		static shell superuser status psql lint test
 
 # Variables
 BACKEND_SERVICE_NAME = django
@@ -25,6 +25,9 @@ migrate:
 migrations:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py makemigrations
 
+static:
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py collectstatic
+
 shell:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell
 
@@ -45,4 +48,4 @@ lint:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
 test:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test --cov=apps
