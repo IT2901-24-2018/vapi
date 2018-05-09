@@ -1,4 +1,4 @@
-.PHONY: default build start stop restart migrate migrations \
+.PHONY: default build start down stop restart migrate migrations \
 		static shell superuser status psql test lint-only test-only
 
 # Variables
@@ -14,6 +14,9 @@ build:
 
 start:
 	docker-compose up
+
+down:
+	docker-compose down
 
 stop:
 	docker-compose stop
