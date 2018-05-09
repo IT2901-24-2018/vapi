@@ -68,11 +68,11 @@ def segment_network(road_network, max_distance, min_gps):
         road_segment["the_geom"] = geometry_to_list(road_segment["the_geom"])
 
         if road_segment["stretchdistance"] < 1:
+            print("Found an invalid stretchdistance:", road_segment["stretchdistance"],
+                  ", roadsectionid:", road_segment["roadsectionid"])
             new_distance = calculate_road_length_simple(road_segment["the_geom"]["coordinates"])
             road_segment["stretchdistance"] = new_distance
-            print("Found an invalid stretchdistance:", road_segment["stretchdistance"],
-                  ", roadsectionid:", road_segment["roadsectionid"],
-                  "setting stretchdistance to:", new_distance)
+            print("setting stretchdistance to:", new_distance)
 
         if len(road_segment["the_geom"]["coordinates"]) > min_gps and check_split(road_segment, max_distance):
             split_roads = split_segment(road_segment, max_distance, [], min_gps)
