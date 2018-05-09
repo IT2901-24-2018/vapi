@@ -1,5 +1,3 @@
-import datetime
-
 from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
