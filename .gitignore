@@ -14,3 +14,4 @@ roadnet.gjson
 .pytest_cache/
 
 .coverage
+coverage.xml
