@@ -22,6 +22,6 @@ script:
   - flake8 apps/api apps/data
   - isort -c
   - py.test --cov-config=setup.cfg --cov=apps
-  - bash < (curl -s https://codecov.io/bash)
+  - codecov -t codecov-token
 notifications:
   email: false
