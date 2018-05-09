@@ -176,7 +176,6 @@ class WeatherViewSet(viewsets.ModelViewSet):
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            # headers = self.get_success_headers(serializer.data)
             return Response(
                 "{} row(s) added and {} weather objects updated".format(len(serializer.data),
                                                                         number_of_updated_weather),
