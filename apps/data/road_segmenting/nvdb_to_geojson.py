@@ -15,7 +15,7 @@ from warnings import warn
 import geojson
 import shapely.wkt
 
-# Funky imports
+# Need different imports for tests
 try:
     from apps.data.road_segmenting.nvdbapi import NvdbFagdata, NvdbVegnett
     from apps.data.road_segmenting.road_filter import remove_keys
