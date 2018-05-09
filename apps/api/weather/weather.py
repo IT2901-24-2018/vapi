@@ -119,4 +119,3 @@ def get_weather_for_mun(municipality):
     queryset = WeatherData.objects.filter(county_and_municipality_id=municipality).values()
     matched_weather = list(queryset)
     return matched_weather
-

@@ -14,7 +14,6 @@ from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, Us
 from api.weather import weather
 
 
-
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
     page_size_query_param = "page_size"

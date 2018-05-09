@@ -8,10 +8,11 @@ In each serializer is listed all the fields that are used from the model.
 Also includes a url field.
 """
 
-from django.contrib.auth.models import User
-from rest_framework import serializers
 from datetime import timedelta
+
+from django.contrib.auth.models import User
 from django.utils import timezone
+from rest_framework import serializers
 
 from api.models import ProductionData, RoadSegment, WeatherData
 
