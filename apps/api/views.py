@@ -111,14 +111,13 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # Handle overlap with old prod-data
         mapped_data = mapper.handle_prod_data_overlap(mapped_data)
 
-        # Handle weather data when adding new production data
-        weather.handle_prod_weather_overlap(mapped_data)
-
         # Instantiate the serializer
         serializer = self.get_serializer(data=mapped_data, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
+            # Handle weather data when adding new production data
+            weather.handle_prod_weather_overlap(serializer.data)
             serializer.save()
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED,

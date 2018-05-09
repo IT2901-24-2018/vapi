@@ -1,8 +1,7 @@
-import datetime
 from copy import deepcopy
 
-import pytz
 from django.db.models import F
+from django.utils.dateparse import parse_datetime
 
 from api.models import ProductionData, RoadSegment, WeatherData
 
@@ -58,6 +57,7 @@ def handle_prod_weather_overlap(mapped_data):
             if prod_data['plow_active'] or prod_data['brush_active']:
                 if check_time_period(prod_data):
                     # Zero the precipitation
+                    print("WE ARE IN BBY")
                     reset_precipitation(prod_data)
 
 
@@ -82,9 +82,8 @@ def check_time_period(prod_data):
     if weather_element:
         start_weather_time = weather_element[0]['start_time_period']
         end_weather_time = weather_element[0]['end_time_period']
-        prod_data_time = datetime.datetime.strptime(prod_data['time'], "%Y-%m-%dT%H:%M:%S")
-        aware_prod_data_time = pytz.utc.localize(prod_data_time)
-        return start_weather_time <= aware_prod_data_time <= end_weather_time
+        parsed_weather = parse_datetime(prod_data['time'])
+        return start_weather_time <= parsed_weather <= end_weather_time
     return False
 
 
