@@ -38,8 +38,8 @@ class ProductionDataInputSerializer(serializers.Serializer):
     time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15Z")
     startlat = serializers.FloatField(help_text="Start latitude. Example: 63.3870750023729")
     startlong = serializers.FloatField(help_text="Start longitute. Example: 10.3277250005425")
-    endlat = serializers.FloatField(help_text="End latitude. Example: 63.3874419990294", required=False)
-    endlong = serializers.FloatField(help_text="End longitude. Example: 10.3290930003037", required=False)
+    endlat = serializers.FloatField(help_text="End latitude. Example: 63.3874419990294")
+    endlong = serializers.FloatField(help_text="End longitude. Example: 10.3290930003037")
     dry_spreader_active = serializers.NullBooleanField(required=False,
                                                        help_text="Dry spreader active boolean. Optional.")
     plow_active = serializers.NullBooleanField(required=False, help_text="Plow boolean. Optional.")
