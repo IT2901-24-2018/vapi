@@ -14,6 +14,7 @@ from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, Us
 from api.weather import weather
 
 
+
 class StandardResultsSetPagination(PageNumberPagination):
     page_size = 100
     page_size_query_param = "page_size"
@@ -158,49 +159,26 @@ class WeatherViewSet(viewsets.ModelViewSet):
         """
         data = []
 
-        start = datetime.datetime.strptime(request.data['start_time_period'], "%Y-%m-%dT%H:%M:%S")
-        end = datetime.datetime.strptime(request.data['end_time_period'], "%Y-%m-%dT%H:%M:%S")
-        now = datetime.datetime.now()
-        delta = end - start
-        days_ago = now - end
-
         if isinstance(request.data, list):
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
                 error = {"detail": "Input list too long"}
                 return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        elif request.data['unit'].lower() != "mm":
-            error = {"detail": "Unit must be mm"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        elif request.data['value'] < 0:
-            error = {"detail": "Can not enter negative value data"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        elif delta.days >= 1:
-            error = {"detail": "Only supports 1 day time frame for weather"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
-        elif (days_ago.days > 1) or (end > now):
-            error = {"detail": "Weather can not be over 24 hours old or in the future"}
-            return Response(error, status=status.HTTP_400_BAD_REQUEST)
         else:
             data.append(request.data)
 
         serializer = self.get_serializer(data=data, many=True)
-        if not serializer.is_valid():
+        if not serializer.is_valid(raise_exception=True):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         # Map weather data to road a road segment
         number_of_updated_weather, mapped_weather = weather.map_weather_to_segment(data)
 
-        # If mapped_weather is an empty list
-        if not mapped_weather and number_of_updated_weather == 0:
-            error = {"detail": "No weather was mapped to road segments for that municipality"}
-            return Response(error, status=status.HTTP_200_OK)
-
         # Instantiate the serializer
         serializer = WeatherDataSerializer(data=mapped_weather, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             # headers = self.get_success_headers(serializer.data)
             return Response(

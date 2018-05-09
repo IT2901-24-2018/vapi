@@ -10,6 +10,8 @@ Also includes a url field.
 
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from datetime import timedelta
+from django.utils import timezone
 
 from api.models import ProductionData, RoadSegment, WeatherData
 
@@ -33,6 +35,37 @@ class WeatherDataInputSerializer(serializers.Serializer):
     """
     Serializer for validating the weather data input. Does not need the save and update methods.
     """
+
+    def validate_value(self, value):
+        """
+        Checks that value is below 0
+        """
+        if value < 0:
+            raise serializers.ValidationError("The value must be above 0.")
+        return value
+
+    def validate_county_and_municipality_id(self, value):
+        """
+        Check that the county and municipality id is not below 0.
+        """
+        if value < 0:
+            raise serializers.ValidationError("The value must be above 0.")
+        return value
+
+    def validate(self, data):
+        """
+        Checks multiple time cases
+        """
+        if data['start_time_period'] > data['end_time_period']:
+            raise serializers.ValidationError("End time can not be before start time")
+        elif (timezone.now() - data['end_time_period']) > timedelta(days=1):
+            raise serializers.ValidationError("Weather can not be over 24 hours old")
+        elif data['end_time_period'] > timezone.now():
+            raise serializers.ValidationError("End time can not be in the future")
+        elif (data['end_time_period'] - data['start_time_period']) >= timedelta(days=1):
+            raise serializers.ValidationError("Only supports 1 day time frame for weather")
+        return data
+
     start_time_period = serializers.DateTimeField(help_text="Start time for the weather period. "
                                                             "Example: 2018-12-09T08:45:15")
     end_time_period = serializers.DateTimeField(help_text="End time for the weather period. "
@@ -40,15 +73,13 @@ class WeatherDataInputSerializer(serializers.Serializer):
     county_and_municipality_id = serializers.IntegerField(help_text="County and municipality number put together."
                                                                     "Example: 5001 for Trondheim")
     value = serializers.IntegerField(help_text="The amount of precipitation without the unit. Example: 2")
-    unit = serializers.CharField(max_length=2, help_text="The unit describing the value. Max two in length."
-                                                         "Only supports mm at the moment. Example: mm for millimeter")
     degrees = serializers.IntegerField(help_text="The degree measured in celsius.")
 
 
 class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeatherData
-        fields = ('created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id', 'value',
+        fields = ('id', 'created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id', 'value',
                   'unit', 'degrees', 'segment')
 
 
