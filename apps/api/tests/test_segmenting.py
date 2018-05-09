@@ -178,9 +178,9 @@ class TestSegmenting(unittest.TestCase):
                                              self.min_coordinates_length)
             road_segmented_length = len(road_segmented)
             if road_distance < self.max_segment_distance:
-                self.assertTrue(road_segmented_length == 1, "This road was segmented, but should not have been")
+                self.assertTrue(road_segmented_length == 1, "This road was segmented, but should not have been.")
             elif road_coords_length >= 2*self.min_coordinates_length and road_distance > self.max_segment_distance:
-                self.assertTrue(road_segmented_length > 1, ("This road should have been segmented, but was not "
+                self.assertTrue(road_segmented_length > 1, ("This road should have been segmented, but was not. "
                                 "Stretchdistance:", road_distance, "Coordinates:",
                                                             converted_road["the_geom"]["coordinates"], i))
 
