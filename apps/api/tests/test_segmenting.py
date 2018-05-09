@@ -162,17 +162,27 @@ class TestSegmenting(unittest.TestCase):
             for coordinate in coordinates_original:
                 self.assertTrue(coordinate in coordinates_segmented, "Missing coordinate after segmenting")
 
-    def test_oversegmenting(self):
+    def test_over_and_undersegmenting(self):
         """
         The segmenter should only run on segments that are over the limit in length, it should never segment something
         shorter than that. In other words the segmented road should still be only one segment
         :return: Nothing
         """
+        i = 0
         for road in self.road_net:
-            if road["properties"]["strekningslengde"] < self.max_segment_distance:
-                self.assertTrue(len(segment_network([filter_road(road)], self.max_segment_distance,
-                                                    self.min_coordinates_length)) == 1,
-                                "This road was segmented, but should not have been")
+            i += 1
+            converted_road = convert(road)
+            road_coords_length = len(converted_road["the_geom"]["coordinates"])
+            road_distance = calculate_road_length_simple(converted_road["the_geom"]["coordinates"])
+            road_segmented = segment_network([filter_road(road)], self.max_segment_distance,
+                                             self.min_coordinates_length)
+            road_segmented_length = len(road_segmented)
+            if road_distance < self.max_segment_distance:
+                self.assertTrue(road_segmented_length == 1, "This road was segmented, but should not have been")
+            elif road_coords_length >= 2*self.min_coordinates_length and road_distance > self.max_segment_distance:
+                self.assertTrue(road_segmented_length > 1, ("This road should have been segmented, but was not "
+                                "Stretchdistance:", road_distance, "Coordinates:",
+                                                            converted_road["the_geom"]["coordinates"], i))
 
 
 if __name__ == "__main__":
