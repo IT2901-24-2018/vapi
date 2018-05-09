@@ -43,7 +43,7 @@ def check_for_existing_data(entry):
     segment_id = entry['segment_id']
     prod_data_list = ProductionData.objects.filter(segment=segment_id)
     for data in prod_data_list:
-        return data.time <= end and data.time >= start
+        return start <= data.time <= end
     return False
 
 
@@ -119,3 +119,4 @@ def get_weather_for_mun(municipality):
     queryset = WeatherData.objects.filter(county_and_municipality_id=municipality).values()
     matched_weather = list(queryset)
     return matched_weather
+
