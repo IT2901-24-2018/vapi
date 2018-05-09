@@ -48,4 +48,4 @@ lint:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
 test:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test --cov=apps
