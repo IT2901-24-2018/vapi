@@ -53,6 +53,6 @@ class WeatherData(BaseModel):
     end_time_period = models.DateTimeField()
     county_and_municipality_id = models.IntegerField()
     value = models.IntegerField()
-    unit = models.CharField(max_length=2)
+    unit = models.CharField(default='mm', max_length=2)
     degrees = models.IntegerField()
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
