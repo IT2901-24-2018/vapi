@@ -57,7 +57,6 @@ def handle_prod_weather_overlap(mapped_data):
             if prod_data['plow_active'] or prod_data['brush_active']:
                 if check_time_period(prod_data):
                     # Zero the precipitation
-                    print("WE ARE IN BBY")
                     reset_precipitation(prod_data)
 
 
