@@ -155,10 +155,14 @@ class PostProductionDataTest(APITestCase):
         # Make the test data
         self.data = [{
             "time": timezone.make_aware(timezone.datetime(2018, 2, 2, 0, 0, 0), TIMEZONE),
-            "startlat": 63.387075002372903, "startlong": 10.3277250005425, "plow_active": True
+            "startlat": 63.387075002372903, "startlong": 10.3277250005425,
+            "endlat": 63.387441999029399, "endlong": 10.3290930003037,
+            "plow_active": True
         }, {
             "time": timezone.make_aware(timezone.datetime(2018, 2, 2, 0, 1, 0), TIMEZONE),
-            "startlat": 63.387691997704202, "startlong": 10.3290819995141, "plow_active": True
+            "startlat": 63.387691997704202, "startlong": 10.3290819995141,
+            "endlat": 63.387777001722696, "endlong": 10.328826998917799,
+            "plow_active": True
         }]
 
     def test_post_prod_data_list_authenticated(self):
@@ -172,10 +176,8 @@ class PostProductionDataTest(APITestCase):
         url = reverse("productiondata-list")
         response = self.client.post(url, self.data, format="json")
 
-        # Check the status code, then check that the number of objects in the database matches the number
-        # of objects that are within range in the POST request
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ProductionData.objects.count(), 1)
+        # Check the status code, the production data does not map
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_post_prod_data_list_authenticated_staff(self):
         """
@@ -188,10 +190,8 @@ class PostProductionDataTest(APITestCase):
         url = reverse("productiondata-list")
         response = self.client.post(url, self.data, format="json")
 
-        # Check the status code, then check that the number of objects in the database matches the number
-        # of objects that are within range in the POST request
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ProductionData.objects.count(), 1)
+        # Check the status code, the production data does not map
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_post_prod_data_list_unauthenticated(self):
         """

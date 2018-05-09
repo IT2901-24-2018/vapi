@@ -13,19 +13,26 @@ def get_candidates(sequence, search_radius):
     :param search_radius: Max distance to segment
     :type search_radius: int
     :return: Segment id and distance to it
-    :rtype: dict
+    :rtype: dict[list]
     """
     with connection.cursor() as cursor:
+        # Make a list of query parameters with an id for each production data entry and the geometric data
         params = []
         for i in range(len(sequence)):
             params.extend([i,
                            sequence[i]["startlong"], sequence[i]["startlat"],
                            sequence[i]["endlong"], sequence[i]["endlat"]])
 
+        # Makes '(%s, %s, %s, %s, %s)' separated by ', ' equal to the number of data in production data input
         placeholder = ", ".join("(%s, %s, %s, %s, %s)" for _ in range(len(sequence)))
 
         stmt = """
+        /*
+        Instead of executing one query for each production data entry
+        we make a sequence that contains all the entries
+         */
         WITH sequence (lid, slon, slat, elon, elat) AS (VALUES {placeholder}),
+        -- Make a linestring representing the start and end point of an entry
         line AS
         (
           SELECT *, (ST_SetSRID(ST_MakeLine(
@@ -35,11 +42,8 @@ def get_candidates(sequence, search_radius):
           ST_SetSRID(ST_MakePoint(elon, elat), 4326)::geography AS epoint
           FROM sequence
         )
-        
+
         SELECT line.lid AS lid, segment.id AS sid,
-        -- Test (Remove this)
-        segment.county AS testid,
-        -- Test end
         (
         -- Find distance to segment
           SELECT ST_Distance(
@@ -63,6 +67,7 @@ def get_candidates(sequence, search_radius):
           ST_ClosestPoint(segment.the_geom, ST_SetSRID(ST_MakePoint(line.elon, line.elat), 4326))::geography
         )) AS distance_on_segment
         FROM api_roadsegment AS segment, line
+        -- Only calculate the distances for the segments that are within search radius
         WHERE ST_DWithin(line.line, segment.the_geom::geography, %s)
         ORDER BY lid ASC, distance ASC
         """.format(placeholder=placeholder)
@@ -71,37 +76,73 @@ def get_candidates(sequence, search_radius):
         params.append(search_radius)
         cursor.execute(stmt, params)
         columns = [col[0] for col in cursor.description]
-        return [dict(zip(columns, row)) for row in cursor.fetchall()]
+        list_rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        result = {}
+        for row in list_rows:
+            if row["lid"] not in result:
+                result[row["lid"]] = []
+            result[row["lid"]].append(row)
+        return result
 
 
-def map_to_segment(production_data):
+def prioritize_candidates(lines):
+    """
+    Use distance and the difference between distance_between_start_end and
+    distance_on_segment to decide which segment is better
+    Removes bad matches and set a score attribute to use for prioritizing
+    :param lines: Dictionary with a list for each production data line
+    :type lines: dict[list]
+    :return:
+    """
+    for key in lines:
+        temp_list = []
+        for candidate in lines[key]:
+            # Prevent divide by zero just in case
+            if candidate["distance_between_start_end"] != 0:
+                candidate["distance_diff"] = (abs(candidate["distance_between_start_end"]
+                                                  - candidate["distance_on_segment"])
+                                              / candidate["distance_between_start_end"])
+
+                # Remove candidate if it has about a 90 degree angle (+- 30 degrees) to line
+                # 90 degrees = 1 if distance is 0
+                # Works better if the line is short or the candidate segment is straight
+                if not (0.67 < candidate["distance_diff"] < 1.33):
+                    # Lower score is better
+                    if candidate["distance"] < 5:
+                        # If within 5 m look for the most parallel segment
+                        # Prioritize by lowering distance_diff by 1 making it negative in most cases
+                        candidate["score"] = candidate["distance_diff"] - 1
+                    else:
+                        candidate["score"] = (candidate["distance"]) * (candidate["distance_diff"])
+                    temp_list.append(candidate)
+
+        # Sort lists based on score
+        lines[key] = sorted(temp_list, key=lambda x: x["score"])
+    return lines
+
+
+def map_to_segment(prod_data):
     """
     Maps production data to road segments.
     Returns the prod-data dicts that mapped to a segment with the db id of the segment
-    :param production_data: List of dicts that include a startlong and startlat attribute
-    :type production_data: list[dict]
+    :param prod_data: List of dicts that include a startlong and startlat attribute
+    :type prod_data: list[dict]
     :return: Mapped prod-data
     :rtype: list
     """
 
-    candidates = get_candidates(production_data, MAX_MAPPING_DISTANCE)
+    lines = get_candidates(prod_data, MAX_MAPPING_DISTANCE)
+
+    prioritized = prioritize_candidates(lines)
 
     mapped_data = []
 
-    # Check for each prod-data id what segment is best
-    # Criteria is the closest distance and most similar distance_between_start_end and distance_on_segment
-
-    for candidate in candidates:
-
-        # Check what segment to map to
-
-
-
-        if True:
-
-            production_data[int(candidate["lid"])]["segment"] = candidate["sid"]
-            production_data[int(candidate["lid"])]["start_point"] = candidate["start_mapped_point"]
-            production_data[int(candidate["lid"])]["end_point"] = candidate["end_mapped_point"]
-            mapped_data.append(production_data[int(candidate["lid"])])
+    # Map to the highest prioritized segment
+    for key in prioritized:
+        if len(prioritized[key]) > 0:
+            prod_data[int(prioritized[key][0]["lid"])]["segment"] = prioritized[key][0]["sid"]
+            prod_data[int(prioritized[key][0]["lid"])]["start_point"] = prioritized[key][0]["start_mapped_point"]
+            prod_data[int(prioritized[key][0]["lid"])]["end_point"] = prioritized[key][0]["end_mapped_point"]
+            mapped_data.append(prod_data[int(prioritized[key][0]["lid"])])
 
     return mapped_data
