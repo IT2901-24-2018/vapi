@@ -21,7 +21,7 @@ env:
 script:
   - flake8 apps/api apps/data
   - isort -c
-  - py.test --cov=apps
+  - py.test --cov-config=setup.cfg --cov=apps
 after_success:
   - bash < (curl -s https://codecov.io/bash)
 notifications:

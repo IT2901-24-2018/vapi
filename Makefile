@@ -53,4 +53,4 @@ lint-only:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
 test-only:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test --cov=apps
+	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test --cov-config=setup.cfg --cov=apps
