@@ -66,7 +66,7 @@ class TestSegmenting(unittest.TestCase):
 
     def test_road_filter(self):
         """
-        The road_filter function should returns a string, otherwise segmentation will crash in later stages
+        The road_filter function should return a string, otherwise segmentation will crash in later stages
         :return: Nothing
         """
         for road in self.road_net:
