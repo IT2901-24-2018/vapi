@@ -52,13 +52,5 @@ lint-only:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) flake8 $(BACKEND_LINT_FOLDERS)
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> a2a259059886f5558c926d71113272e0f2e0ac3e
 test-only:
 	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test --cov=apps
-<<<<<<< HEAD
->>>>>>> dev
-=======
->>>>>>> a2a259059886f5558c926d71113272e0f2e0ac3e
