@@ -12,3 +12,5 @@ nvdbapi-clientinfo.json
 roadnet.gjson
 
 .pytest_cache/
+
+.coverage
