@@ -22,6 +22,6 @@ script:
   - flake8 apps/api apps/data
   - isort -c
   - py.test --cov-config=setup.cfg --cov=apps
-  - codecov -t $CODECOV-TOKEN
+  - codecov -t $CODECOV_TOKEN
 notifications:
   email: false
