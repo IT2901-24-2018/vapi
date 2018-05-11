@@ -41,7 +41,7 @@ def utm_to_latlon(start_point, end_point, zone1, zone2):
     :param end_point: the second GPS point given in UTM list form [x, y]
     :param zone1: the number of the zone, from 0 to 66 or something
     :param zone2: the letter for the zone, from a to z
-    :return: two latlong points in list form [[star_tlat, start_long], [end_lat, end_long]]
+    :return: two latlong points in list form [[start_lat, start_long], [end_lat, end_long]]
     """
     start = utm.to_latlon(start_point[0], start_point[1], zone1, zone2)
     end = utm.to_latlon(end_point[0], end_point[1], zone1, zone2)
