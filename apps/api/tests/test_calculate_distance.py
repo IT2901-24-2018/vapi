@@ -1,6 +1,6 @@
 import unittest
 
-from api.segmenter.calculate_distance import *
+from api.segmenter.calculate_distance import utm_to_latlon, calculate_road_length, calculate_road_length_simple
 
 
 class TestCalculateDistance(unittest.TestCase):
