@@ -56,13 +56,23 @@ Get your database up to speed by applying existing migrations:
 
 `sudo make migrate`
 
-## Superuser
+## Log in
 
 Create a superuser in Django:
 
 `sudo make superuser`
 
-While we plan to remove the need for this in the future, we need to fill in the superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
+You are now ready to start the server again:
+
+`sudo make`
+
+Navigate to [http://localhost:8000/](http://localhost:8000/), and see that Vapi is up and running!
+
+To gain access to all the endpoints of the API, you must log in as a superuser. Navigate to the [API page](http://localhost:8000/api/) and log in with your superuser in the top-right corner.
+
+## Vapi example scripts
+
+To run our example scripts, you will need to fill in your superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
 
 ```
 DJANGO_DEBUG=True
@@ -70,13 +80,7 @@ API_USERNAME=yourusername
 API_PASSWORD=yourpassword
 ```
 
-## Vapi example scripts
-
-Start the server again:
-
-`sudo make`
-
-To run our example road segmenter `example_roadnet_to_db.py`, open a new terminal, then make a bash-shell in your container with:
+To run our example road segmenter `example_roadnet_to_db.py`, make sure that the server is running. Open a new terminal, then make a bash-shell in your container with:
 
 `sudo docker exec -t -i vapi_django_1 /bin/bash`
 
