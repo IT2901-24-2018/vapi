@@ -38,7 +38,7 @@ class ProductionDataInputSerializer(serializers.Serializer):
     Serializer for validating the input of the production data endpoint
     Does not need the save and update methods
     """
-    time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15Z")
+    time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15")
     startlat = serializers.FloatField(help_text="Start latitude. Example: 63.3870750023729")
     startlong = serializers.FloatField(help_text="Start longitute. Example: 10.3277250005425")
     endlat = serializers.FloatField(help_text="End latitude. Example: 63.3874419990294")
