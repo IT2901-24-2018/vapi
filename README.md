@@ -44,11 +44,15 @@ DJANGO_DEBUG=True
 ```
 
 ## Initial build
-We have a Makefile that simplifies interaction with our Docker containers. You will likely need to use `sudo` for most Docker commands, but you can omit it depending on your installation.
+We have a Makefile that simplifies interaction with our Docker containers. You will likely need to use `sudo` for most Docker commands, but you can omit it depending on your installation. On Linux you can remove the need for sudo by adding your current user to the docker group:
+
+`sudo gpasswd -a $USER docker`
+
+After logging out and in again, you'll be able to run Docker (and make) commands without sudo.
 
 Start up the application for the first time, building your containers and starting them up by running:
 
-`sudo make`
+`make`
 
 Your Postgres container might be slower than the Django container when starting Vapi for the first time, but the server isn't ready yet anyways, so that's hardly an issue. Stop the server with `CTRL+C`.
 
@@ -56,17 +60,17 @@ Your Postgres container might be slower than the Django container when starting 
 
 Get your database up to speed by applying existing migrations:
 
-`sudo make migrate`
+`make migrate`
 
 ## Log in
 
 Create a superuser in Django:
 
-`sudo make superuser`
+`make superuser`
 
 You are now ready to start the server again:
 
-`sudo make`
+`make`
 
 Navigate to [http://localhost:8000/](http://localhost:8000/), and see that Vapi is up and running!
 
@@ -86,7 +90,7 @@ API_PASSWORD=yourpassword
 
 To run our example road segmenter `example_roadnet_to_db.py`, make sure that the server is running. Open a new terminal, then make a bash-shell in your container with:
 
-`sudo docker exec -t -i vapi_django_1 /bin/bash`
+`docker exec -t -i vapi_django_1 /bin/bash`
 
 When you're inside, run:
 
@@ -98,46 +102,46 @@ You can also run `example_create_test_prod_data.py` to simulate production data 
 
 ## Other make commands
 
-`sudo make start`
+`make start`
 
-Generally speaking, you will only need to build your containers when updating the Docker configurations, or new dependencies have been added. For general use, `sudo make start` will be faster and sufficient.
+Generally speaking, you will only need to build your containers when updating the Docker configurations, or new dependencies have been added. For general use, `make start` will be faster and sufficient.
 
-`sudo make test`
+`make test`
 
 This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
 
-`sudo make lint-only`
+`make lint-only`
 
 Only run linting (flake8 and isort)
 
-`sudo make test-only`
+`make test-only`
 
 Only run our own tests
 
-`sudo make migrations`
+`make migrations`
 
 This will run `python manage.py makemigrations`, creating new migrations based on changes made to models.
 
-`sudo make psql`
+`make psql`
 
 Starts a psql shell, handy for manually interacting with the database.
 
-`sudo make down`
+`make down`
 
 Tears down the containers, handy for clearing out the database.
 
-`sudo make build`
+`make build`
 
 This will build the containers.
 
-`sudo make stop`
+`make stop`
 
 This will stop your containers if they're running in detached mode.
 
-`sudo make restart`
+`make restart`
 
 This will stop and start (restart) your containers if they're running in detached mode.
 
-`sudo make status`
+`make status`
 
 This will display the status of your containers.
