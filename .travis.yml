@@ -19,7 +19,7 @@ install:
 env:
   - DJANGO_DEBUG=True
 script:
-  - flake8 apps/api apps/data
+  - flake8 apps/
   - isort -c
   - py.test --cov-config=setup.cfg --cov=apps
   - codecov -t $CODECOV_TOKEN

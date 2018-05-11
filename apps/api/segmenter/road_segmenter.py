@@ -96,12 +96,12 @@ def geometry_to_list(geometry):
     :return: A ditionary containing srid as a string and coordinates as a 2D list with float values
     """
     coordinates_list = []
-    temp = geometry.split(";")
-    srid, coordinates = temp[0], temp[1]
+    points = geometry.split(";")
+    srid, coordinates = points[0], points[1]
     srid = srid[5:]
 
-    temp = coordinates[11:len(coordinates)-1].split(",")
-    for pair in temp:
+    points = coordinates[11:len(coordinates)-1].split(",")
+    for pair in points:
         coord_pair = []
         for number in pair.split(" "):
             coord_pair.append(float(number))

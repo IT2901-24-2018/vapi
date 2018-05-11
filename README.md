@@ -2,13 +2,15 @@
 
 [![Build Status](https://travis-ci.org/IT2901-24-2018/vapi.svg?branch=dev)](https://travis-ci.org/IT2901-24-2018/vapi) [![codecov](https://codecov.io/gh/IT2901-24-2018/vapi/branch/dev/graph/badge.svg)](https://codecov.io/gh/IT2901-24-2018/vapi)
 
-Vapi is an API that gathers Norways digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
+Vapi is an API that gathers Norway's digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
 
 Vapi was built by a team of seven students in their sixth semester of the Bachelor’s in Informatics programme at [NTNU](https://www.ntnu.edu/), as a part of the course [IT2901](https://www.ntnu.edu/studies/courses/IT2901) - Informatics Project II, colloquially known as the bachelor's thesis. Vapi was developed for the [Norwegian Public Roads Administration](https://www.vegvesen.no/en/home).
 
 Additional documentation and information can be found in our [wiki](https://github.com/it2901-24-2018/vapi/wiki). As this is a student project, the wiki also contains a lot of administrative information related to the project. 
 
 Vapi was built with [Django](https://www.djangoproject.com/) as a multi-container [Docker](https://www.docker.com/) application. Huge thanks to [Christian Duvholt](https://github.com/duvholt) for Docker guidance.
+
+Thanks to [Jan Kristian Jensen](https://github.com/LtGlahn) for letting us use his [repository](https://github.com/LtGlahn/nvdbapi-V2) for interacting with the [NVDB API](https://www.vegvesen.no/nvdb/apidokumentasjon/). We used it for getting the official road network from the NVDB API and processing it.
 
 # Setup
 
@@ -42,11 +44,15 @@ DJANGO_DEBUG=True
 ```
 
 ## Initial build
-We have a Makefile that simplifies interaction with our Docker containers. You will likely need to use `sudo` for most Docker commands, but you can omit it depending on your installation.
+We have a Makefile that simplifies interaction with our Docker containers. You will likely need to use `sudo` for most Docker commands, but you can omit it depending on your installation. On Linux you can remove the need for sudo by adding your current user to the docker group:
+
+`sudo gpasswd -a $USER docker`
+
+After logging out and in again, you'll be able to run Docker (and make) commands without sudo.
 
 Start up the application for the first time, building your containers and starting them up by running:
 
-`sudo make`
+`make`
 
 Your Postgres container might be slower than the Django container when starting Vapi for the first time, but the server isn't ready yet anyways, so that's hardly an issue. Stop the server with `CTRL+C`.
 
@@ -54,15 +60,27 @@ Your Postgres container might be slower than the Django container when starting 
 
 Get your database up to speed by applying existing migrations:
 
-`sudo make migrate`
+`make migrate`
 
-## Superuser
+## Log in
 
 Create a superuser in Django:
 
-`sudo make superuser`
+`make superuser`
 
-While we plan to remove the need for this in the future, we need to fill in the superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
+You are now ready to start the server again:
+
+`make`
+
+Navigate to [http://localhost:8000/](http://localhost:8000/), and see that Vapi is up and running!
+
+To gain access to all the endpoints of the API, you must log in as a superuser. Navigate to the [API page](http://localhost:8000/api/) and log in with your superuser in the top-right corner.
+
+## Vapi example scripts
+
+We have two files to help with populating the database with road segments and production data. These scripts are not necessary for the API, but we left them here as a convenience for future developers.
+
+To run our example scripts, you will need to fill in your superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
 
 ```
 DJANGO_DEBUG=True
@@ -70,15 +88,9 @@ API_USERNAME=yourusername
 API_PASSWORD=yourpassword
 ```
 
-## Vapi example scripts
+To run our example road segmenter `example_roadnet_to_db.py`, make sure that the server is running. Open a new terminal, then make a bash-shell in your container with:
 
-Start the server again:
-
-`sudo make`
-
-To run our example road segmenter `example_roadnet_to_db.py`, open a new terminal, then make a bash-shell in your container with:
-
-`sudo docker exec -t -i vapi_django_1 /bin/bash`
+`docker exec -t -i vapi_django_1 /bin/bash`
 
 When you're inside, run:
 
@@ -88,43 +100,37 @@ You can also run `example_create_test_prod_data.py` to simulate production data 
 
 `python /vapi/apps/data/example_create_test_prod_data.py`
 
-## Other make commands
+# NVDB API Client Information
 
-`sudo make start`
+Our `road_fetcher.py` file interacts with the NVDB API directly, and is used by both our `example_roadnet_to_db.py` script, and the `test_segmenting.py` tests.
 
-Generally speaking, you will only need to build your containers when updating the Docker configurations, or new dependencies have been added. For general use, `sudo make start` will be faster and sufficient.
+Please fill in your client info that is sent along with the requests to the NVDB API, so that they have information on who is using the API.
 
-`sudo make test`
+Make the nvdbapi-clientinfo.json file in the root folder by:
 
-This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
+`cp example-nvdbapi-clientinfo.json nvdbapi-clientinfo.json`
 
-`sudo make migrations`
+Then, fill in your system and contact into the `nvdbapi-clientinfo.json` file. The file is ignored by git.
 
-This will run `python manage.py makemigrations`, creating new migrations based on changes made to models.
+Not having a `nvdbapi-clientinfo.json` file will produce a warning, but `road_fetcher.py` will still work.
 
-`sudo make shell`
+## Makefile commands
 
-This will start up a Django shell within the container.
+Default is the first command defined in the `Makefile`, and as such will be run by simply running `make`
 
-## Other other make commands
+| Target | Command | Description |
+| --- | --- | --- |
+| default | build start | Both builds and starts the containers. |
+| build | docker-compose build | Builds the containers. |
+| start | docker-compose up | Starts the server. |
+| down | docker-compose down | Tears down the containers, handy for clearing out the database. |
+| stop | docker-compose stop | Stops your containers if they're already running mode. |
+| restart | stop start | Stops and starts (restart) your containers. |
+| migrate |	docker-compose run --rm django python manage.py migrate | Applies existing migrations to the database |
+| migrations | docker-compose run --rm django python manage.py makemigrations | Creates new migrations based on changes made to models. |
+| superuser | docker-compose run --rm django python manage.py createsuperuser | Initiates Django superuser creation. |
+| psql | 	docker-compose exec -u postgres postgres psql | Starts a psql shell, handy for manually interacting with the database. |
+| test | test-only lint-only | Runs our linting and tests. We advice you to run this before pushing your code to Github, to ensure your code will pass our Travis CI build. |
+| lint-only | docker-compose run --rm django flake8 apps/ <br/> docker-compose run --rm django isort -c | Only runs linting (flake8 and isort) |
+| test-only | docker-compose run --rm django py.test --cov-config=setup.cfg --cov=apps | Only runs our own tests |
 
-`sudo make build`
-
-This will build the containers.
-
-`sudo make stop`
-
-This will stop your containers if they're running in detached mode.
-
-`sudo make restart`
-
-This will stop and start (restart) your containers if they're running in detached mode.
-
-`sudo make status`
-
-This will display the status of your containers.
-
-## Credits 
-
-Thanks to Jan Kristian Jensen https://github.com/LtGlahn for letting us use his https://github.com/LtGlahn/nvdbapi-V2 repo for interacting with the NVDB API.
-We used it for getting the official road network from the NVDB API and processing it. 

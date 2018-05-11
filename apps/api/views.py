@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -10,7 +9,7 @@ from api.overlap_handler.overlap_handler import handle_prod_data_overlap
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.segmenter.road_segmenter import segment_network
 from api.serializers import (ProductionDataInputSerializer, ProductionDataSerializer,
-                             RoadSegmentSerializer, UserSerializer, WeatherDataInputSerializer,
+                             RoadSegmentSerializer, WeatherDataInputSerializer,
                              WeatherDataSerializer)
 from api.weather import weather
 
@@ -203,15 +202,3 @@ class WeatherViewSet(viewsets.ModelViewSet):
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `read` actions.
-
-    list: Lists all users.
-
-    read: Returns the user with a given ID.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer

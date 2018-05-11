@@ -10,7 +10,6 @@ Also includes a url field.
 
 from datetime import timedelta
 
-from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -38,7 +37,7 @@ class ProductionDataInputSerializer(serializers.Serializer):
     Serializer for validating the input of the production data endpoint
     Does not need the save and update methods
     """
-    time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15Z")
+    time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15")
     startlat = serializers.FloatField(help_text="Start latitude. Example: 63.3870750023729")
     startlong = serializers.FloatField(help_text="Start longitute. Example: 10.3277250005425")
     endlat = serializers.FloatField(help_text="End latitude. Example: 63.3874419990294")
@@ -102,9 +101,3 @@ class WeatherDataSerializer(serializers.ModelSerializer):
         model = WeatherData
         fields = ('id', 'created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id',
                   'value', 'unit', 'degrees', 'segment')
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ("url", "id", "username")

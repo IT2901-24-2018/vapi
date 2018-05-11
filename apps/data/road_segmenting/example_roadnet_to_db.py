@@ -32,6 +32,7 @@ def format_to_db(municipality, type_road):
 
 def data_in(municipality, type_road):
     """
+    Takes the municipality number and the type of road and gathers the road network, segments it and post it to the API.
     :return: The status code of the finished post request.
     """
     url = "http://localhost:8000/api/roadsegments/"
