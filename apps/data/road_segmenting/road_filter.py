@@ -1,4 +1,3 @@
-# Circular imports suck
 def remove_keys(road):
     """
     :param road: A road segment as a dict
@@ -10,6 +9,11 @@ def remove_keys(road):
 
 
 def remove_height(road_network):
+    """
+    Removes the height from road_network
+    :param road_network: Unformatted geojson road network
+    :return: road_network without height
+    """
     for road in road_network["features"]:
         for list_coordinates in road["geometry"]["coordinates"]:
             if len(list_coordinates) > 2:
