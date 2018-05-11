@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/IT2901-24-2018/vapi.svg?branch=dev)](https://travis-ci.org/IT2901-24-2018/vapi) [![codecov](https://codecov.io/gh/IT2901-24-2018/vapi/branch/dev/graph/badge.svg)](https://codecov.io/gh/IT2901-24-2018/vapi)
 
-Vapi is an API that gathers Norway's digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and output as a RESTful API.
+Vapi is an API that gathers Norway's digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
 
 Vapi was built by a team of seven students in their sixth semester of the Bachelor’s in Informatics programme at [NTNU](https://www.ntnu.edu/), as a part of the course [IT2901](https://www.ntnu.edu/studies/courses/IT2901) - Informatics Project II, colloquially known as the bachelor's thesis. Vapi was developed for the [Norwegian Public Roads Administration](https://www.vegvesen.no/en/home).
 
@@ -145,3 +145,21 @@ This will stop and start (restart) your containers if they're running in detache
 `make status`
 
 This will display the status of your containers.
+
+## Table of "make - " commands 
+
+| Alias | Command | Description |
+|-------| :-------------: | ------------- |
+| (default) | build start | Starts the application for the first time. |
+| build | docker-compose build | This will build the containers. |
+| start | docker-compose up | Starts the server. |
+| down | docker-compose down | Tears down the containers, handy for clearing out the database. |
+| stop | docker-compose stop | This will stop your containers if they're running in detached mode. |
+| restart | runs stop & start | This will stop and start (restart) your containers if they're running in detached mode. |
+| migrate |	docker-compose run --rm django python manage.py migrate | Apply existing migrations to the database |
+| migrations | docker-compose run --rm django python manage.py makemigrations | This will run `python manage.py makemigrations`, creating new migrations based on changes made to models. |
+| superuser | docker-compose run --rm django python manage.py createsuperuser | Creates a superuser in Django. |
+| psql | 	docker-compose exec -u postgres postgres psql | Starts a psql shell, handy for manually interacting with the database. |
+| lint-only | docker-compose run --rm django flake8 apps/ <br/> docker-compose run --rm django isort -c | Only run linting (flake8 and isort) |
+| test-only | docker-compose run --rm django py.test --cov-config=setup.cfg --cov=apps | Only run our own tests |
+| test | runs test-only & lint-only | This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our Travis CI build. |
