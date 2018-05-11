@@ -18,9 +18,9 @@ class RoadSegment(BaseModel):
     county = models.IntegerField(help_text="County identifier.  Example: 50")
     href = models.CharField(max_length=150, help_text="Link to NVDB for this unique segment")
     category = models.CharField(max_length=4, help_text="Road segment category. Example: K")
-    municipality = models.IntegerField(help_text="Municipality number for that county."
-                                       "Example: 01 for Trondheim")
-    startdate = models.DateField(help_text="Start date for the road segment. Example: 2018-08-02")
+    municipality = models.IntegerField(help_text="County and municipality number for that municipality."
+                                       "Example: 5001 for Trondheim")
+    startdate = models.DateField(help_text="Start date for the road segment. Example: 2018-04-20")
     region = models.IntegerField(help_text="Region number. Example: 4")
     status = models.CharField(max_length=4, help_text="Road status. Example: G")
     stretchdistance = models.IntegerField(help_text="Length of the road segment. Example 111")
@@ -55,3 +55,12 @@ class ProductionData(BaseModel):
     brush_active = models.NullBooleanField()
     material_type_code = models.IntegerField(null=True)
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
+
+
+class WeatherData(BaseModel):
+    start_time_period = models.DateTimeField()
+    end_time_period = models.DateTimeField()
+    county_and_municipality_id = models.IntegerField()
+    value = models.IntegerField()
+    unit = models.CharField(default='mm', max_length=2)
+    degrees = models.IntegerField()    
