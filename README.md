@@ -100,52 +100,6 @@ You can also run `example_create_test_prod_data.py` to simulate production data 
 
 `python /vapi/apps/data/example_create_test_prod_data.py`
 
-## Other make commands
-
-`make start`
-
-Generally speaking, you will only need to build your containers when updating the Docker configurations, or new dependencies have been added. For general use, `make start` will be faster and sufficient.
-
-`make test`
-
-This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
-
-`make lint-only`
-
-Only run linting (flake8 and isort)
-
-`make test-only`
-
-Only run our own tests
-
-`make migrations`
-
-This will run `python manage.py makemigrations`, creating new migrations based on changes made to models.
-
-`make psql`
-
-Starts a psql shell, handy for manually interacting with the database.
-
-`make down`
-
-Tears down the containers, handy for clearing out the database.
-
-`make build`
-
-This will build the containers.
-
-`make stop`
-
-This will stop your containers if they're running in detached mode.
-
-`make restart`
-
-This will stop and start (restart) your containers if they're running in detached mode.
-
-`make status`
-
-This will display the status of your containers.
-
 ## Table of "make - " commands 
 
 | Alias | Command | Description |
