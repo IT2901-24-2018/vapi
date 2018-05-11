@@ -123,3 +123,8 @@ This will stop and start (restart) your containers if they're running in detache
 `sudo make status`
 
 This will display the status of your containers.
+
+## Credits 
+
+Thanks to Jan Kristian Jensen https://github.com/LtGlahn for letting us use his https://github.com/LtGlahn/nvdbapi-V2 repo for interacting with the NVDB API.
+We used it for getting the official road network from the NVDB API and processing it. 
