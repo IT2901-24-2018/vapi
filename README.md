@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/IT2901-24-2018/vapi.svg?branch=dev)](https://travis-ci.org/IT2901-24-2018/vapi) [![codecov](https://codecov.io/gh/IT2901-24-2018/vapi/branch/dev/graph/badge.svg)](https://codecov.io/gh/IT2901-24-2018/vapi)
 
-Vapi is an API that gathers Norway's digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and output as a RESTful API.
+Vapi is an API that gathers Norway's digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
 
 Vapi was built by a team of seven students in their sixth semester of the Bachelor’s in Informatics programme at [NTNU](https://www.ntnu.edu/), as a part of the course [IT2901](https://www.ntnu.edu/studies/courses/IT2901) - Informatics Project II, colloquially known as the bachelor's thesis. Vapi was developed for the [Norwegian Public Roads Administration](https://www.vegvesen.no/en/home).
 
@@ -114,48 +114,23 @@ Then, fill in your system and contact into the `nvdbapi-clientinfo.json` file. T
 
 Not having a `nvdbapi-clientinfo.json` file will produce a warning, but `road_fetcher.py` will still work.
 
-## Other make commands
+## Makefile commands
 
-`make start`
+Default is the first command defined in the `Makefile`, and as such will be run by simply running `make`
 
-Generally speaking, you will only need to build your containers when updating the Docker configurations, or new dependencies have been added. For general use, `make start` will be faster and sufficient.
+| Target | Command | Description |
+|-------| :-------------: | ------------- |
+| (default) | build start | Both builds and starts the containers. |
+| build | docker-compose build | Builds the containers. |
+| start | docker-compose up | Starts the server. |
+| down | docker-compose down | Tears down the containers, handy for clearing out the database. |
+| stop | docker-compose stop | Stops your containers if they're already running mode. |
+| restart | stop start | Stops and starts (restart) your containers. |
+| migrate |	docker-compose run --rm django python manage.py migrate | Applies existing migrations to the database |
+| migrations | docker-compose run --rm django python manage.py makemigrations | Creates new migrations based on changes made to models. |
+| superuser | docker-compose run --rm django python manage.py createsuperuser | Initiates Django superuser creation. |
+| psql | 	docker-compose exec -u postgres postgres psql | Starts a psql shell, handy for manually interacting with the database. |
+| test | test-only lint-only | Runs our linting and tests. We advice you to run this before pushing your code to Github, to ensure your code will pass our Travis CI build. |
+| lint-only | docker-compose run --rm django flake8 apps/ <br/> docker-compose run --rm django isort -c | Only runs linting (flake8 and isort) |
+| test-only | docker-compose run --rm django py.test --cov-config=setup.cfg --cov=apps | Only runs our own tests |
 
-`make test`
-
-This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
-
-`make lint-only`
-
-Only run linting (flake8 and isort)
-
-`make test-only`
-
-Only run our own tests
-
-`make migrations`
-
-This will run `python manage.py makemigrations`, creating new migrations based on changes made to models.
-
-`make psql`
-
-Starts a psql shell, handy for manually interacting with the database.
-
-`make down`
-
-Tears down the containers, handy for clearing out the database.
-
-`make build`
-
-This will build the containers.
-
-`make stop`
-
-This will stop your containers if they're running in detached mode.
-
-`make restart`
-
-This will stop and start (restart) your containers if they're running in detached mode.
-
-`make status`
-
-This will display the status of your containers.
