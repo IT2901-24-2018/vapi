@@ -13,7 +13,7 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     :return: Final compiled list of all segmented_road_network after being passed down recursively
     """
     coordinates = road_segment["the_geom"]["coordinates"]
-    index, meter = (calculate_road_length(coordinates, max_distance, False))
+    index, meter = (calculate_road_length(coordinates, max_distance))
 
     segment_before_split = copy.deepcopy(road_segment)
     segment_before_split["the_geom"]["coordinates"] = segment_before_split["the_geom"]["coordinates"][:index]
