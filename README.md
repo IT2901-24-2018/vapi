@@ -8,7 +8,7 @@ Vapi was built by a team of seven students in their sixth semester of the Bachel
 
 Additional documentation and information can be found in our [wiki](https://github.com/it2901-24-2018/vapi/wiki). As this is a student project, the wiki also contains a lot of administrative information related to the project. 
 
-Vapi was built with React (setup with [create-react-app](https://github.com/facebook/create-react-app)), and [Django](https://www.djangoproject.com/). The two were combined with [this guide](http://v1k45.com/blog/modern-django-part-1-setting-up-django-and-react/) by Vikas Yadav. Vapi is built as a multi-container [Docker](https://www.docker.com/) application, with huge thanks to [Christian Duvholt](https://github.com/duvholt) for setup guidance.
+Vapi was built with [Django](https://www.djangoproject.com/) as a multi-container [Docker](https://www.docker.com/) application. Huge thanks to [Christian Duvholt](https://github.com/duvholt) for Docker guidance.
 
 # Setup
 
@@ -84,7 +84,7 @@ When you're inside, run:
 
 `python /vapi/apps/data/road_segmenting/example_roadnet_to_db.py`
 
-You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/data/Driftsdata_SubSet_Small.geojson` file:
+You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/data/production_input_data.geojson` file:
 
 `python /vapi/apps/data/example_create_test_prod_data.py`
 
