@@ -1,5 +1,6 @@
 # All credit should go to the creator of this file
 # https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdbapi.py
+# Used for getting the official road network from NVDB API in JSON format.
 # -*- coding: utf-8 -*-
 
 import json
