@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/IT2901-24-2018/vapi.svg?branch=dev)](https://travis-ci.org/IT2901-24-2018/vapi) [![codecov](https://codecov.io/gh/IT2901-24-2018/vapi/branch/dev/graph/badge.svg)](https://codecov.io/gh/IT2901-24-2018/vapi)
 
-Vapi is an API that gathers Norways digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
+Vapi is an API that gathers Norway's digital roadnet, then segments it into reasonably sized road segments. We also accept input for production data related to road condition influences like weather and maintenance (snow plowing, gravelling, salting). This data is mapped to the road segments, and outputted as a RESTful API.
 
 Vapi was built by a team of seven students in their sixth semester of the Bachelor’s in Informatics programme at [NTNU](https://www.ntnu.edu/), as a part of the course [IT2901](https://www.ntnu.edu/studies/courses/IT2901) - Informatics Project II, colloquially known as the bachelor's thesis. Vapi was developed for the [Norwegian Public Roads Administration](https://www.vegvesen.no/en/home).
 
@@ -123,3 +123,14 @@ This will stop and start (restart) your containers if they're running in detache
 `sudo make status`
 
 This will display the status of your containers.
+
+## Example files
+
+We have two files to help with populating the database with road segments and production data. These can be used in further development.
+Both example_create_test_prod_data.py and example_roadnet_to_db.py are well described and easy to use.
+NOTE: These are not necessary for the API and can be removed as you see fit. 
+
+## Credits 
+
+Thanks to Jan Kristian Jensen https://github.com/LtGlahn for letting us use his https://github.com/LtGlahn/nvdbapi-V2 repo for interacting with the NVDB API.
+We used it for getting the official road network from the NVDB API and processing it. 

@@ -1,6 +1,6 @@
 import json
 
-# Funky imports
+# Different import statements required when testing
 try:
     from apps.data.road_segmenting.nvdb_to_geojson import vegnett2geojson
     from apps.data.road_segmenting.nvdbapi import NvdbVegnett
