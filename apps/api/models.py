@@ -18,9 +18,9 @@ class RoadSegment(BaseModel):
     county = models.IntegerField(help_text="County identifier.  Example: 50")
     href = models.CharField(max_length=150, help_text="Link to NVDB for this unique segment")
     category = models.CharField(max_length=4, help_text="Road segment category. Example: K")
-    municipality = models.IntegerField(help_text="Municipality number for that county."
-                                       "Example: 01 for Trondheim")
-    startdate = models.DateField(help_text="Start date for the road segment. Example: 2018-08-02")
+    municipality = models.IntegerField(help_text="County and municipality number for that municipality."
+                                       "Example: 5001 for Trondheim")
+    startdate = models.DateField(help_text="Start date for the road segment. Example: 2018-04-20")
     region = models.IntegerField(help_text="Region number. Example: 4")
     status = models.CharField(max_length=4, help_text="Road status. Example: G")
     stretchdistance = models.IntegerField(help_text="Length of the road segment. Example 111")
@@ -42,7 +42,7 @@ class RoadSegment(BaseModel):
 
 
 class ProductionData(BaseModel):
-    time = models.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15Z")
+    time = models.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15")
     startlat = models.FloatField(help_text="Start latitude. Example: 63.3870750023729")
     startlong = models.FloatField(help_text="Start longitute. Example: 10.3277250005425")
     endlat = models.FloatField(help_text="End latitude. Example: 63.3874419990294")
@@ -54,3 +54,13 @@ class ProductionData(BaseModel):
     material_type_code = models.IntegerField(null=True, help_text="Material type boolean. Optional")
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE, help_text="Segment ID to mapped segment. "
                                 "Will be autocompleted by the code. Enter dummy value.")
+
+
+class WeatherData(BaseModel):
+    start_time_period = models.DateTimeField()
+    end_time_period = models.DateTimeField()
+    county_and_municipality_id = models.IntegerField()
+    value = models.IntegerField()
+    unit = models.CharField(default='mm', max_length=2)
+    degrees = models.IntegerField()
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)

@@ -5,10 +5,12 @@ from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT, MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
 
 from api.mapper import mapper
-from api.models import ProductionData, RoadSegment
+from api.models import ProductionData, RoadSegment, WeatherData
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.segmenter.road_segmenter import segment_network
-from api.serializers import ProductionDataSerializer, RoadSegmentSerializer, UserSerializer
+from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, UserSerializer,
+                             WeatherDataInputSerializer, WeatherDataSerializer)
+from api.weather import weather
 
 
 class StandardResultsSetPagination(PageNumberPagination):
@@ -104,7 +106,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         else:
             data.append(request.data)
 
-        # Map prod data to road a road segment
+        # Map prod data to road segment
         mapped_data = mapper.map_to_segment(data)
 
         # Check that there are successfully mapped prod-data
@@ -120,10 +122,71 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
+            # Handle weather data when adding new production data
+            weather.handle_prod_weather_overlap(serializer.data)
             serializer.save()
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED,
                             headers=headers)
+
+        # If not valid return error
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class WeatherViewSet(viewsets.ModelViewSet):
+    """
+    list: Returns all the elements. Weather data in this case.
+
+    read: Retrieve weather data. #ID of the weather needed.
+
+    update: Updates one single weather data. All fields are mandatory.
+
+    partial_update: Updates one single weather data. No fields are mandatory.
+
+    destroy: Request for deleting a weather data element.
+    """
+    queryset = WeatherData.objects.all()
+    serializer_class = WeatherDataInputSerializer
+    # Only registered users can use this view
+    permission_classes = (permissions.IsAuthenticated, IsStaffOrCreateOnly,)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = WeatherDataSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Create new weather data from list mapped to road segment
+        """
+        data = []
+
+        if isinstance(request.data, list):
+            data = request.data
+            if len(request.data) > INPUT_LIST_LIMIT:
+                error = {"detail": "Input list too long"}
+                return Response(error, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            data.append(request.data)
+
+        serializer = self.get_serializer(data=data, many=True)
+        if not serializer.is_valid(raise_exception=True):
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Map weather data to road a road segment
+        number_of_updated_weather, mapped_weather = weather.map_weather_to_segment(data)
+
+        # Instantiate the serializer
+        serializer = WeatherDataSerializer(data=mapped_weather, many=True)
+
+        # Check if the serializer is valid and takes the necessary actions
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(
+                "{} row(s) added and {} weather objects updated".format(len(serializer.data),
+                                                                        number_of_updated_weather),
+                status=status.HTTP_201_CREATED,
+            )
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
