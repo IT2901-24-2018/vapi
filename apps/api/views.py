@@ -128,13 +128,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
             # Handle weather data when adding new production data
-            weather.handle_prod_weather_overlap(serializer.data)
+            weather.handle_prod_weather_overlap(serializer.validated_data)
             serializer.save()
-            # headers = self.get_success_headers(serializer.data)
             return Response(
                 "{} row(s) added".format(len(serializer.data)),
                 status=status.HTTP_201_CREATED,
-                # headers=headers
             )
 
         # If not valid return error
