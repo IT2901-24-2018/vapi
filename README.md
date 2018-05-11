@@ -10,6 +10,8 @@ Additional documentation and information can be found in our [wiki](https://gith
 
 Vapi was built with [Django](https://www.djangoproject.com/) as a multi-container [Docker](https://www.docker.com/) application. Huge thanks to [Christian Duvholt](https://github.com/duvholt) for Docker guidance.
 
+Thanks to [Jan Kristian Jensen](https://github.com/LtGlahn) for letting us use his [repository](https://github.com/LtGlahn/nvdbapi-V2) for interacting with the NVDB API. We used it for getting the official road network from the NVDB API and processing it.
+
 # Setup
 
 ## Github
@@ -56,13 +58,25 @@ Get your database up to speed by applying existing migrations:
 
 `sudo make migrate`
 
-## Superuser
+## Log in
 
 Create a superuser in Django:
 
 `sudo make superuser`
 
-While we plan to remove the need for this in the future, we need to fill in the superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
+You are now ready to start the server again:
+
+`sudo make`
+
+Navigate to [http://localhost:8000/](http://localhost:8000/), and see that Vapi is up and running!
+
+To gain access to all the endpoints of the API, you must log in as a superuser. Navigate to the [API page](http://localhost:8000/api/) and log in with your superuser in the top-right corner.
+
+## Vapi example scripts
+
+We have two files to help with populating the database with road segments and production data. These scripts are not necessary for the API, but we left them here as a convenience for future developers.
+
+To run our example scripts, you will need to fill in your superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
 
 ```
 DJANGO_DEBUG=True
@@ -70,13 +84,7 @@ API_USERNAME=yourusername
 API_PASSWORD=yourpassword
 ```
 
-## Vapi example scripts
-
-Start the server again:
-
-`sudo make`
-
-To run our example road segmenter `example_roadnet_to_db.py`, open a new terminal, then make a bash-shell in your container with:
+To run our example road segmenter `example_roadnet_to_db.py`, make sure that the server is running. Open a new terminal, then make a bash-shell in your container with:
 
 `sudo docker exec -t -i vapi_django_1 /bin/bash`
 
@@ -123,14 +131,3 @@ This will stop and start (restart) your containers if they're running in detache
 `sudo make status`
 
 This will display the status of your containers.
-
-## Example files
-
-We have two files to help with populating the database with road segments and production data. These can be used in further development.
-Both example_create_test_prod_data.py and example_roadnet_to_db.py are well described and easy to use.
-NOTE: These are not necessary for the API and can be removed as you see fit. 
-
-## Credits 
-
-Thanks to Jan Kristian Jensen https://github.com/LtGlahn for letting us use his https://github.com/LtGlahn/nvdbapi-V2 repo for interacting with the NVDB API.
-We used it for getting the official road network from the NVDB API and processing it. 
