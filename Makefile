@@ -1,5 +1,5 @@
 .PHONY: default build start down stop restart migrate migrations \
-		static shell superuser status psql test lint-only test-only
+		superuser psql test lint-only test-only
 
 # Variables
 BACKEND_LINT_FOLDERS = apps/api apps/data
@@ -28,17 +28,8 @@ migrate:
 migrations:
 	docker-compose run --rm $(django) python manage.py makemigrations
 
-static:
-	docker-compose run --rm $(django) python manage.py collectstatic
-
-shell:
-	docker-compose run --rm $(django) python manage.py shell
-
 superuser:
 	docker-compose run --rm $(django) python manage.py createsuperuser
-
-status:
-	docker-compose ps
 
 psql:
 	docker-compose exec -u postgres postgres psql

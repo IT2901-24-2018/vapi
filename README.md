@@ -106,15 +106,25 @@ Generally speaking, you will only need to build your containers when updating th
 
 This will run our tests and lint the backend locally. We advice you to run this before pushing your code to Github, to ensure your code will pass our [Travis CI](https://travis-ci.org) build.
 
+`sudo make lint-only`
+
+Only run linting (flake8 and isort)
+
+`sudo make test-only`
+
+Only run our own tests
+
 `sudo make migrations`
 
 This will run `python manage.py makemigrations`, creating new migrations based on changes made to models.
 
-`sudo make shell`
+`sudo make psql`
 
-This will start up a Django shell within the container.
+Starts a psql shell, handy for manually interacting with the database.
 
-## Other other make commands
+`sudo make down`
+
+Tears down the containers, handy for clearing out the database.
 
 `sudo make build`
 
