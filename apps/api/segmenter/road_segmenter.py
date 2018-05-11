@@ -90,6 +90,11 @@ def segment_network(road_network, max_distance, min_gps):
 
 
 def geometry_to_list(geometry):
+    """
+    Converts the_geom to a dictionary containing SRID and a list of coordinate points
+    :param geometry: the_geom in string format
+    :return: A ditionary containing srid as a string and coordinates as a 2D list with float values
+    """
     coordinates_list = []
     temp = geometry.split(";")
     srid, coordinates = temp[0], temp[1]
@@ -105,6 +110,12 @@ def geometry_to_list(geometry):
 
 
 def list_to_geometry(coord_list, srid):
+    """
+    Takes a coordinates list and an srid and combines them into the_geom in string format
+    :param coord_list: A 2D array of coordinate points with floats as values
+    :param srid: srid in string format
+    :return: the_geom in string format "SRID=1234;LINESTRING(1 2,3 4,5 6)
+    """
     linestring = ""
     for pair in coord_list:
         linestring += str(pair[0]) + " " + str(pair[1]) + ","
