@@ -10,7 +10,7 @@ Additional documentation and information can be found in our [wiki](https://gith
 
 Vapi was built with [Django](https://www.djangoproject.com/) as a multi-container [Docker](https://www.docker.com/) application. Huge thanks to [Christian Duvholt](https://github.com/duvholt) for Docker guidance.
 
-Thanks to [Jan Kristian Jensen](https://github.com/LtGlahn) for letting us use his [repository](https://github.com/LtGlahn/nvdbapi-V2) for interacting with the NVDB API. We used it for getting the official road network from the NVDB API and processing it.
+Thanks to [Jan Kristian Jensen](https://github.com/LtGlahn) for letting us use his [repository](https://github.com/LtGlahn/nvdbapi-V2) for interacting with the [NVDB API](https://www.vegvesen.no/nvdb/apidokumentasjon/). We used it for getting the official road network from the NVDB API and processing it.
 
 # Setup
 
@@ -99,6 +99,20 @@ When you're inside, run:
 You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/data/production_input_data.geojson` file:
 
 `python /vapi/apps/data/example_create_test_prod_data.py`
+
+# NVDB API Client Information
+
+Our `road_fetcher.py` file interacts with the NVDB API directly, and is used by both our `example_roadnet_to_db.py` script, and the `test_segmenting.py` tests.
+
+Please fill in your client info that is sent along with the requests to the NVDB API, so that they have information on who is using the API.
+
+Make the nvdbapi-clientinfo.json file in the root folder by:
+
+`cp example-nvdbapi-clientinfo.json nvdbapi-clientinfo.json`
+
+Then, fill in your system and contact into the `nvdbapi-clientinfo.json` file. The file is ignored by git.
+
+Not having a `nvdbapi-clientinfo.json` file will produce a warning, but `road_fetcher.py` will still work.
 
 ## Other make commands
 
