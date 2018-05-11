@@ -119,8 +119,8 @@ Not having a `nvdbapi-clientinfo.json` file will produce a warning, but `road_fe
 Default is the first command defined in the `Makefile`, and as such will be run by simply running `make`
 
 | Target | Command | Description |
-|-------| :-------------: | ------------- |
-| (default) | build start | Both builds and starts the containers. |
+| --- | --- | --- |
+| default | build start | Both builds and starts the containers. |
 | build | docker-compose build | Builds the containers. |
 | start | docker-compose up | Starts the server. |
 | down | docker-compose down | Tears down the containers, handy for clearing out the database. |
