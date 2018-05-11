@@ -10,8 +10,8 @@ from api.overlap_handler.overlap_handler import handle_prod_data_overlap
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.segmenter.road_segmenter import segment_network
 from api.serializers import (ProductionDataInputSerializer, ProductionDataSerializer,
-                             RoadSegmentSerializer, UserSerializer,
-                             WeatherDataInputSerializer, WeatherDataSerializer)
+                             RoadSegmentSerializer, UserSerializer, WeatherDataInputSerializer,
+                             WeatherDataSerializer)
 from api.weather import weather
 
 

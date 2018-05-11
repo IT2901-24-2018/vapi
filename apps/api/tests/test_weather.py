@@ -74,10 +74,11 @@ class InsertOneWeatherDataTest(APITestCase):
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
         ProductionData.objects.create(
-            time=timezone.now(), startlat=64.3870750023729, startlong=64.3870750023729, endlat=64.3870750023729,
-            endlong=64.3870750023729, dry_spreader_active=True,
-            plow_active=True, wet_spreader_active=True, brush_active=True, material_type_code=True,
-            segment=RoadSegment.objects.get()
+            time=timezone.now(), startlat=64.3870750023729, startlong=64.3870750023729,
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=64.3870750023729,
+            endlong=64.3870750023729, end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"),
+            dry_spreader_active=True, plow_active=True, wet_spreader_active=True, brush_active=True,
+            material_type_code=True, segment=RoadSegment.objects.get()
         )
         weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',
                                          "end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
