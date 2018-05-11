@@ -38,7 +38,7 @@ class RoadSegment(BaseModel):
                                                 "271221.1001 7042142.6001,271227.3999 7042147.0,271230."
                                                 "6001 7042148.3999,271234.5 7042147.6001,271239.8999 7042146.8999,"
                                                 "271245.8999 7042147.3999,271249.69995 7042149.30029,"
-                                                "271252.8 7042152.2")
+                                                "271252.8 7042152.2)")
 
 
 class ProductionData(BaseModel):
@@ -62,6 +62,6 @@ class WeatherData(BaseModel):
     end_time_period = models.DateTimeField()
     county_and_municipality_id = models.IntegerField()
     value = models.IntegerField()
-    unit = models.CharField(default='mm', max_length=2)
+    unit = models.CharField(default="mm", max_length=2)
     degrees = models.IntegerField()
     segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)

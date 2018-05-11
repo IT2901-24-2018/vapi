@@ -13,7 +13,7 @@ def get_from_vegref(file_name_path):
     open_data = json.load(open(file_name_path))
     from_vegrefs = []
 
-    for feature in open_data['features']:
+    for feature in open_data["features"]:
         properties = feature["properties"]
         from_vegrefs.append(str(properties["from_vegref"]))
     return convert_vegref(from_vegrefs)
@@ -28,7 +28,7 @@ def get_to_vegref(file_name_path):
     open_data = json.load(open(file_name_path))
     to_vegrefs = []
 
-    for feature in open_data['features']:
+    for feature in open_data["features"]:
         properties = feature["properties"]
         to_vegrefs.append(str(properties["to_vegref"]))
     return convert_vegref(to_vegrefs)
@@ -73,7 +73,7 @@ def get_veglenke_info(gathered_veg):
     base_url = "https://www.vegvesen.no/nvdb/api/v2/vegnett/lenker/"
     gathered_vegnett = []
     for veg in gathered_veg:
-        vegref_id = str(veg['veglenke']['id'])
+        vegref_id = str(veg["veglenke"]["id"])
         r = requests.get(base_url + vegref_id)
         if r.status_code == requests.codes.ok:
             print(r.json())

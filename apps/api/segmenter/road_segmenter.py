@@ -13,7 +13,7 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     :return: Final compiled list of all segmented_road_network after being passed down recursively
     """
     coordinates = road_segment["the_geom"]["coordinates"]
-    index, meter = (calculate_road_length(coordinates, max_distance, False))
+    index, meter = (calculate_road_length(coordinates, max_distance))
 
     segment_before_split = copy.deepcopy(road_segment)
     segment_before_split["the_geom"]["coordinates"] = segment_before_split["the_geom"]["coordinates"][:index]
@@ -90,13 +90,18 @@ def segment_network(road_network, max_distance, min_gps):
 
 
 def geometry_to_list(geometry):
+    """
+    Converts the_geom to a dictionary containing SRID and a list of coordinate points
+    :param geometry: the_geom in string format
+    :return: A ditionary containing srid as a string and coordinates as a 2D list with float values
+    """
     coordinates_list = []
-    temp = geometry.split(";")
-    srid, coordinates = temp[0], temp[1]
+    points = geometry.split(";")
+    srid, coordinates = points[0], points[1]
     srid = srid[5:]
 
-    temp = coordinates[11:len(coordinates)-1].split(",")
-    for pair in temp:
+    points = coordinates[11:len(coordinates)-1].split(",")
+    for pair in points:
         coord_pair = []
         for number in pair.split(" "):
             coord_pair.append(float(number))
@@ -105,6 +110,12 @@ def geometry_to_list(geometry):
 
 
 def list_to_geometry(coord_list, srid):
+    """
+    Takes a coordinates list and an srid and combines them into the_geom in string format
+    :param coord_list: A 2D array of coordinate points with floats as values
+    :param srid: srid in string format
+    :return: the_geom in string format "SRID=1234;LINESTRING(1 2,3 4,5 6)
+    """
     linestring = ""
     for pair in coord_list:
         linestring += str(pair[0]) + " " + str(pair[1]) + ","

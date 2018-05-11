@@ -10,7 +10,6 @@ Also includes a url field.
 
 from datetime import timedelta
 
-from django.contrib.auth.models import User
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -38,7 +37,7 @@ class ProductionDataInputSerializer(serializers.Serializer):
     Serializer for validating the input of the production data endpoint
     Does not need the save and update methods
     """
-    time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15Z")
+    time = serializers.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15")
     startlat = serializers.FloatField(help_text="Start latitude. Example: 63.3870750023729")
     startlong = serializers.FloatField(help_text="Start longitute. Example: 10.3277250005425")
     endlat = serializers.FloatField(help_text="End latitude. Example: 63.3874419990294")
@@ -86,13 +85,13 @@ class WeatherDataInputSerializer(serializers.Serializer):
         """
         Checks multiple time cases
         """
-        if data['start_time_period'] > data['end_time_period']:
+        if data["start_time_period"] > data["end_time_period"]:
             raise serializers.ValidationError("End time can not be before start time")
-        elif (timezone.now() - data['end_time_period']) > timedelta(days=1):
+        elif (timezone.now() - data["end_time_period"]) > timedelta(days=1):
             raise serializers.ValidationError("Weather can not be over 24 hours old")
-        elif data['end_time_period'] > timezone.now():
+        elif data["end_time_period"] > timezone.now():
             raise serializers.ValidationError("End time can not be in the future")
-        elif (data['end_time_period'] - data['start_time_period']) >= timedelta(days=1):
+        elif (data["end_time_period"] - data["start_time_period"]) >= timedelta(days=1):
             raise serializers.ValidationError("Only supports 1 day time frame for weather")
         return data
 
@@ -100,11 +99,5 @@ class WeatherDataInputSerializer(serializers.Serializer):
 class WeatherDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = WeatherData
-        fields = ('id', 'created', 'updated', 'start_time_period', 'end_time_period', 'county_and_municipality_id',
-                  'value', 'unit', 'degrees', 'segment')
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ("url", "id", "username")
+        fields = ("id", "created", "updated", "start_time_period", "end_time_period", "county_and_municipality_id",
+                  "value", "unit", "degrees", "segment")

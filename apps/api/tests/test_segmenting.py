@@ -28,12 +28,15 @@ class TestSegmenting(unittest.TestCase):
 
         # Apparently the setUpClass is a bit funky and the road_net does not stay filtered after setUpClass is run,
         # so instead it is done in each test function it is needed instead of here.
-        temp = []
+        road_net_list = []
         for road in cls.road_net:
-            temp.append(filter_road(road))
-        cls.road_net_segmented = segment_network(temp, cls.max_segment_distance, cls.min_coordinates_length)
+            road_net_list.append(filter_road(road))
+        cls.road_net_segmented = segment_network(road_net_list, cls.max_segment_distance, cls.min_coordinates_length)
 
     def setUp(self):
+        """
+        Needs to be here for the tests to run
+        """
         pass
 
     def test_road_segmenter_list(self):

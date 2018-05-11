@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db import connection
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
@@ -11,7 +10,7 @@ from api.overlap_handler.overlap_handler import handle_prod_data_overlap
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.segmenter.road_segmenter import segment_network
 from api.serializers import (ProductionDataInputSerializer, ProductionDataSerializer,
-                             RoadSegmentSerializer, UserSerializer, WeatherDataInputSerializer,
+                             RoadSegmentSerializer, WeatherDataInputSerializer,
                              WeatherDataSerializer)
 from api.weather import weather
 
@@ -24,8 +23,8 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
-    and `destroy` actions.
+    This viewset automatically provides "list", "create", "read", "update", "partial_update"
+    and "destroy" actions.
 
     list: Returns all the elements. Road segments in this case.
 
@@ -74,8 +73,8 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
 class ProductionDataViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
-    and `destroy` actions.
+    This viewset automatically provides "list", "create", "read", "update", "partial_update"
+    and "destroy" actions.
 
     list: Returns all the elements. Production data in this case.
 
@@ -291,15 +290,3 @@ class SegmentStatusViewSet(viewsets.ReadOnlyModelViewSet):
         Retrieve one segment with status from pk
         """
         return Response(self.get_queryset_custom(segment_id=pk))
-
-
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    This viewset automatically provides `list` and `read` actions.
-
-    list: Lists all users.
-
-    read: Returns the user with a given ID.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer

@@ -1,5 +1,6 @@
 # All credit should go to the creator of this file
 # https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdb2geojson.py
+# Used for getting the official road network from NVDB API in JSON format.
 
 # -*- coding: utf-8 -*-
 """Lagre vegnett og fagdata fra NVDB til geojson.
@@ -41,32 +42,32 @@ def __addveg2geojson(vegseg, mygeojson):
     v = remove_keys(vegseg)
 
     egenskaper = {}
-    wktgeom = v['geometri'].pop('wkt')
+    wktgeom = v["geometri"].pop("wkt")
 
-    if 'vegreferanse' in v.keys():
-        vegref = v.pop('vegreferanse')
-        vegref['vrefkortform'] = vegref.pop('kortform')
+    if "vegreferanse" in v.keys():
+        vegref = v.pop("vegreferanse")
+        vegref["vrefkortform"] = vegref.pop("kortform")
 
         for k in vegref.keys():
             egenskaper[k] = vegref[k]
 
     else:
-        print('Ingen vegreferanse funnet for veglenke', v['kortform'])
+        print("Ingen vegreferanse funnet for veglenke", v["kortform"])
 
     for k in v.keys():
         egenskaper[k] = v[k]
 
     geom = shapely.wkt.loads(wktgeom)
 
-    if geom.type == 'LineString':
-        mygeojson['features'].append(geojson.Feature(geometry=geom,
+    if geom.type == "LineString":
+        mygeojson["features"].append(geojson.Feature(geometry=geom,
                                                      properties=egenskaper))
-    elif 'vrefkortform' in vegref.keys():
-        print('Degenerert bit av veglenke (punkt, ikke linje)',
-              vegref['vrefkortform'], vegseg['kortform'])
+    elif "vrefkortform" in vegref.keys():
+        print("Degenerert bit av veglenke (punkt, ikke linje)",
+              vegref["vrefkortform"], vegseg["kortform"])
     else:
-        print('Degenerert bit av veglenke (punkt, ikke linje)',
-              vegseg['kortform'])
+        print("Degenerert bit av veglenke (punkt, ikke linje)",
+              vegseg["kortform"])
 
     return mygeojson
 
@@ -88,7 +89,7 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False):
 
     Eksempel
     v = NvdbVegnett()
-    v.addfilter_geo( { 'kommune' : 5001, 'vegreferanse' : 'kg' })
+    v.addfilter_geo( { "kommune" : 5001, "vegreferanse" : "kg" })
     gjson = vegnett2geojson(v)
     """
 
@@ -97,7 +98,7 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False):
     # Har vi et objekt for søk mot NVDB api?
     if isinstance(vegnett, NvdbVegnett):
         if not vegnett.geofilter and not ignorewarning and not maxcount:
-            warn('For mange lenker - bruk  ignorewarning=True for hele Norge')
+            warn("For mange lenker - bruk  ignorewarning=True for hele Norge")
             maxcount = 1000
 
         v = vegnett.nesteForekomst()
@@ -112,30 +113,30 @@ def vegnett2geojson(vegnett, ignorewarning=False, maxcount=False):
                 stopp = True
             v = vegnett.nesteForekomst()
 
-    elif isinstance(vegnett, list) and 'konnekteringslenke' in vegnett[0].keys():
+    elif isinstance(vegnett, list) and "konnekteringslenke" in vegnett[0].keys():
         for v in vegnett:
             mygeojson = __addveg2geojson(v, mygeojson)
     else:
-        warn('Sorry, men gjenkjenner ikke dette som vegnettsdata')
+        warn("Sorry, men gjenkjenner ikke dette som vegnettsdata")
 
     return mygeojson, count
 
 
-def __geometritypefilter(shapelygeometri, geometritype=''):
+def __geometritypefilter(shapelygeometri, geometritype=""):
     """Internt metode for å filtrere vekk de geometritypene man ikke vil ha
 
-    Følger datakatalog-syntaksen 'PUNKT', 'LINJE', ...
+    Følger datakatalog-syntaksen "PUNKT", "LINJE", ...
 
     Returnerer True | False alt ettersom geometritypen stemmer
     """
 
-    if geometritype == '':  # Matcher alt
+    if geometritype == "":  # Matcher alt
         return True
 
-    elif geometritype == 'PUNKT' and shapelygeometri.type == 'Point':
+    elif geometritype == "PUNKT" and shapelygeometri.type == "Point":
         return True
 
-    elif geometritype == 'LINJE' and shapelygeometri.type == 'LineString':
+    elif geometritype == "LINJE" and shapelygeometri.type == "LineString":
         return True
 
     return False
@@ -143,64 +144,64 @@ def __geometritypefilter(shapelygeometri, geometritype=''):
 
 def __addfag2geojson(fag, mygeojson, vegsegmenter=True,
                      ignoreregenskaper=False, ignorervegref=False,
-                     geometrityper=''):
+                     geometrityper=""):
     """Internt metode, føyer til et NVDB fagobjekt til eksisterende geojson.
 
     geometrityper filtrerer ut de geometritypene man vil ha. Følger
-    datakatalog-syntaksen 'PUNKT', 'LINJE', ...
+    datakatalog-syntaksen "PUNKT", "LINJE", ...
     """
 
     # Egenskapsverdier
     egenskaper = {}
 
-    if not ignoreregenskaper and 'egenskaper' in fag.keys():
-        for k in fag['egenskaper']:
-            egenskaper[k['navn']] = k['verdi']
+    if not ignoreregenskaper and "egenskaper" in fag.keys():
+        for k in fag["egenskaper"]:
+            egenskaper[k["navn"]] = k["verdi"]
 
-    egenskaper['id'] = fag['id']
-    egenskaper['metadata'] = fag['metadata']
+    egenskaper["id"] = fag["id"]
+    egenskaper["metadata"] = fag["metadata"]
 
     if vegsegmenter:
 
         # En ny feature per vegsegment
-        egenskaper['antall vegsegmenter'] = len(fag['vegsegmenter'])
+        egenskaper["antall vegsegmenter"] = len(fag["vegsegmenter"])
         count = 0
-        for seg in fag['vegsegmenter']:
+        for seg in fag["vegsegmenter"]:
             eg = copy.deepcopy(egenskaper)
             count += 1
-            eg['vegsegment nr'] = count
+            eg["vegsegment nr"] = count
 
-            geom = shapely.wkt.loads(seg['geometri']['wkt'])
+            geom = shapely.wkt.loads(seg["geometri"]["wkt"])
 
-            seg.pop('geometri')
-            vref = seg.pop('vegreferanse')
-            stedfesting = seg.pop('stedfesting')
+            seg.pop("geometri")
+            vref = seg.pop("vegreferanse")
+            stedfesting = seg.pop("stedfesting")
             eg.update(stedfesting)
 
             if not ignorervegref:
                 eg.update(vref)
                 eg.update(seg)
             else:
-                eg['kortform'] = vref['kortform']
+                eg["kortform"] = vref["kortform"]
 
             if __geometritypefilter(geom, geometritype=geometrityper):
-                mygeojson['features'].append(geojson.Feature(geometry=geom,
+                mygeojson["features"].append(geojson.Feature(geometry=geom,
                                                              properties=eg))
             else:
-                print(str(fag['id']), 'Ignorerte geometritype', geom.type,
-                      'vil ha', str(geometrityper))
+                print(str(fag["id"]), "Ignorerte geometritype", geom.type,
+                      "vil ha", str(geometrityper))
 
     else:
-        geom = shapely.wkt.loads(fag['geometri']['wkt'])
-        fag['lokasjon'].pop('geometri')
-        egenskaper['lokasjon'] = fag['lokasjon']
+        geom = shapely.wkt.loads(fag["geometri"]["wkt"])
+        fag["lokasjon"].pop("geometri")
+        egenskaper["lokasjon"] = fag["lokasjon"]
 
         if __geometritypefilter(geom, geometritype=geometrityper):
-            mygeojson['features'].append(geojson.Feature(geometry=geom,
+            mygeojson["features"].append(geojson.Feature(geometry=geom,
                                                          properties=egenskaper))
         else:
-            print(str(fag['id']), 'Ignorerte geometritype', geom.type,
-                  'vil ha', str(geometrityper))
+            print(str(fag["id"]), "Ignorerte geometritype", geom.type,
+                  "vil ha", str(geometrityper))
 
     return mygeojson
 
@@ -237,7 +238,7 @@ def fagdata2geojson(fagdata, maxcount=False,
 
    Eksempel
         f = ndbFagdata(105) # Fartsgrense
-        f.addfilter_geo( { 'kommune' : 1601, 'vegreferanse' : 'Ev6' })
+        f.addfilter_geo( { "kommune" : 1601, "vegreferanse" : "Ev6" })
         gjson = fagdata2geojson( f)
 
 
@@ -271,9 +272,9 @@ def fagdata2geojson(fagdata, maxcount=False,
     if isinstance(fagdata, NvdbFagdata):
 
         if strictGeometryType:
-            geometrityper = fagdata.objektTypeDef['stedfesting']
+            geometrityper = fagdata.objektTypeDef["stedfesting"]
         else:
-            geometrityper = ''
+            geometrityper = ""
 
         fag = fagdata.nesteForekomst()
         count = 0
@@ -281,12 +282,12 @@ def fagdata2geojson(fagdata, maxcount=False,
         while fag and not stopp:
 
             # Sjekker om vi har tomme data (typisk fagdata på historisk vegnett)
-            if len(fag['vegsegmenter']) > 0:
+            if len(fag["vegsegmenter"]) > 0:
                 mygeojson = __addfag2geojson(fag, mygeojson,
                                              vegsegmenter=vegsegmenter, ignoreregenskaper=ignoreregenskaper,
                                              ignorervegref=ignorervegref, geometrityper=geometrityper)
             else:
-                print('Ignorerer tomt objekt ' + fag['href'])
+                print("Ignorerer tomt objekt " + fag["href"])
 
             count += 1
             if maxcount and count >= maxcount:
@@ -294,13 +295,13 @@ def fagdata2geojson(fagdata, maxcount=False,
 
             fag = fagdata.nesteForekomst()
 
-    elif isinstance(fagdata, dict) and 'egenskaper' in fagdata.keys():
+    elif isinstance(fagdata, dict) and "egenskaper" in fagdata.keys():
 
-        mittobj = NvdbFagdata(fagdata['metadata']['type']['id'])
+        mittobj = NvdbFagdata(fagdata["metadata"]["type"]["id"])
         if strictGeometryType:
-            geometrityper = mittobj.objektTypeDef['stedfesting']
+            geometrityper = mittobj.objektTypeDef["stedfesting"]
         else:
-            geometrityper = ''
+            geometrityper = ""
 
         mygeojson = __addfag2geojson(fagdata, mygeojson,
                                      vegsegmenter=vegsegmenter, ignoreregenskaper=ignoreregenskaper,
