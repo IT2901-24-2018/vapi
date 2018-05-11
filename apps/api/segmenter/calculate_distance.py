@@ -71,6 +71,11 @@ def calculate_road_length(point_list, max_length_meter, haversine):
 
 
 def calculate_road_length_simple(point_list):
+    """
+    Goes through a 2D list of coordinates points and returns the total stretchdistance
+    :param point_list: A 2D list of coordinates with floats as values
+    :return: The stretchdistance in int
+    """
     length = 0
     for i in range(1, len(point_list)):
         prev = i - 1
