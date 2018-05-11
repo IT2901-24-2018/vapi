@@ -128,6 +128,12 @@ This will stop and start (restart) your containers if they're running in detache
 
 This will display the status of your containers.
 
+## Example files
+
+We have two files to help with populating the database with road segments and production data. These can be used in further development.
+Both example_create_test_prod_data.py and example_roadnet_to_db.py are well described and easy to use.
+NOTE: These are not necessary for the API and can be removed as you see fit. 
+
 ## Credits 
 
 Thanks to Jan Kristian Jensen https://github.com/LtGlahn for letting us use his https://github.com/LtGlahn/nvdbapi-V2 repo for interacting with the NVDB API.
