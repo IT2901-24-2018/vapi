@@ -1,9 +1,5 @@
-.PHONY: default build start stop restart migrate migrations \
-		shell superuser status psql lint test
-
-# Variables
-BACKEND_SERVICE_NAME = django
-BACKEND_LINT_FOLDERS = apps/api apps/data
+.PHONY: default build start down stop restart migrate migrations \
+		superuser psql test lint-only test-only
 
 # General usage
 default: build start
@@ -14,35 +10,33 @@ build:
 start:
 	docker-compose up
 
+down:
+	docker-compose down
+
 stop:
 	docker-compose stop
 
 restart: stop start
 
 migrate:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py migrate
+	docker-compose run --rm django python manage.py migrate
 
 migrations:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py makemigrations
-
-shell:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py shell
+	docker-compose run --rm django python manage.py makemigrations
 
 superuser:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) python manage.py createsuperuser
-
-status:
-	docker-compose ps
+	docker-compose run --rm django python manage.py createsuperuser
 
 psql:
-	docker exec -it vapi_postgres_1 psql -U postgres
+	docker-compose exec -u postgres postgres psql
+
 
 # Testing
-test: lint test
+test: lint-only test-only
 
-lint:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) flake8 $(BACKEND_LINT_FOLDERS)
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) isort -c
+lint-only:
+	docker-compose run --rm django flake8 apps/
+	docker-compose run --rm django isort -c
 
-test:
-	docker-compose run --rm $(BACKEND_SERVICE_NAME) py.test
+test-only:
+	docker-compose run --rm django py.test --cov-config=setup.cfg --cov=apps

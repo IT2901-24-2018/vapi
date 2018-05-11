@@ -1,17 +1,24 @@
-/assets/
-static/
-
+# Local environment variables
 .env
 
-.DS_Store
+# Assets collected by Django
+static/
+
+# Local client info for NVDB API
+nvdbapi-clientinfo.json
+
+# Compiled python bytecode
 *.pyc
 
-.vscode/
-.idea/
-
-webpack-stats.dev.json
-webpack-stats.prod.json
-nvdbapi-clientinfo.json
-roadnet.gjson
-
+# Local pytest cache
 .pytest_cache/
+
+# pytest-cov and codecov generated reports
+.coverage
+coverage.xml
+
+# OS X folder files
+.DS_Store
+
+# Jetbrains (PyCharm) project config
+.idea/

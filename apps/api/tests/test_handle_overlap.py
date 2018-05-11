@@ -3,8 +3,8 @@ from django.contrib.gis.geos import GEOSGeometry
 from django.utils import timezone
 from rest_framework.test import APITestCase
 
-from api.mapper import mapper
 from api.models import ProductionData, RoadSegment
+from api.overlap_handler import overlap_handler
 
 # Linestrings for road segments
 LINESTRING1 = GEOSGeometry(
@@ -92,39 +92,57 @@ class OverlapHandlingTest(APITestCase):
         ]
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[0]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[0]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[1]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[1]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[1]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[1]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[2]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[2]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[2]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[2]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[3]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[3]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[3]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[3]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[4]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[4]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[4]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[4]
         )
         self.mapped_data = [
             {"time": timezone.make_aware(timezone.datetime(2018, 2, 1, 0, 0, 0), TIMEZONE), "startlat": 1,
@@ -143,7 +161,7 @@ class OverlapHandlingTest(APITestCase):
         """
         Test for finding earliest and latest times for a segment in mapped production data
         """
-        segment_times = mapper.find_time_period_per_segment(self.mapped_data)
+        segment_times = overlap_handler.find_time_period_per_segment(self.mapped_data)
         self.assertEqual(len(segment_times), 4)
 
         correct_result = {
@@ -165,7 +183,7 @@ class OverlapHandlingTest(APITestCase):
         """
         Test for deleting overlapped production data
         """
-        mapper.handle_prod_data_overlap(self.mapped_data)
+        overlap_handler.handle_prod_data_overlap(self.mapped_data)
         prod_data = ProductionData.objects.all()
         self.assertEqual(len(prod_data), 1)
 
@@ -202,27 +220,39 @@ class OverlapHandlingOutdatedInputDataTest(APITestCase):
         ]
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 3, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[0]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[0]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 3, 1, 0, 0, 30), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[0]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[0]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 1, 1, 0, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[1]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[1]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 2, 1, 1, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[2]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[2]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 2, 1, 1, 0, 30), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[2]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[2]
         )
         ProductionData.objects.create(
             time=timezone.make_aware(timezone.datetime(2018, 2, 1, 1, 0, 0), TIMEZONE), startlat=1, startlong=1,
-            endlat=1, endlong=1, plow_active=True, segment=segments[3]
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=1, endlong=1,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True,
+            segment=segments[3]
         )
         self.mapped_data = [
             {"time": timezone.make_aware(timezone.datetime(2018, 2, 1, 0, 0, 0), TIMEZONE), "startlat": 1,
@@ -257,7 +287,7 @@ class OverlapHandlingOutdatedInputDataTest(APITestCase):
         """
         Test for filtering out outdated production data based on the data already in db
         """
-        filtered_prod_data = mapper.remove_outdated_prod_data(self.segment_times, self.mapped_data)
+        filtered_prod_data = overlap_handler.remove_outdated_prod_data(self.segment_times, self.mapped_data)
 
         # Outdated by a large margin
         self.assertNotIn(self.mapped_data[0], filtered_prod_data)

@@ -9,16 +9,17 @@ from api import views
 router = DefaultRouter()
 router.register(r"roadsegments", views.RoadSegmentViewSet, "roadsegment")
 router.register(r"prod-data", views.ProductionDataViewSet, "productiondata")
-router.register(r"users", views.UserViewSet)
+router.register(r"weather", views.WeatherViewSet, "weatherdata")
+router.register(r"road-status", views.SegmentStatusViewSet, "segmentstatus")
 
 # The API URLs are determined automatically by the router.
 urlpatterns = [
     # Handle api/
     url(r"api/", include(router.urls)),
     # Redirect api to api/
-    url(r'^api$', RedirectView.as_view(url='/api/')),
+    url(r"^api$", RedirectView.as_view(url="/api/")),
     # Handle docs/
-    url(r'^docs/', include_docs_urls(title='VAPI Documentation')),
+    url(r"^docs/", include_docs_urls(title="VAPI Documentation")),
     # Redirect docs to docs/
-    url(r'^docs$', RedirectView.as_view(url='/docs/'))
+    url(r"^docs$", RedirectView.as_view(url="/docs/"))
 ]

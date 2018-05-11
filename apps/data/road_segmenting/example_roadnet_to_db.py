@@ -1,54 +1,28 @@
 import os
 
 import requests
-from road_segmenter import road_segmenter
+from road_fetcher import vegnet_to_geojson
+from road_filter import filter_road
+from vapi.constants import MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
 
+# This municipality code is Trondheim
 municipality = 5001
+# This type of road code means k = communal, and g = walkways and bicycle roads
 type_of_road = "kg"
-max_distance = 100
-min_segments = 2
+# Values used for segmenting
+max_distance = MAX_SEGMENT_LENGTH
+min_segments = MIN_COORDINATES_LENGTH
 
 # Credentials for connecting and writing to the API
 API_username = os.environ["API_USERNAME"]
 API_password = os.environ["API_PASSWORD"]
 
 
-def filter_road(road):
-    """
-    Filteres the input road segment to satisfy DB layout.
-    :param road: A dictionary containing a road segment
-    :return: A filtered dict with the road segment
-    """
-    # Format the linestring correctly
-    linestring = ""
-    for pair in road["geometry"]["coordinates"]:
-        linestring += str(pair[0]) + " " + str(pair[1]) + ","
-    linestring = linestring.rstrip(",")
-    geometry = "SRID={};LINESTRING({})".format(road["properties"]["geometri"]["srid"], linestring)
-
-    filtered_road = {
-        "the_geom":        geometry,
-        "county":          road["properties"]["fylke"],
-        "href":            road["properties"]["href"],
-        "category":        road["properties"]["kategori"],
-        "municipality":    road["properties"]["kommune"],
-        "startdate":       road["properties"]["metadata"]["startdato"],
-        "region":          road["properties"]["region"],
-        "status":          road["properties"]["status"],
-        "stretchdistance": road["properties"]["strekningslengde"],
-        "typeofroad":      road["properties"]["typeVeg"],
-        "roadsectionid":   road["properties"]["veglenkeid"],
-        "vrefshortform":   road["properties"]["vrefkortform"],
-    }
-
-    return filtered_road
-
-
-def format_to_db(municipality, type_road, max_distance, min_segments):
+def format_to_db(municipality, type_road):
     """
     :return: Returns a filtered road network
     """
-    road_network = road_segmenter(municipality, type_road, max_distance, min_segments)
+    road_network = vegnet_to_geojson(municipality, type_road)[1]["features"]
     filtered_road_network = []
     for road in road_network:
         road_done = filter_road(road)
@@ -56,16 +30,17 @@ def format_to_db(municipality, type_road, max_distance, min_segments):
     return filtered_road_network
 
 
-def data_in(municipality, type_road, max_distance, min_segments):
+def data_in(municipality, type_road):
     """
+    Takes the municipality number and the type of road and gathers the road network, segments it and post it to the API.
     :return: The status code of the finished post request.
     """
     url = "http://localhost:8000/api/roadsegments/"
-    filtered_network = format_to_db(municipality, type_road, max_distance, min_segments)
+    filtered_network = format_to_db(municipality, type_road)
 
     r = requests.post(url, json=filtered_network, auth=(API_username, API_password))
     return "Status: {}\n{}".format(r.status_code, r.text)
 
 
 if __name__ == "__main__":
-    print(data_in(municipality, type_of_road, max_distance, min_segments))
+    print(data_in(municipality, type_of_road))

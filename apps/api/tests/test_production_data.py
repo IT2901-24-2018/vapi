@@ -18,19 +18,20 @@ class InsertOneProductionDataTest(APITestCase):
     """
     def setUp(self):
         linestring = GEOSGeometry(
-            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
-            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
-            '267185 7037296,267191 7037300)', 32633
+            "LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,"
+            "266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,"
+            "267185 7037296,267191 7037300)", 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate="2018-1-1", region=1,
             stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
-        d = RoadSegment.objects.get()
+        segment = RoadSegment.objects.get()
 
         ProductionData.objects.create(
-            time=timezone.now(), startlat=60.7758584, startlong=20.756444, endlat=60.45454, endlong=20.57575,
-            plow_active=True, segment=d
+            time=timezone.now(), startlat=60.7758584, startlong=20.756444,
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=60.45454, endlong=20.57575,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True, segment=segment
         )
 
     def test_prod_data(self):
@@ -75,14 +76,19 @@ class GetAllProductionDataTest(APITestCase):
 
         # Create data in db
         ProductionData.objects.create(
-            time=timezone.now(), startlat=60.7758584, startlong=20.756444, endlat=60.45454, endlong=20.57575,
-            plow_active=True, segment=d
+            time=timezone.now(), startlat=60.7758584, startlong=20.756444,
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=60.45454, endlong=20.57575,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), plow_active=True, segment=d
         )
         ProductionData.objects.create(
-            time=timezone.now(), startlat=60.4564577, startlong=20.465565, endlat=60.646566, endlong=20.4564, segment=d
+            time=timezone.now(), startlat=60.4564577, startlong=20.465565,
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=60.646566, endlong=20.4564,
+            end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), segment=d
         )
         ProductionData.objects.create(
-            time=timezone.now(), startlat=60.56345345, startlong=20.3453453, endlat=60.3453453, endlong=20.4354,
+            time=timezone.now(), startlat=60.56345345, startlong=20.3453453,
+            start_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"), endlat=60.3453453,
+            endlong=20.4354, end_point=GEOSGeometry("POINT(10.356343049613752 63.397435490163907)"),
             wet_spreader_active=True, segment=d
         )
 
@@ -149,12 +155,14 @@ class PostProductionDataTest(APITestCase):
         # Make the test data
         self.data = [{
             "time": timezone.make_aware(timezone.datetime(2018, 2, 2, 0, 0, 0), TIMEZONE),
-            "startlat": 63.387075002372903, "startlong": 10.3277250005425, "endlat": 60.45454,
-            "endlong": 20.57575, "plow_active": True
+            "startlat": 63.387075002372903, "startlong": 10.3277250005425,
+            "endlat": 63.387441999029399, "endlong": 10.3290930003037,
+            "plow_active": True
         }, {
             "time": timezone.make_aware(timezone.datetime(2018, 2, 2, 0, 1, 0), TIMEZONE),
-            "startlat": 63.387691997704202, "startlong": 10.3290819995141, "endlat": 60.646566,
-            "endlong": 20.45645, "plow_active": True
+            "startlat": 63.387691997704202, "startlong": 10.3290819995141,
+            "endlat": 63.387777001722696, "endlong": 10.328826998917799,
+            "plow_active": True
         }]
 
     def test_post_prod_data_list_authenticated(self):
@@ -168,10 +176,8 @@ class PostProductionDataTest(APITestCase):
         url = reverse("productiondata-list")
         response = self.client.post(url, self.data, format="json")
 
-        # Check the status code, then check that the number of objects in the database matches the number
-        # of objects that are within range in the POST request
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ProductionData.objects.count(), 1)
+        # Check the status code, the production data does not map
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_post_prod_data_list_authenticated_staff(self):
         """
@@ -184,10 +190,8 @@ class PostProductionDataTest(APITestCase):
         url = reverse("productiondata-list")
         response = self.client.post(url, self.data, format="json")
 
-        # Check the status code, then check that the number of objects in the database matches the number
-        # of objects that are within range in the POST request
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(ProductionData.objects.count(), 1)
+        # Check the status code, the production data does not map
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
     def test_post_prod_data_list_unauthenticated(self):
         """
