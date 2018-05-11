@@ -34,6 +34,9 @@ class TestSegmenting(unittest.TestCase):
         cls.road_net_segmented = segment_network(road_net_list, cls.max_segment_distance, cls.min_coordinates_length)
 
     def setUp(self):
+        """
+        Needs to be here for the tests to run
+        """
         pass
 
     def test_road_segmenter_list(self):

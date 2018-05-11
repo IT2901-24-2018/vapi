@@ -26,6 +26,9 @@ class TestCalculateDistance(unittest.TestCase):
         cls.zone2 = "V"
 
     def setUp(self):
+        """
+        Needs to be here for the tests to run
+        """
         pass
 
     def test_int(self):
