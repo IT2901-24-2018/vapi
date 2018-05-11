@@ -22,17 +22,17 @@ sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# Don't use this secret key, only left it here as an example of what it should look like
 SECRET_KEY = '_26^m9#xs0hi*bi_ak+o@n_2yyq^8wc8t-p26zc*^&_1a*ui7c'
 
-# Overwrite for production
+# Pulled from .env. True for development, as per the README.md instructions
+# Set DJANGO_DEBUG=False in README for production
 DEBUG = os.environ["DJANGO_DEBUG"]
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
@@ -44,7 +44,6 @@ DATABASES = {
 }
 
 # Database definition for Travis
-
 if 'TRAVIS' in os.environ:
     DATABASES = {
         'default': {
@@ -53,9 +52,7 @@ if 'TRAVIS' in os.environ:
         }
     }
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -98,10 +95,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'vapi.wsgi.application'
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -117,10 +112,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -131,13 +124,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
-
 STATIC_URL = '/static/'
+
+# Directory Django will move collected static to (/static in this case)
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
+# Where Django will also look for staticfiles (/assets in this case)
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
@@ -146,6 +140,6 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
-# URL
-
+# We added manual redirects for urls instead of automatically appending slashes
+# https://docs.djangoproject.com/en/2.0/ref/settings/#append-slash
 APPEND_SLASH = False
