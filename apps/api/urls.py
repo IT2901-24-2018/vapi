@@ -16,9 +16,9 @@ urlpatterns = [
     # Handle api/
     url(r"api/", include(router.urls)),
     # Redirect api to api/
-    url(r'^api$', RedirectView.as_view(url='/api/')),
+    url(r"^api$", RedirectView.as_view(url="/api/")),
     # Handle docs/
-    url(r'^docs/', include_docs_urls(title='VAPI Documentation')),
+    url(r"^docs/", include_docs_urls(title="VAPI Documentation")),
     # Redirect docs to docs/
-    url(r'^docs$', RedirectView.as_view(url='/docs/'))
+    url(r"^docs$", RedirectView.as_view(url="/docs/"))
 ]
