@@ -101,4 +101,3 @@ class WeatherDataSerializer(serializers.ModelSerializer):
         model = WeatherData
         fields = ("id", "created", "updated", "start_time_period", "end_time_period", "county_and_municipality_id",
                   "value", "unit", "degrees", "segment")
-
