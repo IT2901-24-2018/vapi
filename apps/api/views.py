@@ -1,3 +1,4 @@
+from django.db import connection
 from rest_framework import permissions, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -127,13 +128,11 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
             # Handle weather data when adding new production data
-            weather.handle_prod_weather_overlap(serializer.data)
+            weather.handle_prod_weather_overlap(serializer.validated_data)
             serializer.save()
-            # headers = self.get_success_headers(serializer.data)
             return Response(
                 "{} row(s) added".format(len(serializer.data)),
                 status=status.HTTP_201_CREATED,
-                # headers=headers
             )
 
         # If not valid return error
@@ -202,3 +201,92 @@ class WeatherViewSet(viewsets.ModelViewSet):
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SegmentStatusViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Read only viewset for status on segments
+    """
+    pagination_class = StandardResultsSetPagination
+    page_size = 100
+
+    def get_queryset(self):
+        """
+        Django Rest Framework complains if this is not overridden
+        """
+        pass
+
+    def get_queryset_custom(self, segment_id=None, page=None, page_size=None):
+        """
+        Custom method for getting the query data
+        Uses raw sql as the query is a bit difficult to implement with django models
+        :param segment_id: id of the segment for retrieve
+        :param page: page number for list
+        :param page_size: page size for list
+        :return: When used by retrieve, a dictionary. When used by list, a list of dictionaries
+        """
+        with connection.cursor() as cursor:
+            stmt = """
+            SELECT s.id, s.county, s.href, s.category, s.municipality, s.region,
+            s.status, s.stretchdistance, s.typeofroad, s.roadsectionid, s.vrefshortform,
+            (SELECT ST_AsText(s.the_geom)) AS the_geom,
+            w.start_time_period, w.end_time_period,
+            w.value, w.unit, w.degrees,
+
+            (SELECT MAX(p.time) FROM api_productiondata AS p WHERE p.segment_id = s.id) AS time,
+            (SELECT EXISTS
+              (SELECT * FROM api_productiondata AS p
+              WHERE p.segment_id = s.id AND p.dry_spreader_active = TRUE)) AS dry_spreader_active,
+            (SELECT EXISTS
+              (SELECT * FROM api_productiondata AS p
+              WHERE p.segment_id = s.id AND p.plow_active = TRUE)) AS plow_active,
+            (SELECT EXISTS
+              (SELECT * FROM api_productiondata AS p
+              WHERE p.segment_id = s.id AND p.wet_spreader_active = TRUE)) AS wet_spreader_active,
+            (SELECT EXISTS
+              (SELECT * FROM api_productiondata AS p
+              WHERE p.segment_id = s.id AND p.brush_active = TRUE)) AS brush_active,
+            (SELECT p.material_type_code
+              FROM api_productiondata AS p
+              WHERE p.segment_id = s.id ORDER BY p.material_type_code LIMIT 1) AS material_type_code
+
+            FROM api_roadsegment AS s
+            INNER JOIN api_weatherdata AS w ON s.id = w.segment_id
+            """
+            if segment_id is not None:
+                where_clause = "WHERE s.id = %s"
+                cursor.execute(stmt + where_clause, [segment_id])
+                columns = [col[0] for col in cursor.description]
+                rows = dict(zip(columns, cursor.fetchone()))
+            else:
+                if page is not None and page_size is not None:
+                    pagination = "LIMIT %s OFFSET %s"
+                    cursor.execute(stmt + pagination, [page_size, (int(page) - 1) * int(page_size)])
+                else:
+                    pagination = "LIMIT %s"
+                    cursor.execute(stmt + pagination, [page_size])
+                columns = [col[0] for col in cursor.description]
+                rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        return rows
+
+    def list(self, request, *args, **kwargs):
+        """
+        List all segments with status.
+        Defaults to 100 segments
+        Use: /api/road-status/?page=<page_number>&page_size<number_of_segments_per_page>
+        """
+        page = request.query_params.get("page", None)
+        if request.query_params.get("page_size", None) is not None:
+            page_size = request.query_params.get("page_size", None)
+        else:
+            page_size = self.page_size
+        if page is not None and page_size is not None:
+            return Response(self.get_queryset_custom(page=page, page_size=page_size))
+
+        return Response(self.get_queryset_custom(page_size=self.page_size))
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        """
+        Retrieve one segment with status from pk
+        """
+        return Response(self.get_queryset_custom(segment_id=pk))
