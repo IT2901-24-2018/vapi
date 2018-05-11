@@ -42,18 +42,19 @@ class RoadSegment(BaseModel):
 
 
 class ProductionData(BaseModel):
-    time = models.DateTimeField(help_text="When the production data was generated. Example: 2016-11-04T08:45:15")
-    startlat = models.FloatField(help_text="Start latitude. Example: 63.3870750023729")
-    startlong = models.FloatField(help_text="Start longitute. Example: 10.3277250005425")
-    endlat = models.FloatField(help_text="End latitude. Example: 63.3874419990294")
-    endlong = models.FloatField(help_text="End longitude. Example: 10.3290930003037")
-    dry_spreader_active = models.NullBooleanField(help_text="Dry spreader active boolean. Optional.")
-    plow_active = models.NullBooleanField(help_text="Plow boolean. Optional.")
-    wet_spreader_active = models.NullBooleanField(help_text="Wet spreader boolean. Optional.")
-    brush_active = models.NullBooleanField(help_text="Brush boolean. Optional.")
-    material_type_code = models.IntegerField(null=True, help_text="Material type boolean. Optional")
-    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE, help_text="Segment ID to mapped segment. "
-                                "Will be autocompleted by the code. Enter dummy value.")
+    time = models.DateTimeField()
+    startlat = models.FloatField()
+    startlong = models.FloatField()
+    start_point = models.PointField()
+    endlat = models.FloatField()
+    endlong = models.FloatField()
+    end_point = models.PointField()
+    dry_spreader_active = models.NullBooleanField()
+    plow_active = models.NullBooleanField()
+    wet_spreader_active = models.NullBooleanField()
+    brush_active = models.NullBooleanField()
+    material_type_code = models.IntegerField(null=True)
+    segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE)
 
 
 class WeatherData(BaseModel):

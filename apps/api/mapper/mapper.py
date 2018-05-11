@@ -1,146 +1,148 @@
 from django.db import connection
 from vapi.constants import MAX_MAPPING_DISTANCE
 
-from api.models import ProductionData
 
-
-def point_to_linestring_distance(point, search_radius):
+def get_candidates(sequence, search_radius):
     """
     Returns closest segment and distance.
     Uses built in postgis functions to find the distance in meters between
-    a point (input) and all the segments in the database. Then it returns
+    a line (input) and all the segments in the database. Then it returns
     the closest one or None if no segments within the MAX_MAPPING_DISTANCE.
-    :param point: lon lat
-    :type point: tuple
+    :param sequence: list with start and end points (lon/lat)
+    :type sequence: list[dict]
     :param search_radius: Max distance to segment
     :type search_radius: int
     :return: Segment id and distance to it
-    :rtype: dict
+    :rtype: dict[list]
     """
     with connection.cursor() as cursor:
+        # Make a list of query parameters with an id for each production data entry and the geometric data
+        params = []
+        for i in range(len(sequence)):
+            params.extend([i,
+                           sequence[i]["startlong"], sequence[i]["startlat"],
+                           sequence[i]["endlong"], sequence[i]["endlat"]])
+
+        # Makes '(%s, %s, %s, %s, %s)' separated by ', ' equal to the number of data in production data input
+        placeholder = ", ".join("(%s, %s, %s, %s, %s)" for _ in range(len(sequence)))
+
         stmt = """
-        WITH segment (id, distance)
-        AS
-        -- Find distance to segment and id
+        /*
+        Instead of executing one query for each production data entry
+        we make a sequence that contains all the entries
+         */
+        WITH sequence (lid, slon, slat, elon, elat) AS (VALUES {placeholder}),
+        -- Make a linestring representing the start and end point of an entry
+        line AS
         (
-          SELECT segment.id AS id,
-          ST_Distance(
-            segment.the_geom::geography,
-            -- Make a point with srid 4326 since the point is lon lat
-            ST_SetSRID(ST_MakePoint(%s, %s), 4326)::geography
-          ) AS distance
-          FROM api_roadsegment segment
+          SELECT *, (ST_SetSRID(ST_MakeLine(
+            ST_MakePoint(slon, slat), ST_MakePoint(elon, elat)
+          ), 4326)::geography) AS line,
+          ST_SetSRID(ST_MakePoint(slon, slat), 4326)::geography AS spoint,
+          ST_SetSRID(ST_MakePoint(elon, elat), 4326)::geography AS epoint
+          FROM sequence
         )
-        SELECT id, distance
-        FROM segment
-        WHERE distance <= %s
-        ORDER BY distance ASC
-        LIMIT 1
-        """
-        cursor.execute(stmt, [point[0], point[1], search_radius])
-        row = cursor.fetchone()
 
-    if row:
-        return {"id": row[0], "distance": row[1]}
-    else:
-        return None
+        SELECT line.lid AS lid, segment.id AS sid,
+        (
+        -- Find distance to segment
+          SELECT ST_Distance(
+            segment.the_geom::geography,
+            line.line
+          ) AS distance
+        ),
+        -- Map start point to closest point on segment
+        (SELECT ST_AsText(ST_ClosestPoint(
+          segment.the_geom, ST_SetSRID(ST_MakePoint(line.slon, line.slat), 4326))) AS start_mapped_point
+        ),
+        -- Map end point to closest point on segment
+        (SELECT ST_AsText(ST_ClosestPoint(
+          segment.the_geom, ST_SetSRID(ST_MakePoint(line.elon, line.elat), 4326))) AS end_mapped_point
+        ),
+        -- Find distance between start point and end point
+        (SELECT ST_Distance(line.spoint, line.epoint)) AS distance_between_start_end,
+        -- Find distance between the remapped start and end points
+        (SELECT ST_Distance(
+          ST_ClosestPoint(segment.the_geom, ST_SetSRID(ST_MakePoint(line.slon, line.slat), 4326))::geography,
+          ST_ClosestPoint(segment.the_geom, ST_SetSRID(ST_MakePoint(line.elon, line.elat), 4326))::geography
+        )) AS distance_on_segment
+        FROM api_roadsegment AS segment, line
+        -- Only calculate the distances for the segments that are within search radius
+        WHERE ST_DWithin(line.line, segment.the_geom::geography, %s)
+        ORDER BY lid ASC, distance ASC
+        """.format(placeholder=placeholder)
+
+        # Add search_radius to parameters
+        params.append(search_radius)
+        cursor.execute(stmt, params)
+        columns = [col[0] for col in cursor.description]
+        list_rows = [dict(zip(columns, row)) for row in cursor.fetchall()]
+        result = {}
+        for row in list_rows:
+            if row["lid"] not in result:
+                result[row["lid"]] = []
+            result[row["lid"]].append(row)
+        return result
 
 
-def map_to_segment(production_data):
+def prioritize_candidates(lines):
+    """
+    Use distance and the difference between distance_between_start_end and
+    distance_on_segment to decide which segment is better
+    Removes bad matches and set a score attribute to use for prioritizing
+    :param lines: Dictionary with a list for each production data line
+    :type lines: dict[list]
+    :return:
+    """
+    for key in lines:
+        temp_list = []
+        for candidate in lines[key]:
+            # Prevent divide by zero just in case
+            if candidate["distance_between_start_end"] != 0:
+                candidate["distance_diff"] = (abs(candidate["distance_between_start_end"]
+                                                  - candidate["distance_on_segment"])
+                                              / candidate["distance_between_start_end"])
+
+                # Remove candidate if it has about a 90 degree angle (+- 30 degrees) to line
+                # 90 degrees = 1 if distance is 0
+                # Works better if the line is short or the candidate segment is straight
+                if not (0.67 < candidate["distance_diff"] < 1.33):
+                    # Lower score is better
+                    if candidate["distance"] < 5:
+                        # If within 5 m look for the most parallel segment
+                        # Prioritize by lowering distance_diff by 1 making it negative in most cases
+                        candidate["score"] = candidate["distance_diff"] - 1
+                    else:
+                        candidate["score"] = (candidate["distance"]) * (candidate["distance_diff"])
+                    temp_list.append(candidate)
+
+        # Sort lists based on score
+        lines[key] = sorted(temp_list, key=lambda x: x["score"])
+    return lines
+
+
+def map_to_segment(prod_data):
     """
     Maps production data to road segments.
     Returns the prod-data dicts that mapped to a segment with the db id of the segment
-    :param production_data: List of dicts that include a startlon and startlat
-    :type production_data: list
+    :param prod_data: List of dicts that include a startlong and startlat attribute
+    :type prod_data: list[dict]
     :return: Mapped prod-data
     :rtype: list
     """
 
+    lines = get_candidates(prod_data, MAX_MAPPING_DISTANCE)
+
+    prioritized = prioritize_candidates(lines)
+
     mapped_data = []
 
-    for prod_data in production_data:
-
-        point = (prod_data["startlong"], prod_data["startlat"])
-        segment = point_to_linestring_distance(point, MAX_MAPPING_DISTANCE)
-
-        # Only do if segment is not None
-        if segment is not None:
-            prod_data["segment"] = segment["id"]
-            mapped_data.append(prod_data)
+    # Map to the highest prioritized segment
+    for key in prioritized:
+        if len(prioritized[key]) > 0:
+            prod_data[int(prioritized[key][0]["lid"])]["segment"] = prioritized[key][0]["sid"]
+            prod_data[int(prioritized[key][0]["lid"])]["start_point"] = prioritized[key][0]["start_mapped_point"]
+            prod_data[int(prioritized[key][0]["lid"])]["end_point"] = prioritized[key][0]["end_mapped_point"]
+            mapped_data.append(prod_data[int(prioritized[key][0]["lid"])])
 
     return mapped_data
-
-
-def find_time_period_per_segment(prod_data):
-    """
-    Finds the segment id and latest time connected to it
-    :param prod_data: Mapped production data
-    :type prod_data: list
-    :return: dict of segments and the latest time they were handled
-    :rtype: dict
-    """
-    segment_times = {}
-    for data in prod_data:
-        if str(data["segment"]) not in segment_times:
-            segment_times[str(data["segment"])] = {"earliest_time": data["time"], "latest_time": data["time"]}
-        elif data["time"] > segment_times[str(data["segment"])]["latest_time"]:
-            segment_times[str(data["segment"])]["latest_time"] = data["time"]
-        elif data["time"] < segment_times[str(data["segment"])]["earliest_time"]:
-            segment_times[str(data["segment"])]["earliest_time"] = data["time"]
-
-    return segment_times
-
-
-def delete_prod_data_before_time(segment, time):
-    """
-    Deletes prod-data older than 'time'
-    :param segment: The segment the prod-data belongs to
-    :param time: datetime object to use for comparison
-    :return: None
-    """
-    with connection.cursor() as cursor:
-        stmt = """
-        DELETE FROM api_productiondata
-        WHERE segment_id = %s and time < %s
-        """
-        cursor.execute(stmt, [segment, time])
-
-
-def remove_outdated_prod_data(segment_times, prod_data):
-    """
-    Filter out the production data that is already overwritten by production data in db
-    :param segment_times: Dict of segments and their corresponding earliest and latest times
-    :type segment_times: dict
-    :param prod_data: List of mapped production data
-    :type prod_data: list
-    :return: List of production data that is not outdated
-    :rtype: list
-    """
-    filtered_prod_data = []
-    for segment in segment_times:
-        # Check if there is not production data on the segment with a more recent time
-        if len(ProductionData.objects.filter(segment=segment, time__gt=segment_times[segment]["latest_time"])) == 0:
-            for prod in prod_data:
-                if str(prod["segment"]) == segment:
-                    filtered_prod_data.append(prod)
-
-    return filtered_prod_data
-
-
-def handle_prod_data_overlap(prod_data):
-    """
-    Deletes obsolete production data before inserting new
-    :param prod_data: Production data mapped to a segment
-    :type prod_data: list
-    :return: Production data without outdated entries
-    :rtype: list
-    """
-    segment_times = find_time_period_per_segment(prod_data)
-
-    prod_data = remove_outdated_prod_data(segment_times, prod_data)
-
-    # Delete overlap from db
-    for segment in segment_times:
-        delete_prod_data_before_time(segment, segment_times[segment]["earliest_time"])
-
-    return prod_data

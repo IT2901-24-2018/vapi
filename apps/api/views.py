@@ -4,12 +4,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from vapi.constants import INPUT_LIST_LIMIT, MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
 
-from api.mapper import mapper
+from api.mapper.mapper import map_to_segment
 from api.models import ProductionData, RoadSegment, WeatherData
+from api.overlap_handler.overlap_handler import handle_prod_data_overlap
 from api.permissions import IsAdminOrReadOnly, IsStaffOrCreateOnly
 from api.segmenter.road_segmenter import segment_network
-from api.serializers import (ProductionDataSerializer, RoadSegmentSerializer, UserSerializer,
-                             WeatherDataInputSerializer, WeatherDataSerializer)
+from api.serializers import (ProductionDataInputSerializer, ProductionDataSerializer,
+                             RoadSegmentSerializer, UserSerializer, WeatherDataInputSerializer,
+                             WeatherDataSerializer)
 from api.weather import weather
 
 
@@ -85,7 +87,7 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
     destroy: Request for deleting a production data element.
     """
     queryset = ProductionData.objects.all()
-    serializer_class = ProductionDataSerializer
+    serializer_class = ProductionDataInputSerializer
     # Only registered users can use this view
     permission_classes = (permissions.IsAuthenticated, IsStaffOrCreateOnly,)
 
@@ -97,7 +99,6 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
 
         # Check if the incoming data is a list
         # If it is a list set the many flag to True
-
         if isinstance(request.data, list):
             data = request.data
             if len(request.data) > INPUT_LIST_LIMIT:
@@ -106,8 +107,12 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
         else:
             data.append(request.data)
 
-        # Map prod data to road segment
-        mapped_data = mapper.map_to_segment(data)
+        serializer = self.get_serializer(data=data, many=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Map production data to a road segment
+        mapped_data = map_to_segment(data)
 
         # Check that there are successfully mapped prod-data
         if len(mapped_data) == 0:
@@ -115,22 +120,30 @@ class ProductionDataViewSet(viewsets.ModelViewSet):
             return Response(error, status=status.HTTP_200_OK)
 
         # Handle overlap with old prod-data
-        mapped_data = mapper.handle_prod_data_overlap(mapped_data)
+        mapped_data = handle_prod_data_overlap(mapped_data)
 
         # Instantiate the serializer
-        serializer = self.get_serializer(data=mapped_data, many=True)
+        serializer = ProductionDataSerializer(data=mapped_data, many=True)
 
         # Check if the serializer is valid and takes the necessary actions
         if serializer.is_valid():
             # Handle weather data when adding new production data
             weather.handle_prod_weather_overlap(serializer.data)
             serializer.save()
-            headers = self.get_success_headers(serializer.data)
-            return Response(serializer.data, status=status.HTTP_201_CREATED,
-                            headers=headers)
+            # headers = self.get_success_headers(serializer.data)
+            return Response(
+                "{} row(s) added".format(len(serializer.data)),
+                status=status.HTTP_201_CREATED,
+                # headers=headers
+            )
 
         # If not valid return error
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = ProductionDataSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class WeatherViewSet(viewsets.ModelViewSet):
