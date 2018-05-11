@@ -84,7 +84,7 @@ When you're inside, run:
 
 `python /vapi/apps/data/road_segmenting/example_roadnet_to_db.py`
 
-You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/data/Driftsdata_SubSet_Small.geojson` file:
+You can also run `example_create_test_prod_data.py` to simulate production data input here, which requires you to have a `apps/data/production_input_data.geojson` file:
 
 `python /vapi/apps/data/example_create_test_prod_data.py`
 
