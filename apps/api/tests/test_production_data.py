@@ -18,12 +18,12 @@ class InsertOneProductionDataTest(APITestCase):
     """
     def setUp(self):
         linestring = GEOSGeometry(
-            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
-            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
-            '267185 7037296,267191 7037300)', 32633
+            "LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,"
+            "266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,"
+            "267185 7037296,267191 7037300)", 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate='2018-1-1', region=1,
+            the_geom=linestring, county=1, href=1, category=1, municipality=1, startdate="2018-1-1", region=1,
             stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
         segment = RoadSegment.objects.get()

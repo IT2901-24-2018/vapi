@@ -12,12 +12,12 @@ class InsertOneWeatherDataTest(APITestCase):
     """
     def setUp(self):
         linestring = GEOSGeometry(
-            'LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,'
-            '266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,'
-            '267185 7037296,267191 7037300)', 32633
+            "LINESTRING(266711 7037272,266712 7037276,266747 7037300,266793 7037316,266826 7037325,266835 7037327,"
+            "266876 7037333,266916 7037334,266955 7037332,267032 7037323,267127 7037314,267174 7037300,267181 7037296,"
+            "267185 7037296,267191 7037300)", 32633
         )
         RoadSegment.objects.create(
-            the_geom=linestring, county=5001, href=1, category=1, municipality=5001, startdate='2018-1-1', region=1,
+            the_geom=linestring, county=5001, href=1, category=1, municipality=5001, startdate="2018-1-1", region=1,
             stretchdistance=1, typeofroad=1, roadsectionid=1, vrefshortform=1
         )
         segment = RoadSegment.objects.get()
@@ -61,9 +61,9 @@ class InsertOneWeatherDataTest(APITestCase):
         """
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
-        weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',
-                                         "end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
-                                         "value": 4, "unit": 'mm', "degrees": 30, "segment": 4}])
+        weather.map_weather_to_segment([{"start_time_period": "2018-12-10T08:45:15Z",
+                                         "end_time_period": "2018-12-11T08:45:15Z", "county_and_municipality_id": 5001,
+                                         "value": 4, "unit": "mm", "degrees": 30, "segment": 4}])
         entry2 = WeatherData.objects.get()
         self.assertEqual(entry2.value, 6)
 
@@ -80,8 +80,8 @@ class InsertOneWeatherDataTest(APITestCase):
             dry_spreader_active=True, plow_active=True, wet_spreader_active=True, brush_active=True,
             material_type_code=True, segment=RoadSegment.objects.get()
         )
-        weather.map_weather_to_segment([{"start_time_period": '2018-12-10T08:45:15Z',
-                                         "end_time_period": '2018-12-11T08:45:15Z', "county_and_municipality_id": 5001,
-                                         "value": 4, "unit": 'mm', "degrees": 30, "segment": 4}])
+        weather.map_weather_to_segment([{"start_time_period": "2018-12-10T08:45:15Z",
+                                         "end_time_period": "2018-12-11T08:45:15Z", "county_and_municipality_id": 5001,
+                                         "value": 4, "unit": "mm", "degrees": 30, "segment": 4}])
         entry = WeatherData.objects.get()
         self.assertEqual(entry.value, 2)
