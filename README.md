@@ -10,6 +10,8 @@ Additional documentation and information can be found in our [wiki](https://gith
 
 Vapi was built with [Django](https://www.djangoproject.com/) as a multi-container [Docker](https://www.docker.com/) application. Huge thanks to [Christian Duvholt](https://github.com/duvholt) for Docker guidance.
 
+Thanks to [Jan Kristian Jensen](https://github.com/LtGlahn) for letting us use his [repository](https://github.com/LtGlahn/nvdbapi-V2) for interacting with the NVDB API. We used it for getting the official road network from the NVDB API and processing it.
+
 # Setup
 
 ## Github
@@ -72,6 +74,8 @@ To gain access to all the endpoints of the API, you must log in as a superuser. 
 
 ## Vapi example scripts
 
+We have two files to help with populating the database with road segments and production data. These scripts are not necessary for the API, but we left them here as a convenience for future developers.
+
 To run our example scripts, you will need to fill in your superuser credentials to the `.env` file you made earlier. This file will not be checked in to Git. Modify the `.env` file so that it looks like this, replacing yourusername with your username, and yourpassword with your password:
 
 ```
@@ -127,14 +131,3 @@ This will stop and start (restart) your containers if they're running in detache
 `sudo make status`
 
 This will display the status of your containers.
-
-## Example files
-
-We have two files to help with populating the database with road segments and production data. These can be used in further development.
-Both example_create_test_prod_data.py and example_roadnet_to_db.py are well described and easy to use.
-NOTE: These are not necessary for the API and can be removed as you see fit. 
-
-## Credits 
-
-Thanks to Jan Kristian Jensen https://github.com/LtGlahn for letting us use his https://github.com/LtGlahn/nvdbapi-V2 repo for interacting with the NVDB API.
-We used it for getting the official road network from the NVDB API and processing it. 
