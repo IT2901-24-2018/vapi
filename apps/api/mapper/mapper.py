@@ -95,7 +95,7 @@ def prioritize_candidates(lines):
     :return:
     """
     for key in lines:
-        temp_list = []
+        key_list = []
         for candidate in lines[key]:
             # Prevent divide by zero just in case
             if candidate["distance_between_start_end"] != 0:
@@ -114,10 +114,10 @@ def prioritize_candidates(lines):
                         candidate["score"] = candidate["distance_diff"] - 1
                     else:
                         candidate["score"] = (candidate["distance"]) * (candidate["distance_diff"])
-                    temp_list.append(candidate)
+                    key_list.append(candidate)
 
         # Sort lists based on score
-        lines[key] = sorted(temp_list, key=lambda x: x["score"])
+        lines[key] = sorted(key_list, key=lambda x: x["score"])
     return lines
 
 
