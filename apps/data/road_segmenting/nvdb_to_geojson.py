@@ -1,5 +1,6 @@
 # All credit should go to the creator of this file
 # https://github.com/LtGlahn/nvdbapi-V2/blob/master/nvdb2geojson.py
+# Used for getting the official road network from NVDB API in JSON format.
 
 # -*- coding: utf-8 -*-
 """Lagre vegnett og fagdata fra NVDB til geojson.

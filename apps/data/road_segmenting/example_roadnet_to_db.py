@@ -3,11 +3,15 @@ import os
 import requests
 from road_fetcher import vegnet_to_geojson
 from road_filter import filter_road
+from vapi.constants import MAX_SEGMENT_LENGTH, MIN_COORDINATES_LENGTH
 
+# This municipality code is Trondheim
 municipality = 5001
+# This type of road code means k = communal, and g = walkways and bicycle roads
 type_of_road = "kg"
-max_distance = 100
-min_segments = 2
+# Values used for segmenting
+max_distance = MAX_SEGMENT_LENGTH
+min_segments = MIN_COORDINATES_LENGTH
 
 # Credentials for connecting and writing to the API
 API_username = os.environ["API_USERNAME"]
@@ -28,6 +32,7 @@ def format_to_db(municipality, type_road):
 
 def data_in(municipality, type_road):
     """
+    Takes the municipality number and the type of road and gathers the road network, segments it and post it to the API.
     :return: The status code of the finished post request.
     """
     url = "http://localhost:8000/api/roadsegments/"

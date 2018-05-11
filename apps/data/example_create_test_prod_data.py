@@ -9,6 +9,9 @@ API_password = os.environ["API_PASSWORD"]
 
 
 def data_in():
+    """
+    Creates a post request to the API on the given URL with data from the production data file.
+    """
     url = "http://localhost:8000/api/prod-data/"
     prod_data_path = "./production_input_data.geojson"
     data = data_filter.production_data_filter(os.path.join(os.path.dirname(os.path.realpath(__file__)), prod_data_path))

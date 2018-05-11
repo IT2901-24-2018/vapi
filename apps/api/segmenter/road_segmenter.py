@@ -13,7 +13,7 @@ def split_segment(road_segment, max_distance, segmented_road_network, min_gps):
     :return: Final compiled list of all segmented_road_network after being passed down recursively
     """
     coordinates = road_segment["the_geom"]["coordinates"]
-    index, meter = (calculate_road_length(coordinates, max_distance, False))
+    index, meter = (calculate_road_length(coordinates, max_distance))
 
     segment_before_split = copy.deepcopy(road_segment)
     segment_before_split["the_geom"]["coordinates"] = segment_before_split["the_geom"]["coordinates"][:index]
@@ -96,12 +96,12 @@ def geometry_to_list(geometry):
     :return: A ditionary containing srid as a string and coordinates as a 2D list with float values
     """
     coordinates_list = []
-    temp = geometry.split(";")
-    srid, coordinates = temp[0], temp[1]
+    points = geometry.split(";")
+    srid, coordinates = points[0], points[1]
     srid = srid[5:]
 
-    temp = coordinates[11:len(coordinates)-1].split(",")
-    for pair in temp:
+    points = coordinates[11:len(coordinates)-1].split(",")
+    for pair in points:
         coord_pair = []
         for number in pair.split(" "):
             coord_pair.append(float(number))
