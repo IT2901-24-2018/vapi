@@ -22,8 +22,8 @@ class StandardResultsSetPagination(PageNumberPagination):
 
 class RoadSegmentViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
-    and `destroy` actions.
+    This viewset automatically provides "list", "create", "read", "update", "partial_update"
+    and "destroy" actions.
 
     list: Returns all the elements. Road segments in this case.
 
@@ -72,8 +72,8 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
 
 class ProductionDataViewSet(viewsets.ModelViewSet):
     """
-    This viewset automatically provides `list`, `create`, `read`, 'update', 'partial_update'
-    and `destroy` actions.
+    This viewset automatically provides "list", "create", "read", "update", "partial_update"
+    and "destroy" actions.
 
     list: Returns all the elements. Production data in this case.
 

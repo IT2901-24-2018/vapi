@@ -23,7 +23,7 @@ def get_candidates(sequence, search_radius):
                            sequence[i]["startlong"], sequence[i]["startlat"],
                            sequence[i]["endlong"], sequence[i]["endlat"]])
 
-        # Makes '(%s, %s, %s, %s, %s)' separated by ', ' equal to the number of data in production data input
+        # Makes "(%s, %s, %s, %s, %s)" separated by ", " equal to the number of data in production data input
         placeholder = ", ".join("(%s, %s, %s, %s, %s)" for _ in range(len(sequence)))
 
         stmt = """

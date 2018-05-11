@@ -25,7 +25,7 @@ def find_time_period_per_segment(prod_data):
 
 def delete_prod_data_before_time(segment, time):
     """
-    Deletes prod-data older than 'time'
+    Deletes prod-data older than "time"
     :param segment: The segment the prod-data belongs to
     :param time: datetime object to use for comparison
     :return: None
